@@ -1,75 +1,49 @@
 import * as path from 'path';
-import { nx_monorepo } from 'aws-prototyping-sdk';
-import { Nx } from 'aws-prototyping-sdk/nx-monorepo';
 import { SourceCode, typescript } from 'projen';
 import { NodePackageManager } from 'projen/lib/javascript';
+import { RushProject } from './rush-project';
 
-export const NX_DEFAULT_OUTPUTS = [
-  '{projectRoot}/dist',
-  '{projectRoot}/lib',
-  '{projectRoot}/build',
-  '{projectRoot}/coverage',
-  '{projectRoot}/test-reports',
-  '{projectRoot}/target',
-  '{projectRoot}/LICENSE_THIRD_PARTY',
-  '{projectRoot}/.jsii',
-];
-
-/**
- * Workspace default NX "build" target
- *
- * @see {@link NxTargetDefaults}
- * @see {@link ProjectTarget}
- */
-export const NX_BUILD_TARGET_DEFAULT: Nx.ProjectTarget = {
-  outputs: NX_DEFAULT_OUTPUTS,
-  dependsOn: [
-    {
-      target: 'build',
-      projects: Nx.TargetDependencyProject.DEPENDENCIES,
-    },
-  ],
-};
-
-/**
- * Workspace default NX `targetDefaults`
- *
- * @see {@link NxTargetDefaults}
- */
-export const NX_TARGET_DEFAULTS: Nx.TargetDefaults = {
-  build: NX_BUILD_TARGET_DEFAULT,
-};
 
 
 // const SHARED_DEV_DEPS: string[] = [
 //
 // ];
 
-export interface MonorepoRootOptions extends Omit<nx_monorepo.NxMonorepoProjectOptions, 'sampleCode' | 'jest' | 'jestOptions'> {}
+export interface MonorepoRootOptions extends Omit<typescript.TypeScriptProjectOptions, 'sampleCode' | 'jest' | 'jestOptions'> {}
 
-export class MonorepoRoot extends nx_monorepo.NxMonorepoProject {
+export class MonorepoRoot extends typescript.TypeScriptProject {
   private readonly projects: MonorepoTypeScriptProject[] = [];
   private postInstallDependencies = new Array<() => boolean>();
+  private readonly rushProject: RushProject;
 
   constructor(options: MonorepoRootOptions) {
     super({
       ...options,
-      nxConfig: {
-        cacheableOperations: ['build', 'test'],
-        targetDefaults: NX_TARGET_DEFAULTS,
-      },
+      projenrcTs: true,
       sampleCode: false,
       jest: false,
       eslint: false,
+      githubOptions: {
+        mergify: false,
+      },
     });
+    this.rushProject = new RushProject(this);
 
+    this.gitignore.exclude('**/.rush/temp');
+    this.gitignore.exclude('common/deploy/');
+    this.gitignore.exclude('common/temp/');
     this.tasks.removeTask('build');
     this.tasks.addTask('build', {
-      steps: [{ spawn: 'default' }, { exec: 'pnpm nx run-many --target=build --all' }],
+      steps: [{ spawn: 'default' }, { exec: 'rushx build' }],
     });
   }
 
   public register(project: MonorepoTypeScriptProject) {
+    this.rushProject.addProject({
+      packageName: project.name,
+      projectFolder: path.relative(this.outdir, project.outdir),
+      skipRushCheck: false,
+    });
     this.projects.push(project);
   }
   public synth() {
@@ -170,6 +144,9 @@ export class MonorepoTypeScriptProject extends typescript.TypeScriptProject {
     this.tasks.removeTask('clobber');
     this.tasks.removeTask('eject');
 
+    this.setScript('_phase:build', 'pnpm build');
+    this.setScript('_phase:test', 'pnpm test');
+
     // Composite project and references
     const allDeps = [...(props.deps ?? []), ...(props.peerDeps ?? []), ...(props.devDeps ?? [])];
     for (const tsconfig of [this.tsconfig, this.tsconfigDev]) {
@@ -218,7 +195,7 @@ function packageNames(xs?: Array<string | MonorepoTypeScriptProject>): string[] 
   if (!xs) {
     return undefined;
   }
-  return xs.map((x) => (typeof x === 'string' ? x : x.name));
+  return xs.map((x) => (typeof x === 'string' ? x : `${x.name}@workspace:*`));
 }
 
 

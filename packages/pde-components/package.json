@@ -13,7 +13,9 @@
     "test:watch": "npx projen test:watch",
     "upgrade": "npx projen upgrade",
     "watch": "npx projen watch",
-    "projen": "npx projen"
+    "projen": "npx projen",
+    "_phase:build": "pnpm build",
+    "_phase:test": "pnpm test"
   },
   "devDependencies": {
     "@types/jest": "^29.4.0",
@@ -34,7 +36,7 @@
   "dependencies": {
     "constructs": "^10.1.241",
     "listr2": "*",
-    "pde-core": "^0.0.0",
+    "pde-core": "workspace:*",
     "projen": "^0.67.34",
     "zx": "^7.1.1"
   },

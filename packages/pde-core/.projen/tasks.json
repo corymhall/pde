@@ -32,7 +32,16 @@
     },
     "default": {
       "name": "default",
+<<<<<<<< HEAD:packages/pde-components/.projen/tasks.json
       "description": "Synthesize project files"
+========
+      "description": "Synthesize project files",
+      "steps": [
+        {
+          "exec": "(cd `git rev-parse --show-toplevel`; npx projen default)"
+        }
+      ]
+>>>>>>>> c520c2b (migrating to rush):packages/pde-core/.projen/tasks.json
     },
     "eslint": {
       "name": "eslint",

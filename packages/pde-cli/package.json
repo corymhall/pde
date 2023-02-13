@@ -16,7 +16,9 @@
     "test:watch": "npx projen test:watch",
     "upgrade": "npx projen upgrade",
     "watch": "npx projen watch",
-    "projen": "npx projen"
+    "projen": "npx projen",
+    "_phase:build": "pnpm build",
+    "_phase:test": "pnpm test"
   },
   "devDependencies": {
     "@types/jest": "^29.4.0",

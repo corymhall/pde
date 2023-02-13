@@ -32,7 +32,12 @@
     },
     "default": {
       "name": "default",
-      "description": "Synthesize project files"
+      "description": "Synthesize project files",
+      "steps": [
+        {
+          "exec": "(cd `git rev-parse --show-toplevel`; npx projen default)"
+        }
+      ]
     },
     "eslint": {
       "name": "eslint",
@@ -100,19 +105,19 @@
           "exec": "pnpm update npm-check-updates"
         },
         {
-          "exec": "npm-check-updates --dep dev --upgrade --target=minor"
+          "exec": "npm-check-updates --dep dev --upgrade --target=minor --reject='pde-core'"
         },
         {
-          "exec": "npm-check-updates --dep optional --upgrade --target=minor"
+          "exec": "npm-check-updates --dep optional --upgrade --target=minor --reject='pde-core'"
         },
         {
-          "exec": "npm-check-updates --dep peer --upgrade --target=minor"
+          "exec": "npm-check-updates --dep peer --upgrade --target=minor --reject='pde-core'"
         },
         {
-          "exec": "npm-check-updates --dep prod --upgrade --target=minor"
+          "exec": "npm-check-updates --dep prod --upgrade --target=minor --reject='pde-core'"
         },
         {
-          "exec": "npm-check-updates --dep bundle --upgrade --target=minor"
+          "exec": "npm-check-updates --dep bundle --upgrade --target=minor --reject='pde-core'"
         },
         {
           "exec": "pnpm i --no-frozen-lockfile"
