@@ -36,5 +36,16 @@
   ],
   "exclude": [
     "node_modules"
+  ],
+  "references": [
+    {
+      "path": "packages/pde-cli"
+    },
+    {
+      "path": "packages/pde-core"
+    },
+    {
+      "path": "packages/pde-components"
+    }
   ]
 }

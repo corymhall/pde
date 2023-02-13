@@ -1,17 +1,14 @@
 {
   "files": [
+    ".eslintrc.js",
+    ".eslintrc.json",
     ".gitattributes",
     ".gitignore",
     ".npmignore",
-    ".nx/plugins/nx-monorepo-plugin.js",
-    ".nxignore",
     ".projen/deps.json",
     ".projen/files.json",
     ".projen/tasks.json",
-    ".syncpackrc.json",
     "LICENSE",
-    "nx.json",
-    "pnpm-workspace.yaml",
     "tsconfig.dev.json",
     "tsconfig.json"
   ],
