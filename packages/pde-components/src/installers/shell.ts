@@ -1,8 +1,7 @@
 import { Construct } from 'constructs';
 import { ListrTask } from 'listr2';
-import { Project, InstallerOptions, Installer, InstallerConfig } from 'pde-core';
-import { $ } from 'zx';
-import { chain } from '../private/utils';
+import { Project, InstallerOptions, Installer } from 'pde-core';
+import { $, cd } from 'zx';
 
 /**
  * Options for installing a component from a URL
@@ -37,6 +36,16 @@ export class ShellInstaller extends Installer {
     this.fileName = options.downloadUrl.split('/').pop()!;
     this.downloadCommand = `curl -OL ${options.downloadUrl}`;
     this.name = options.name;
+    const project = Project.of(this);
+
+    const downloadTask: ListrTask = {
+      title: 'download',
+      task: async (_ctx, task) => {
+        cd(project.systemTmpDir);
+        task.output = `downloading ${this.name}... [0]`;
+        await $`${this.downloadCommand}`;
+      },
+    };
 
     const installTask: ListrTask = {
       title: 'install',
@@ -48,7 +57,12 @@ export class ShellInstaller extends Installer {
           return false;
         }
       },
-      task: async (_ctx) => {
+      task: async (_ctx, task) => {
+        task.newListr([downloadTask]);
+        if (this.executable) {
+          await $`chmod +x ${this.fileName}`;
+        }
+        task.output = `Installing ${this.name}... [1]`;
         await $`${this.installCommands.join(' && ')}`;
       },
     };
@@ -56,65 +70,9 @@ export class ShellInstaller extends Installer {
       title: 'update',
       task: async (_ctx, task) => {
         task.newListr([installTask]);
+        task.output = `updating ${this.name}... [2]`;
         await $`${this.updateCommands.join(' && ')}`;
       },
     });
-  }
-
-  public renderInstall(): InstallerConfig {
-    const project = Project.of(this);
-    return {
-      name: this.name,
-      tasks: [
-        {
-          name: 'download',
-          steps: [
-            {
-              cwd: project.systemTmpDir,
-              say: `downloading ${this.name}...`,
-              name: 'update',
-              exec: this.downloadCommand,
-            },
-          ],
-        },
-        {
-          name: 'install',
-          steps: [
-            {
-              spawn: `${this.name}:download`,
-            },
-            {
-              cwd: project.systemTmpDir,
-              say: `installing ${this.name}...`,
-              name: 'install',
-              exec: chain([
-                ...this.executable ? [`chmod +x ${this.fileName}`] : [],
-                ...this.installCommands ?? [],
-              ]),
-            },
-          ],
-          conditions: [
-            `[ ! -n $(command -v ${this.name}) ]`,
-          ],
-        },
-        {
-          name: 'update',
-          steps: [
-            {
-              spawn: `${this.name}:install`,
-            },
-            {
-              cwd: project.systemTmpDir,
-              say: `updating ${this.name}...`,
-              name: 'update',
-              exec: chain([
-                ...this.executable ? [`chmod +x ${this.fileName}`] : [],
-                ...this.updateCommands ?? [],
-              ]),
-            },
-          ],
-        },
-      ],
-    };
   }
 }

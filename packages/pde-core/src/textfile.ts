@@ -1,4 +1,4 @@
-import { File, FileConfig } from '@cdktf/provider-local/lib/file';
+import { File } from '@cdktf/provider-local/lib/file';
 import { Construct } from 'constructs';
 
 export interface LocalFileProps {

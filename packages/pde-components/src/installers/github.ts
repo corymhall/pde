@@ -1,6 +1,9 @@
 import * as path from 'path';
 import { Construct } from 'constructs';
-import { InstallerOptions, Installer, InstallerConfig, IHome, IProfile } from 'pde-core';
+import { ListrTask } from 'listr2';
+import { InstallerOptions, Installer, IHome, IProfile } from 'pde-core';
+import { fs } from 'zx/.';
+import { $, cd } from 'zx/core';
 import { ShellInstaller } from './shell';
 import { chain } from '../private/utils';
 
@@ -102,71 +105,47 @@ export class GitHubRepoInstaller extends Installer {
     if (options.addBin) {
       options.profile.addToEnv('PATH', `$PATH:${path.join(options.home.homeLocation, this.folderName, 'bin')}`);
     }
-  }
-
-  public renderInstall(): InstallerConfig {
     const absolutePath = path.join(this.home.homeLocation, this.folderName);
     const url = `https://github.com/${this.org}/${this.repo}.git`;
-    return {
-      name: this.name,
-      tasks: [
-        {
-          name: 'download',
-          steps: [
-            {
-              cwd: this.home.homeLocation,
-              say: `cloning ${this.name}`,
-              name: 'clone',
-            },
-          ],
-        },
-        {
-          name: 'install',
-          steps: [
-            {
-              spawn: `${this.name}:download`,
-            },
-            {
-              cwd: this.home.homeLocation,
-              say: `cloning ${this.name}`,
-              name: 'clone',
-              exec: `git clone ${url} ${this.folderName}`,
-            },
-            {
-              cwd: absolutePath,
-              say: `checking out ${this.version}`,
-              exec: `git checkout ${this.version}`,
-            },
-            {
-              cwd: absolutePath,
-              say: `installing ${this.name}...`,
-              name: 'install',
-              exec: chain(this.installCommands ?? []),
-            },
-          ],
-          conditions: [
-            `if [ -d ${absolutePath} ]; then exit 1;fi`,
-          ],
-        },
-        {
-          name: 'update',
-          steps: [
-            {
-              cwd: absolutePath,
-              say: `cleaning ${this.name}`,
-              name: 'clean',
-              exec: 'git clean -fqdx .',
-            },
-            {
-              cwd: absolutePath,
-              say: `updating ${this.name}`,
-              exec: `git checkout ${this.version} && git pull`,
-              name: 'update',
-            },
-          ],
-        },
-      ],
+
+    const cloneTask: ListrTask = {
+      title: 'clone',
+      skip: async (_ctx) => {
+        if (fs.existsSync(this.folderName)) return true;
+        return false;
+      },
+      task: async (_ctx, task) => {
+        cd(this.home.homeLocation);
+        task.output = `cloning ${this.name}... [0]`;
+        await $`git clone ${url} ${this.folderName}`;
+      },
     };
+
+    const installTask: ListrTask = {
+      title: 'install',
+      skip: async (_ctx) => {
+        if (fs.existsSync(absolutePath)) return true;
+        return false;
+      },
+      task: async (_ctx, task) => {
+        task.newListr([cloneTask]);
+        $.cwd = absolutePath;
+        task.output = `checking out ${this.version}... [1]`;
+        await $`git checkout ${this.version}`;
+        await $`${chain(this.installCommands ?? [])}`;
+      },
+    };
+    this.listrs.push({
+      title: 'update',
+      task: async (_ctx, task) => {
+        $.cwd = absolutePath;
+        task.output = `cleaning ${this.name}... [2]`;
+        await $`git clean -fzdx`;
+        task.output = `updating from ${this.version}...[3]`;
+        await $`git checkout ${this.version} && git pull`;
+        task.newListr([installTask]);
+      },
+    });
   }
 }
 
