@@ -21,6 +21,11 @@
       },
       "ignoreMissingScript": true,
       "allowWarningsOnSuccess": false
+    },
+    {
+      "name": "_phase:lint",
+      "ignoreMissingScript": true,
+      "allowWarningsOnSuccess": false
     }
   ],
   "commands": [
@@ -40,6 +45,16 @@
       "phases": [
         "_phase:build",
         "_phase:test"
+      ],
+      "enableParallelism": true,
+      "incremental": true
+    },
+    {
+      "commandKind": "phased",
+      "name": "lint",
+      "summary": "lint all projects",
+      "phases": [
+        "_phase:lint"
       ],
       "enableParallelism": true,
       "incremental": true

@@ -1,6 +1,6 @@
 import { Construct } from 'constructs';
 import { IHome, Platform, Project } from 'pde-core';
-import { ShellInstaller } from './shell';
+import { ShellInstaller } from './shell.js';
 
 export interface AwsCliInstallerOptions {
   readonly home: IHome;

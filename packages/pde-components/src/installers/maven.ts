@@ -1,7 +1,7 @@
 import * as path from 'path';
 import { Construct } from 'constructs';
 import { IHome, IProfile } from 'pde-core';
-import { ShellInstaller } from './shell';
+import { ShellInstaller } from './shell.js';
 
 export interface MavenInstallerOptions {
   readonly version: string;

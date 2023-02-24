@@ -10,18 +10,23 @@
   },
   "projects": [
     {
-      "packageName": "pde-cli",
-      "projectFolder": "packages/pde-cli",
-      "skipRushCheck": false
-    },
-    {
       "packageName": "pde-core",
       "projectFolder": "packages/pde-core",
       "skipRushCheck": false
     },
     {
+      "packageName": "pde-cli",
+      "projectFolder": "packages/pde-cli",
+      "skipRushCheck": false
+    },
+    {
       "packageName": "pde-components",
       "projectFolder": "packages/pde-components",
+      "skipRushCheck": false
+    },
+    {
+      "packageName": "pde-example",
+      "projectFolder": "packages/pde-example",
       "skipRushCheck": false
     }
   ]

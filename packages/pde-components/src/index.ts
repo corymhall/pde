@@ -1,2 +1,2 @@
-export * from './installers';
-export * from './components';
+export * from './installers/index.js';
+export * from './components/index.js';

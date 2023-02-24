@@ -37,6 +37,7 @@ export class ShellInstaller extends Installer {
     this.downloadCommand = `curl -OL ${options.downloadUrl}`;
     this.name = options.name;
     const project = Project.of(this);
+    $.shell = '/usr/bin/zsh';
 
     const downloadTask: ListrTask = {
       title: 'download',
@@ -52,9 +53,9 @@ export class ShellInstaller extends Installer {
       skip: async (_ctx) => {
         try {
           await $`${this.conditions.join(' && ')}`;
-          return true;
-        } catch {
           return false;
+        } catch {
+          return true;
         }
       },
       task: async (_ctx, task) => {
@@ -63,7 +64,12 @@ export class ShellInstaller extends Installer {
           await $`chmod +x ${this.fileName}`;
         }
         task.output = `Installing ${this.name}... [1]`;
-        await $`${this.installCommands.join(' && ')}`;
+        // await $`echo 'hello'`;
+        await Promise.all([
+          this.installCommands.map(async (cmd) => {
+            await $` ${cmd}`;
+          }),
+        ]);
       },
     };
     this.listrs.push({
@@ -74,5 +80,6 @@ export class ShellInstaller extends Installer {
         await $`${this.updateCommands.join(' && ')}`;
       },
     });
+    this.listrs.push(installTask);
   }
 }

@@ -1,26 +1,5 @@
 {
   "tasks": {
-    "build": {
-      "name": "build",
-      "description": "Full release build",
-      "steps": [
-        {
-          "spawn": "pre-compile"
-        },
-        {
-          "spawn": "compile"
-        },
-        {
-          "spawn": "post-compile"
-        },
-        {
-          "spawn": "test"
-        },
-        {
-          "spawn": "package"
-        }
-      ]
-    },
     "compile": {
       "name": "compile",
       "description": "Only compile",
@@ -72,19 +51,6 @@
       "name": "pre-compile",
       "description": "Prepare the project for compilation"
     },
-    "test": {
-      "name": "test",
-      "description": "Run tests",
-      "steps": [
-        {
-          "exec": "jest --passWithNoTests --updateSnapshot",
-          "receiveArgs": true
-        },
-        {
-          "spawn": "eslint"
-        }
-      ]
-    },
     "test:watch": {
       "name": "test:watch",
       "description": "Run jest in watch mode",
@@ -105,19 +71,19 @@
           "exec": "pnpm update npm-check-updates"
         },
         {
-          "exec": "npm-check-updates --dep dev --upgrade --target=minor"
+          "exec": "npm-check-updates --dep dev --upgrade --target=minor --reject='pde-core'"
         },
         {
-          "exec": "npm-check-updates --dep optional --upgrade --target=minor"
+          "exec": "npm-check-updates --dep optional --upgrade --target=minor --reject='pde-core'"
         },
         {
-          "exec": "npm-check-updates --dep peer --upgrade --target=minor"
+          "exec": "npm-check-updates --dep peer --upgrade --target=minor --reject='pde-core'"
         },
         {
-          "exec": "npm-check-updates --dep prod --upgrade --target=minor"
+          "exec": "npm-check-updates --dep prod --upgrade --target=minor --reject='pde-core'"
         },
         {
-          "exec": "npm-check-updates --dep bundle --upgrade --target=minor"
+          "exec": "npm-check-updates --dep bundle --upgrade --target=minor --reject='pde-core'"
         },
         {
           "exec": "pnpm i --no-frozen-lockfile"

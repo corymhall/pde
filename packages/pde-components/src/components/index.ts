@@ -1,2 +1,2 @@
-export * from './profile/zsh';
-export * from './profile/bash';
+export * from './profile/zsh.js';
+export * from './profile/bash.js';

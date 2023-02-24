@@ -1,11 +1,10 @@
 import * as path from 'path';
+import 'zx/globals';
 import { Construct } from 'constructs';
 import { ListrTask } from 'listr2';
 import { InstallerOptions, Installer, IHome, IProfile } from 'pde-core';
-import { fs } from 'zx/.';
-import { $, cd } from 'zx/core';
-import { ShellInstaller } from './shell';
-import { chain } from '../private/utils';
+import { ShellInstaller } from './shell.js';
+import { chain } from '../private/utils.js';
 
 /**
  * Common options for installing a component from a GitHub repo
@@ -145,7 +144,7 @@ export class GitHubRepoInstaller extends Installer {
         await $`git checkout ${this.version} && git pull`;
         task.newListr([installTask]);
       },
-    });
+    }, cloneTask, installTask);
   }
 }
 

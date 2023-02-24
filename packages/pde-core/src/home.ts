@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { Construct } from 'constructs';
-import { Component, IComponent } from './project-base';
+import { Component, IComponent } from './project-base.js';
 const HOME_SYMBOL = Symbol.for('pde-core/Home');
 
 /**

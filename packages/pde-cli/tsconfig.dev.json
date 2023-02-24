@@ -8,9 +8,10 @@
     "inlineSourceMap": true,
     "inlineSources": true,
     "lib": [
-      "es2019"
+      "es2019",
+      "dom"
     ],
-    "module": "CommonJS",
+    "module": "nodenext",
     "noEmitOnError": false,
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
@@ -25,6 +26,7 @@
     "stripInternal": true,
     "target": "ES2019",
     "composite": true,
+    "moduleResolution": "nodenext",
     "outDir": "lib"
   },
   "include": [
@@ -35,5 +37,9 @@
   "exclude": [
     "node_modules"
   ],
-  "references": []
+  "references": [
+    {
+      "path": "../pde-core"
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 import { Construct } from 'constructs';
 import { Profile, IProfile, ProfilesOptions } from 'pde-core';
-import { GitHubRepoInstaller } from '../../installers/github';
+import { GitHubRepoInstaller } from '../../installers/github.js';
 
 export interface ZplugPlugins {
   readonly pluginName: string;
@@ -21,7 +21,7 @@ export class ZshProfile extends Profile implements IProfile {
     this.addToEnv('ENHANCD_COMPLETION_BEHAVIOR', 'list');
     this.addToEnv('KEYTIMEOUT', '1');
 
-    const zinit = new GitHubRepoInstaller(this, '', {
+    const zinit = new GitHubRepoInstaller(this, 'zinit', {
       home: this.home,
       name: 'zinit',
       profile: this,

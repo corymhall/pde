@@ -1,5 +1,5 @@
 import { Construct } from 'constructs';
-import { GitHubRepoInstaller, GitHubRepoOptions } from './github';
+import { GitHubRepoInstaller, GitHubRepoOptions } from './github.js';
 
 export interface NvmInstallerOptions extends Pick<GitHubRepoOptions, 'home' | 'profile'> {}
 

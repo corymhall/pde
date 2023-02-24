@@ -37,13 +37,16 @@
   ],
   "references": [
     {
-      "path": "packages/pde-cli"
-    },
-    {
       "path": "packages/pde-core"
     },
     {
+      "path": "packages/pde-cli"
+    },
+    {
       "path": "packages/pde-components"
+    },
+    {
+      "path": "packages/pde-example"
     }
   ]
 }

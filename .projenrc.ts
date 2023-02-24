@@ -22,21 +22,6 @@ const project = new MonorepoRoot({
 });
 
 
-new MonorepoTypeScriptProject({
-  packageManager: NodePackageManager.PNPM,
-  name: 'pde-cli',
-  bin: {
-    pde: './bin/cli',
-  },
-  deps: [
-    'zx',
-    'listr2',
-    'commander',
-  ],
-  devDeps: [
-  ],
-  parent: project,
-});
 
 const core = new MonorepoTypeScriptProject({
   packageManager: NodePackageManager.PNPM,
@@ -49,10 +34,28 @@ const core = new MonorepoTypeScriptProject({
     'cdktf',
     ...SHARED_DEPS,
   ],
+  devDeps: [
+    'enquirer',
+  ],
   parent: project,
 });
 
-new MonorepoTypeScriptProject({
+const cli = new MonorepoTypeScriptProject({
+  packageManager: NodePackageManager.PNPM,
+  name: 'pde-cli',
+  deps: [
+    'zx',
+    'listr2',
+    'commander',
+    core,
+  ],
+  devDeps: [
+    'enquirer',
+  ],
+  parent: project,
+});
+
+const components = new MonorepoTypeScriptProject({
   packageManager: NodePackageManager.PNPM,
   name: 'pde-components',
   parent: project,
@@ -61,6 +64,21 @@ new MonorepoTypeScriptProject({
     'listr2',
     core,
     ...SHARED_DEPS,
+  ],
+  devDeps: [
+    'enquirer',
+  ],
+});
+
+new MonorepoTypeScriptProject({
+  packageManager: NodePackageManager.PNPM,
+  name: 'pde-example',
+  parent: project,
+  module: true,
+  deps: [
+    core,
+    components,
+    cli,
   ],
 });
 

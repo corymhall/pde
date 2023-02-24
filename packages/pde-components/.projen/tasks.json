@@ -1,26 +1,5 @@
 {
   "tasks": {
-    "build": {
-      "name": "build",
-      "description": "Full release build",
-      "steps": [
-        {
-          "spawn": "pre-compile"
-        },
-        {
-          "spawn": "compile"
-        },
-        {
-          "spawn": "post-compile"
-        },
-        {
-          "spawn": "test"
-        },
-        {
-          "spawn": "package"
-        }
-      ]
-    },
     "compile": {
       "name": "compile",
       "description": "Only compile",
@@ -71,19 +50,6 @@
     "pre-compile": {
       "name": "pre-compile",
       "description": "Prepare the project for compilation"
-    },
-    "test": {
-      "name": "test",
-      "description": "Run tests",
-      "steps": [
-        {
-          "exec": "jest --passWithNoTests --updateSnapshot",
-          "receiveArgs": true
-        },
-        {
-          "spawn": "eslint"
-        }
-      ]
     },
     "test:watch": {
       "name": "test:watch",

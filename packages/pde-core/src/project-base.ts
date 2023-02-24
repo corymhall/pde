@@ -1,5 +1,6 @@
 import { realpathSync } from 'fs';
 import * as os from 'os';
+import { LocalProvider } from '@cdktf/provider-local/lib/provider/index.js';
 import { App, TerraformStack } from 'cdktf';
 import { Command } from 'commander';
 import { Construct, IConstruct } from 'constructs';
@@ -72,7 +73,7 @@ export class Project extends Construct {
 
   private readonly app: App;
 
-  private readonly command: Command;
+  public readonly command: Command;
 
 
   constructor(props: ProjectProps) {
@@ -83,6 +84,7 @@ export class Project extends Construct {
 
     this.app = new App();
     this.stack = new TerraformStack(this.app, 'Project');
+    new LocalProvider(this.stack, 'LocalProvider');
     this.dir = 'dotfiles';
 
     this.synthesizer = new DefaultProjectSynthesizer();
@@ -148,6 +150,7 @@ function installers(node: IConstruct, into: Installer[] = []): Installer[] {
  * @param into Array to append Cnstallers to
  * @returns The same array as is being collected into
  */
+// @ts-ignore
 function components(node: IConstruct, into: Component[] = []): Component[] {
   if (Component.isComponent(node)) {
     into.push(node);
@@ -191,5 +194,5 @@ export class Component extends Construct implements IComponent {
   }
 }
 // These imports have to be at the end to prevent circular imports
-import { Installer } from './installer';
-import { DefaultProjectSynthesizer, IProjectSynthesizer } from './synthesizer';
+import { Installer } from './installer.js';
+import { DefaultProjectSynthesizer, IProjectSynthesizer } from './synthesizer.js';

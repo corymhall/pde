@@ -25,6 +25,11 @@ export class CommandLine extends JsonFile {
             ignoreMissingScript: true,
             allowWarningsOnSuccess: false,
           },
+          {
+            name: '_phase:lint',
+            ignoreMissingScript: true,
+            allowWarningsOnSuccess: false,
+          },
         ],
         commands: [
           {
@@ -39,6 +44,14 @@ export class CommandLine extends JsonFile {
             name: 'test',
             summary: 'build and test all projects',
             phases: ['_phase:build', '_phase:test'],
+            enableParallelism: true,
+            incremental: true,
+          },
+          {
+            commandKind: 'phased',
+            name: 'lint',
+            summary: 'lint all projects',
+            phases: ['_phase:lint'],
             enableParallelism: true,
             incremental: true,
           },

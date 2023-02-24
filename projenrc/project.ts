@@ -34,7 +34,7 @@ export class MonorepoRoot extends typescript.TypeScriptProject {
     this.gitignore.exclude('common/temp/');
     this.tasks.removeTask('build');
     this.tasks.addTask('build', {
-      steps: [{ spawn: 'default' }, { exec: 'rushx build' }],
+      steps: [{ spawn: 'default' }, { exec: 'rush build' }],
     });
   }
 
@@ -98,6 +98,8 @@ export interface MonorepoTypeScriptProjectOptions
   > {
   readonly parent: MonorepoRoot;
 
+  readonly module?: boolean;
+
   readonly private?: boolean;
 
   readonly deps?: Array<string | MonorepoTypeScriptProject>;
@@ -143,14 +145,26 @@ export class MonorepoTypeScriptProject extends typescript.TypeScriptProject {
     this.tasks.tryFind('default')?.reset('(cd `git rev-parse --show-toplevel`; npx projen default)');
     this.tasks.removeTask('clobber');
     this.tasks.removeTask('eject');
+    this.tasks.removeTask('build');
+    this.tasks.removeTask('test');
+    this.tasks.removeTask('lint');
 
-    this.setScript('_phase:build', 'pnpm build');
-    this.setScript('_phase:test', 'pnpm test');
+    this.setScript('build', 'tsc --build');
+    this.setScript('test', 'jest --passWithNoTests --updateSnapshot');
+    this.setScript('lint', 'eslint --ext .ts,.tsx --fix --no-error-on-unmatched-pattern src test build-tools');
+    this.setScript('_phase:build', 'rushx build');
+    this.setScript('_phase:test', 'rushx test');
+    this.setScript('_phase:lint', 'rushx lint');
+
+    const mod = props.module ?? true;
 
     // Composite project and references
     const allDeps = [...(props.deps ?? []), ...(props.peerDeps ?? []), ...(props.devDeps ?? [])];
     for (const tsconfig of [this.tsconfig, this.tsconfigDev]) {
       tsconfig?.file.addOverride('compilerOptions.composite', true);
+      if (mod) tsconfig?.file.addOverride('compilerOptions.moduleResolution', 'nodenext');
+      if (mod) tsconfig?.file.addOverride('compilerOptions.module', 'nodenext');
+      tsconfig?.file.addToArray('compilerOptions.lib', 'dom');
       tsconfig?.file.addOverride(
         'references',
         allDeps.filter(isMonorepoTypeScriptProject).map((p) => ({ path: path.relative(this.outdir, p.outdir) })),
@@ -180,6 +194,7 @@ export class MonorepoTypeScriptProject extends typescript.TypeScriptProject {
     eslintRc.line(`module.exports = json;`);
 
     props.parent.register(this);
+    if (mod) this.package.addField('type', 'module');
   }
 }
 

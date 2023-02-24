@@ -1,7 +1,6 @@
 import { Command } from 'commander';
 import { Construct, IConstruct } from 'constructs';
 import { Manager, ListrTask, Logger, ListrDefaultRenderer } from 'listr2';
-import { $ } from 'zx';
 const INSTALLER_SYMBOL = Symbol.for('pde-core/Installer');
 
 export interface ProjectTask {

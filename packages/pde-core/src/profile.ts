@@ -1,8 +1,8 @@
 import * as path from 'path';
 import { Construct, IConstruct } from 'constructs';
-import { IHome } from './home';
-import { Project } from './project-base';
-import { LocalFile } from './textfile';
+import { IHome } from './home.js';
+import { Project } from './project-base.js';
+import { LocalFile } from './textfile.js';
 const PROFILE_SYMBOL = Symbol.for('pde-core/Profile');
 
 /**
@@ -95,7 +95,7 @@ export class Profile extends Construct implements IProfile {
     this.project = Project.of(this);
 
     this.profileFileName = options.profileFileName;
-    this.file = new LocalFile(this, `${options.name}/${options.profileFileName}`, {
+    this.file = new LocalFile(this.project.stack, `${options.name}/${options.profileFileName}`, {
       filename: `${options.name}/${options.profileFileName}`,
       lines: [
         '# -----------------------------------------------------',

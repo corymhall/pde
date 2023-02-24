@@ -1,4 +1,4 @@
-import { Project } from './project-base';
+import { Project } from './project-base.js';
 /**
  * Encodes information how a certain Project should be deployed
  */

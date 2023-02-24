@@ -7,7 +7,7 @@
           "spawn": "default"
         },
         {
-          "exec": "rushx build"
+          "exec": "rush build"
         }
       ]
     },
