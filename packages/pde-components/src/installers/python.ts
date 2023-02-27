@@ -1,6 +1,5 @@
 import { Construct } from 'constructs';
-import { Installer, IHome, IProfile, LocalFile } from 'pde-core';
-import { $, cd } from 'zx/core';
+import { IHome, InstallerNew, IProfile, LocalFile } from 'pde-core';
 
 export interface PythonGlobalInstallerOptions {
   readonly pythonVersion: string;
@@ -9,11 +8,22 @@ export interface PythonGlobalInstallerOptions {
   readonly profile: IProfile;
 }
 
-export class PythonGlobalInstaller extends Installer {
+export class PythonGlobalInstaller extends InstallerNew {
   public readonly name: string;
   constructor(scope: Construct, id: string, options: PythonGlobalInstallerOptions) {
     super(scope, id, {
-      name: 'python-global',
+      create: `
+        cd('$DOTFILES/python')
+        await $\`pip install -r requirements.txt\`;
+        const version = which(\'python\')
+        echo\`{
+          version,
+          name: 'python-global'
+        }\`
+      `,
+      delete: `
+        'echo\`nothing to do here\`',
+      `,
     });
     this.name = 'python-global';
 
@@ -21,14 +31,6 @@ export class PythonGlobalInstaller extends Installer {
     new LocalFile(this, 'python/requirements.txt', {
       filename: 'python/requirements.txt',
       lines: options.pythonPkgs,
-    });
-
-    this.listrs.push({
-      title: 'install',
-      task: async() => {
-        cd('$DOTFILES/python');
-        await $`pip install -r requirements.txt`;
-      },
     });
   }
 }

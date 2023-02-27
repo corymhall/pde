@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "@cdktf/provider-local": "^5.0.0",
-    "cdktf": "^0.15.4",
+    "cdktf": "^0.15",
     "commander": "*",
     "constructs": "^10.1.241",
     "listr2": "*",

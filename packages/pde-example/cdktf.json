@@ -1,0 +1,14 @@
+{
+  "language": "typescript",
+  "app": "ts-node --esm src/index.ts",
+  "projectId": "f6f620a1-ca17-40f8-a63a-81e769b3392a",
+  "sendCrashReports": "false",
+  "terraformProviders": [
+    "scottwinkler/shell@~> 1.7"
+  ],
+  "terraformModules": [],
+  "context": {
+    "excludeStackIdFromLogicalIds": "true",
+    "allowSepCharsInLogicalIds": "true"
+  }
+}

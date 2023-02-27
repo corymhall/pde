@@ -95,7 +95,7 @@ export class Profile extends Construct implements IProfile {
     this.project = Project.of(this);
 
     this.profileFileName = options.profileFileName;
-    this.file = new LocalFile(this.project.stack, `${options.name}/${options.profileFileName}`, {
+    this.file = new LocalFile(this, `${options.name}/${options.profileFileName}`, {
       filename: `${options.name}/${options.profileFileName}`,
       lines: [
         '# -----------------------------------------------------',

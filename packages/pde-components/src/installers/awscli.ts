@@ -1,12 +1,11 @@
 import { Construct } from 'constructs';
-import { IHome, Platform, Project } from 'pde-core';
-import { ShellInstaller } from './shell.js';
+import { IHome, Platform, Project, InstallerNew } from 'pde-core';
 
 export interface AwsCliInstallerOptions {
   readonly home: IHome;
 }
 
-export class AwsCliInstaller extends ShellInstaller {
+export class AwsCliInstaller extends InstallerNew {
   constructor(scope: Construct, id: string, options: AwsCliInstallerOptions) {
     const project = Project.of(scope);
     let downloadUrl: string;
@@ -29,11 +28,65 @@ export class AwsCliInstaller extends ShellInstaller {
         installCommand + ' --update',
       );
     }
+    $.shell = '/usr/bin/zsh';
+    const downloadCommand = `curl -OL ${downloadUrl}`;
+    const create = () => {
+      return `
+      cd('${project.systemTmpDir}');
+      await $\`${downloadCommand}\`;
+      ${installCommands.map(cmd => `await $\`${cmd}\``).join('\n\t')}
+      const location = await which('aws');
+      const version = await $\`aws --version\`;
+      echo\`{
+        name: 'aws',
+        location: \$\${location},
+        version: \$\${version},
+      }\`;
+      `
+    }
+
+    const update = () => {
+      return `
+      cd('${project.systemTmpDir}');
+      await $\`${downloadCommand}\`;
+      ${updateCommands.map(cmd => `await $\`${cmd}\``).join('\n\t')}
+      const location = await which('aws');
+      const version = await $\`aws --version\`;
+      echo\`{
+        name: 'aws',
+        location: \$\${location},
+        version: \$\${version},
+      }\`;
+      `
+    }
+
+    const del = () => {
+      return `
+      const location = await which('aws');
+      await $\`rm -rf \$\${location}\`;
+      await $\`rm -rf ${options.home.homeLocation}/.local\`;
+      `
+    }
+
+    const read = () => {
+      return `
+      try {
+        const location = await which('aws');
+        const version = await $\`aws --version\`;
+        echo\`{
+          location: \$\${location},
+          version: \$\${version},
+          name: 'aws',
+        }\`
+      } catch {}
+      `
+    }
+
     super(scope, id, {
-      name: 'aws',
-      installCommands: installCommands,
-      updateCommands: updateCommands,
-      downloadUrl: downloadUrl,
+      create: create(),
+      update: update(),
+      delete: del(),
+      read: read(),
     });
   }
 }

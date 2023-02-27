@@ -1,0 +1,52 @@
+{
+  "//": {
+    "metadata": {
+      "backend": "local",
+      "stackName": "Local",
+      "version": "0.15.4"
+    },
+    "outputs": {
+    }
+  },
+  "provider": {
+    "shell": [
+      {
+      }
+    ]
+  },
+  "resource": {
+    "shell_script": {
+      "aws": {
+        "//": {
+          "metadata": {
+            "path": "Local/aws",
+            "uniqueId": "aws"
+          }
+        },
+        "interpreter": [
+          "/usr/bin/zsh",
+          "-c"
+        ],
+        "lifecycle_commands": {
+          "create": "zx <<'EOF'\n\n      cd('/tmp');\n      await $`curl -OL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip`;\n      await $`unzip awscli-exe-linux-x86_64.zip`\n\tawait $`./aws/install -i /home/hallcor/.local -b /home/hallcor/.local/bin`\n      const location = await which('aws');\n      const version = await $`aws --version`;\n      echo`{\n        name: 'aws',\n        location: $${location},\n        version: $${version},\n      }`;\n      \nEOF",
+          "delete": "zx <<'EOF'\n\n      const location = await which('aws');\n      await $`rm -rf $${location}`;\n      await $`rm -rf /home/hallcor/.local`;\n      \nEOF",
+          "read": "zx <<'EOF'\n\n      try {\n        const location = await which('aws');\n        const version = await $`aws --version`;\n        echo`{\n          location: $${location},\n          version: $${version},\n          name: 'aws',\n        }`\n      } catch {}\n      \nEOF",
+          "update": "zx <<'EOF'\n\n      cd('/tmp');\n      await $`curl -OL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip`;\n      await $`./aws/install -i /home/hallcor/.local -b /home/hallcor/.local/bin --update`\n      const location = await which('aws');\n      const version = await $`aws --version`;\n      echo`{\n        name: 'aws',\n        location: $${location},\n        version: $${version},\n      }`;\n      \nEOF"
+        }
+      }
+    }
+  },
+  "terraform": {
+    "backend": {
+      "local": {
+        "path": "/home/hallcor/personal/pde/packages/pde-example/terraform.Local.tfstate"
+      }
+    },
+    "required_providers": {
+      "shell": {
+        "source": "scottwinkler/shell",
+        "version": "1.7.10"
+      }
+    }
+  }
+}

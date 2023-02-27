@@ -165,6 +165,7 @@ export class MonorepoTypeScriptProject extends typescript.TypeScriptProject {
       if (mod) tsconfig?.file.addOverride('compilerOptions.moduleResolution', 'nodenext');
       if (mod) tsconfig?.file.addOverride('compilerOptions.module', 'nodenext');
       tsconfig?.file.addToArray('compilerOptions.lib', 'dom');
+      tsconfig?.addInclude('src/.gen/**/*.ts');
       tsconfig?.file.addOverride(
         'references',
         allDeps.filter(isMonorepoTypeScriptProject).map((p) => ({ path: path.relative(this.outdir, p.outdir) })),

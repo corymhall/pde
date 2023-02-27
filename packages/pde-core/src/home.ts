@@ -1,7 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { Construct } from 'constructs';
-import { Component, IComponent } from './project-base.js';
+import { Construct, IConstruct } from 'constructs';
 const HOME_SYMBOL = Symbol.for('pde-core/Home');
 
 /**
@@ -16,7 +15,7 @@ interface Location {
 /**
  * Represents the users home directory
  */
-export interface IHome extends IComponent {
+export interface IHome extends IConstruct {
   /**
    * The location where executables live
    */
@@ -61,7 +60,7 @@ export interface HomeOptions {
  *
  * This component allows for adding files/directories to home
  */
-export class Home extends Component implements IHome {
+export class Home extends Construct implements IHome {
   public readonly binLocation: string;
   public readonly homeVar: string;
   public readonly homeLocation: string;

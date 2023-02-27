@@ -1,0 +1,13 @@
+{
+  "version": "0.15.4",
+  "stacks": {
+    "Local": {
+      "name": "Local",
+      "constructPath": "Local",
+      "workingDirectory": "stacks/Local",
+      "synthesizedStackPath": "stacks/Local/cdk.tf.json",
+      "annotations": [],
+      "dependencies": []
+    }
+  }
+}

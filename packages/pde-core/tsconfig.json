@@ -31,7 +31,8 @@
     "moduleResolution": "nodenext"
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "src/.gen/**/*.ts"
   ],
   "exclude": [],
   "references": []

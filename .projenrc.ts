@@ -2,7 +2,7 @@ import { NodePackageManager } from 'projen/lib/javascript';
 import { MonorepoRoot, MonorepoTypeScriptProject } from './projenrc/project';
 
 const SHARED_DEPS: string[] = [
-  'constructs',
+  'constructs@10.0.25',
   'projen',
 ];
 
@@ -31,7 +31,7 @@ const core = new MonorepoTypeScriptProject({
     'zx',
     'listr2',
     '@cdktf/provider-local',
-    'cdktf',
+    'cdktf@^0.15',
     ...SHARED_DEPS,
   ],
   devDeps: [
@@ -74,11 +74,12 @@ new MonorepoTypeScriptProject({
   packageManager: NodePackageManager.PNPM,
   name: 'pde-example',
   parent: project,
-  module: true,
   deps: [
+    'cdktf@^0.15',
     core,
     components,
     cli,
+    'constructs',
   ],
 });
 

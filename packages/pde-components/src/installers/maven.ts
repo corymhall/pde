@@ -18,6 +18,10 @@ export class MavenInstaller extends ShellInstaller {
       installCommands: [
         `sudo tar -C ${location} -xzvf apache-maven-3.8.5-bin.tar.gz`,
       ],
+      versionCommand: 'mvn --version',
+      deleteCommands: [
+        `rm -rf ${location}`,
+      ],
     });
 
     options.profile.addToSystemPath(path.join(location, 'apache-maven-3.8.5', 'bin'));

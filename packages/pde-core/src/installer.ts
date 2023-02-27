@@ -43,7 +43,19 @@ export interface InstallerOptions {
    *
    * @default - no install commands are run after downloading
    */
-  readonly installCommands?: string[];
+  readonly installCommands: string[];
+
+  /**
+   * Commands to run in order to delete the program
+   */
+  readonly deleteCommands: string[];
+
+  /**
+   * TODO: docs
+   *
+   * @default - TODO
+   */
+  readonly versionCommand: string;
 
   /**
    * Any update commands that should be run after the component has been downloaded
