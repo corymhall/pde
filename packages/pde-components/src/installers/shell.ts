@@ -52,39 +52,24 @@ export class ShellInstaller extends InstallerNew {
       `
     }
 
-    const create = () => {
-      return `
+    super(scope, id, {
+      create: `
         ${download}
         ${options.executable ? `await $\`chmod +x ${fileName}\`;` : ''}
         ${options.installCommands?.map(cmd => `await $\`${cmd}\``).join('\n\t')};
         ${returnCommand}
-      `
-    };
-    const update =  () => {
-      return `
+      `,
+      update: `
         ${download}
         await $\`${options.updateCommands?.join(' && ')}\`;
         ${returnCommand}
-      `
-    };
-
-    const read = () => {
-      return `
+      `,
+      read: `
         ${returnCommand}
-      `;
-    }
-
-    const del = () => {
-      return `
+      `,
+      delete: `
         ${options.deleteCommands.map(cmd => `await $\`${cmd}\``).join('\n\t')};
-      `;
-    }
-
-    super(scope, id, {
-      create: create(),
-      update: update(),
-      read: read(),
-      delete: del(),
+      `,
     });
     this.name = options.name;
   }

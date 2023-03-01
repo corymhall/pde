@@ -1,10 +1,8 @@
 import * as path from 'path';
 import 'zx/globals';
 import { Construct } from 'constructs';
-import { ListrTask } from 'listr2';
-import { InstallerOptions, Installer, IHome, IProfile } from 'pde-core';
+import { InstallerOptions, IHome, IProfile, InstallerNew } from 'pde-core';
 import { ShellInstaller } from './shell.js';
-import { chain } from '../private/utils.js';
 
 /**
  * Common options for installing a component from a GitHub repo
@@ -83,68 +81,62 @@ export interface GitHubReleaseOptions extends GitHubInstallerOptions {
   readonly executable?: string;
 }
 
-export class GitHubRepoInstaller extends Installer {
+export class GitHubRepoInstaller extends InstallerNew {
   public readonly name: string;
   public readonly absolutePathVar: string;
   private readonly folderName: string;
-  private readonly version: string;
-  private readonly repo: string;
-  private readonly org: string;
-  private readonly home: IHome;
 
   constructor(scope: Construct, id: string, options: GitHubRepoOptions) {
-    super(scope, id, options);
-    this.home = options.home;
+    const folderName = options.folderName ?? options.repo;
+    const absolutePath = path.join(options.home.homeLocation, folderName);
+    const url = `https://github.com/${options.org}/${options.repo}.git`;
+    const version = options.version ?? 'main';
+
+    const clone = `
+      cd('${options.home.homeLocation}');
+      await $\`git clone ${url} ${folderName}\`;
+    `;
+
+    const returnValue = `
+      const version = await \`git rev-parse --abbrev-ref HEAD\`;
+      const folderName = await $\`pwd\`;
+      echo \`{
+        folderName,
+        version,
+      }\`
+    `;
+
+    super(scope, id, {
+      create: `
+        $.cwd = ${absolutePath};
+        ${clone}
+        await $\`git checkout ${version}\`;
+        ${options.installCommands?.map(cmd => `await $\`${cmd}\``).join('\n\t')};
+        ${returnValue}
+      `,
+      update: `
+        $.cwd = ${absolutePath};
+        await $\`git clean -fzdx\`;
+        await $\`git checkout ${version} && git pull\`;
+        ${options.installCommands?.map(cmd => `await $\`${cmd}\``).join('\n\t')};
+        ${returnValue}
+      `,
+      read: `
+        cd('${absolutePath}')
+        ${returnValue}
+      `,
+      delete: `
+        await $\`rm -rf ${absolutePath}\`;
+      `,
+
+    });
+
     this.name = `${options.org}-${options.repo}`;
     this.folderName = options.folderName ?? options.repo;
-    this.version = options.version ?? 'main';
-    this.repo = options.repo;
-    this.org = options.org;
     this.absolutePathVar = path.join(options.home.homeVar, this.folderName);
     if (options.addBin) {
       options.profile.addToEnv('PATH', `$PATH:${path.join(options.home.homeLocation, this.folderName, 'bin')}`);
     }
-    const absolutePath = path.join(this.home.homeLocation, this.folderName);
-    const url = `https://github.com/${this.org}/${this.repo}.git`;
-
-    const cloneTask: ListrTask = {
-      title: 'clone',
-      skip: async (_ctx) => {
-        if (fs.existsSync(this.folderName)) return true;
-        return false;
-      },
-      task: async (_ctx, task) => {
-        cd(this.home.homeLocation);
-        task.output = `cloning ${this.name}... [0]`;
-        await $`git clone ${url} ${this.folderName}`;
-      },
-    };
-
-    const installTask: ListrTask = {
-      title: 'install',
-      skip: async (_ctx) => {
-        if (fs.existsSync(absolutePath)) return true;
-        return false;
-      },
-      task: async (_ctx, task) => {
-        task.newListr([cloneTask]);
-        $.cwd = absolutePath;
-        task.output = `checking out ${this.version}... [1]`;
-        await $`git checkout ${this.version}`;
-        await $`${chain(this.installCommands ?? [])}`;
-      },
-    };
-    this.listrs.push({
-      title: 'update',
-      task: async (_ctx, task) => {
-        $.cwd = absolutePath;
-        task.output = `cleaning ${this.name}... [2]`;
-        await $`git clean -fzdx`;
-        task.output = `updating from ${this.version}...[3]`;
-        await $`git checkout ${this.version} && git pull`;
-        task.newListr([installTask]);
-      },
-    }, cloneTask, installTask);
   }
 }
 
@@ -168,6 +160,10 @@ export class GitHubReleaseInstaller extends ShellInstaller {
       }
     }
     super(scope, id, {
+      deleteCommands: [
+        'echo "nothing to do here"'
+      ],
+      versionCommand: options.versionCommand,
       downloadUrl: downloadUrl.toString(),
       name: `${options.org}-${options.repo}`,
       executable,

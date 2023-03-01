@@ -29,6 +29,9 @@ export class ZshProfile extends Profile implements IProfile {
       version: 'main',
       folderName: '.zinit',
       repo: 'zinit',
+      deleteCommands: [],
+      installCommands: [],
+      versionCommand: '',
     });
     this.addToEnv('ZINIT_HOME', zinit.absolutePathVar);
 

@@ -33,11 +33,21 @@ export class CommandLine extends JsonFile {
         ],
         commands: [
           {
+            commandKind: 'global',
+            name: 'projen',
+            summary: 'Runs projen',
+            shellCommand: 'node --experimental-specifier-resolution=node common/scripts/projenrc.js',
+          },
+          {
             commandKind: 'phased',
             name: 'build',
             phases: ['_phase:build'],
             enableParallelism: true,
             incremental: true,
+            watchOptions: {
+              alwaysWatch: false,
+              watchPhases: ["_phase:build"],
+            },
           },
           {
             commandKind: 'phased',
@@ -46,6 +56,10 @@ export class CommandLine extends JsonFile {
             phases: ['_phase:build', '_phase:test'],
             enableParallelism: true,
             incremental: true,
+            watchOptions: {
+              alwaysWatch: false,
+              watchPhases: ["_phase:build", "_phase:test"],
+            },
           },
           {
             commandKind: 'phased',

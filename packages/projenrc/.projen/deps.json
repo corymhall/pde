@@ -63,27 +63,12 @@
       "type": "build"
     },
     {
-      "name": "cdktf",
-      "version": "^0.15",
-      "type": "runtime"
-    },
-    {
       "name": "constructs",
+      "version": "^10.1.241",
       "type": "runtime"
     },
     {
-      "name": "pde-cli",
-      "version": "workspace:*",
-      "type": "runtime"
-    },
-    {
-      "name": "pde-components",
-      "version": "workspace:*",
-      "type": "runtime"
-    },
-    {
-      "name": "pde-core",
-      "version": "workspace:*",
+      "name": "projen",
       "type": "runtime"
     }
   ],

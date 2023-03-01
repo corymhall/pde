@@ -4,11 +4,15 @@
   "rushVersion": "5.92.0",
   "pnpmVersion": "6.7.1",
   "ensureConsistentVersions": true,
-  "nodeSupportedVersionRange": ">=12.13.0 <13.0.0 || >=14.15.0 <15.0.0 || >=16.13.0 <17.0.0",
   "repository": {
     "url": "https://github.com/corymhall/pde"
   },
   "projects": [
+    {
+      "packageName": "projenrc",
+      "projectFolder": "packages/projenrc",
+      "skipRushCheck": false
+    },
     {
       "packageName": "pde-core",
       "projectFolder": "packages/pde-core",

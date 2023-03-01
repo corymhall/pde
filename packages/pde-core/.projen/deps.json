@@ -81,6 +81,7 @@
     },
     {
       "name": "constructs",
+      "version": "^10.1.241",
       "type": "runtime"
     },
     {

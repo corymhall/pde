@@ -1,5 +1,5 @@
 import { Component, Project } from 'projen';
-import * as rush from './rush';
+import * as rush from './rush/index.js'
 
 export class RushProject extends Component {
   private readonly projects: rush.RushProject[] = [];

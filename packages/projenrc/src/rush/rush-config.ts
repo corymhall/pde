@@ -442,7 +442,6 @@ export class RushConfig extends JsonFile {
         rushVersion: '5.92.0',
         pnpmVersion: '6.7.1',
         ensureConsistentVersions: true,
-        nodeSupportedVersionRange: '>=12.13.0 <13.0.0 || >=14.15.0 <15.0.0 || >=16.13.0 <17.0.0',
         ...options,
       }
     });

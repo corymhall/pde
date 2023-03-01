@@ -14,6 +14,10 @@ export class DotnetInstaller extends ShellInstaller {
       name: 'dotnet',
       executable: true,
       downloadUrl: 'https://dot.net/v1/dotnet-install.sh',
+      versionCommand: 'dotnet --version',
+      deleteCommands: [
+        'echo "nothing to do here yet..."',
+      ],
       installCommands: [`./dotnet-install.sh -c 3.1 --install-dir ${options.home.homeLocation}/.dotnet`],
       ...options,
     });

@@ -1,7 +1,6 @@
 import * as path from 'path';
 import { Construct } from 'constructs';
-import { Installer, LocalFile, IHome, IProfile } from 'pde-core';
-import { $, cd } from 'zx/core';
+import { LocalFile, IHome, IProfile, InstallerNew } from 'pde-core';
 
 export interface NpmGlobalInstallerOptions {
   readonly npmPkgs: string[];
@@ -9,11 +8,33 @@ export interface NpmGlobalInstallerOptions {
   readonly profile: IProfile;
 }
 
-export class NpmGlobalInstaller extends Installer {
+export class NpmGlobalInstaller extends InstallerNew {
   public readonly name: string;
   constructor(scope: Construct, id: string, options: NpmGlobalInstallerOptions) {
+    const npmProjectDir = path.join('$DOTFILES', 'npm');
+    const returnValue = `
+      const nodeVersion = await $\`node --version\`;
+      echo\`{
+        nodeVersion,
+      }\`;
+    `;
     super(scope, id, {
-      name: 'npm-global',
+      create: `
+        cd('${npmProjectDir}')
+        await $\`npm install\`;
+        ${returnValue}
+      `,
+      update: `
+        cd('${npmProjectDir}')
+        await $\`npm install\`;
+        ${returnValue}
+      `,
+      read: `
+        ${returnValue}
+      `,
+      delete: `
+        await $\`rm -rf ${path.join(npmProjectDir, 'node_modules')};
+      `,
     });
 
     this.name = 'npm-global';
@@ -47,17 +68,6 @@ export class NpmGlobalInstaller extends Installer {
       lines: [JSON.stringify(content, undefined, 2)],
     });
 
-    const npmProjectDir = path.join('$DOTFILES', 'npm');
     options.profile.addToSystemPath(`${npmProjectDir}/node_modules/.bin`);
-
-    this.listrs.push(
-      {
-        title: 'install',
-        task: async () => {
-          cd(npmProjectDir);
-          await $`npm install`;
-        },
-      },
-    );
   }
 }

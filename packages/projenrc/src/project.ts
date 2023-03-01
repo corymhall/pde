@@ -1,7 +1,7 @@
 import * as path from 'path';
 import { SourceCode, typescript } from 'projen';
 import { NodePackageManager } from 'projen/lib/javascript';
-import { RushProject } from './rush-project';
+import { RushProject } from './rush-project.js';
 
 
 
@@ -28,6 +28,13 @@ export class MonorepoRoot extends typescript.TypeScriptProject {
       },
     });
     this.rushProject = new RushProject(this);
+    for (const tsconfig of [this.tsconfig, this.tsconfigDev]) {
+      tsconfig?.file.addOverride('compilerOptions.composite', true);
+      tsconfig?.file.addOverride('compilerOptions.moduleResolution', 'nodenext');
+      tsconfig?.file.addOverride('compilerOptions.module', 'nodenext');
+      tsconfig?.file.addToArray('compilerOptions.lib', 'dom');
+    }
+    this.package.addField('type', 'module');
 
     this.gitignore.exclude('**/.rush/temp');
     this.gitignore.exclude('common/deploy/');

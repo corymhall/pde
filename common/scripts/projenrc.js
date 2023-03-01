@@ -1,16 +1,14 @@
-import { NodePackageManager } from 'projen/lib/javascript';
-import { MonorepoRoot, MonorepoTypeScriptProject } from './projenrc/project';
+import { MonorepoRoot, MonorepoTypeScriptProject, NodePackageManager } from '../../packages/projenrc/lib/index.js';
 
-const SHARED_DEPS: string[] = [
-  'constructs@10.0.25',
+const SHARED_DEPS = [
+  'constructs@^10.1.241',
   'projen',
 ];
 
 const project = new MonorepoRoot({
   defaultReleaseBranch: 'main',
   devDeps: [
-    'aws-prototyping-sdk',
-    'nx',
+    'projen',
   ],
   name: 'pde',
   packageManager: NodePackageManager.PNPM,
@@ -21,7 +19,14 @@ const project = new MonorepoRoot({
   release: false,
 });
 
-
+new MonorepoTypeScriptProject({
+  packageManager: NodePackageManager.PNPM,
+  name: 'projenrc',
+  deps: [
+    ...SHARED_DEPS,
+  ],
+  parent: project,
+});
 
 const core = new MonorepoTypeScriptProject({
   packageManager: NodePackageManager.PNPM,

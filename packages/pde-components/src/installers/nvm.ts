@@ -12,6 +12,9 @@ export class NvmInstaller extends GitHubRepoInstaller {
       org: 'nvm-sh',
       profile: options.profile,
       folderName: '.nvm',
+      deleteCommands: ['echo "nothing to do here"'],
+      installCommands: ['echo "nothing to do here"'],
+      versionCommand: 'nvm --version',
     });
 
     options.profile.addLines([

@@ -31,24 +31,9 @@
     "moduleResolution": "nodenext"
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "src/.gen/**/*.ts"
   ],
   "exclude": [],
-  "references": [
-    {
-      "path": "packages/projenrc"
-    },
-    {
-      "path": "packages/pde-core"
-    },
-    {
-      "path": "packages/pde-cli"
-    },
-    {
-      "path": "packages/pde-components"
-    },
-    {
-      "path": "packages/pde-example"
-    }
-  ]
+  "references": []
 }
