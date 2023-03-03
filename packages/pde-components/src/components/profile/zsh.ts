@@ -22,14 +22,12 @@ export class ZshProfile extends Profile implements IProfile {
     this.addToEnv('KEYTIMEOUT', '1');
 
     const zinit = new GitHubRepoInstaller(this, 'zinit', {
-      home: this.home,
       name: 'zinit',
-      profile: this,
       org: 'zdharma-continuum',
       version: 'main',
       folderName: '.zinit',
       repo: 'zinit',
-      deleteCommands: [],
+      uninstallCommands: [],
       installCommands: [],
       versionCommand: '',
     });

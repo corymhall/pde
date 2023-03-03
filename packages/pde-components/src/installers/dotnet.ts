@@ -1,9 +1,9 @@
 import { Construct } from 'constructs';
-import { IHome, IProfile } from 'pde-core';
+import { IHome, ISystemProfile } from 'pde-core';
 import { ShellInstaller } from './shell.js';
 
 export interface DotnetInstallerOptions {
-  readonly profile: IProfile;
+  readonly profile: ISystemProfile;
   readonly home: IHome;
 
 }
@@ -15,8 +15,8 @@ export class DotnetInstaller extends ShellInstaller {
       executable: true,
       downloadUrl: 'https://dot.net/v1/dotnet-install.sh',
       versionCommand: 'dotnet --version',
-      deleteCommands: [
-        'echo "nothing to do here yet..."',
+      uninstallCommands: [
+        "echo 'nothing to do here yet...'",
       ],
       installCommands: [`./dotnet-install.sh -c 3.1 --install-dir ${options.home.homeLocation}/.dotnet`],
       ...options,

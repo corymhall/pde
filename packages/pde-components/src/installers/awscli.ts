@@ -1,12 +1,10 @@
 import { Construct } from 'constructs';
-import { IHome, Platform, Project, InstallerNew } from 'pde-core';
+import { Platform, Project, Installer } from 'pde-core';
 
-export interface AwsCliInstallerOptions {
-  readonly home: IHome;
-}
+export interface AwsCliInstallerOptions { }
 
-export class AwsCliInstaller extends InstallerNew {
-  constructor(scope: Construct, id: string, options: AwsCliInstallerOptions) {
+export class AwsCliInstaller extends Installer {
+  constructor(scope: Construct, id: string, _options: AwsCliInstallerOptions = {}) {
     const project = Project.of(scope);
     let downloadUrl: string;
     const installCommands: string[] = [];
@@ -19,7 +17,7 @@ export class AwsCliInstaller extends InstallerNew {
       updateCommands.push(...installCommands);
     } else {
       downloadUrl = 'https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip';
-      const installCommand = `./aws/install -i ${options.home.homeLocation}/.local -b ${options.home.homeLocation}/.local/bin`;
+      const installCommand = `./aws/install -i ${project.home.homeLocation}/.local -b ${project.home.homeLocation}/.local/bin`;
       installCommands.push(
         'unzip awscli-exe-linux-x86_64.zip',
         installCommand,
@@ -28,65 +26,49 @@ export class AwsCliInstaller extends InstallerNew {
         installCommand + ' --update',
       );
     }
-    $.shell = '/usr/bin/zsh';
     const downloadCommand = `curl -OL ${downloadUrl}`;
-    const create = () => {
-      return `
-      cd('${project.systemTmpDir}');
-      await $\`${downloadCommand}\`;
-      ${installCommands.map(cmd => `await $\`${cmd}\``).join('\n\t')}
-      const location = await which('aws');
-      const version = await $\`aws --version\`;
-      echo\`{
-        name: 'aws',
-        location: \$\${location},
-        version: \$\${version},
-      }\`;
-      `
-    }
 
-    const update = () => {
-      return `
-      cd('${project.systemTmpDir}');
-      await $\`${downloadCommand}\`;
-      ${updateCommands.map(cmd => `await $\`${cmd}\``).join('\n\t')}
-      const location = await which('aws');
-      const version = await $\`aws --version\`;
-      echo\`{
-        name: 'aws',
-        location: \$\${location},
-        version: \$\${version},
-      }\`;
-      `
-    }
-
-    const del = () => {
-      return `
-      const location = await which('aws');
-      await $\`rm -rf \$\${location}\`;
-      await $\`rm -rf ${options.home.homeLocation}/.local\`;
-      `
-    }
-
-    const read = () => {
-      return `
-      try {
+    super(scope, id, {
+      create: `
+        cd('${project.systemTmpDir}');
+        await $\`${downloadCommand}\`;
+        ${installCommands.map(cmd => `await $\`${cmd}\``).join('\n\t')}
         const location = await which('aws');
         const version = await $\`aws --version\`;
         echo\`{
+          name: 'aws',
           location: \$\${location},
           version: \$\${version},
+        }\`;
+      `,
+      update: `
+        cd('${project.systemTmpDir}');
+        await $\`${downloadCommand}\`;
+        ${updateCommands.map(cmd => `await $\`${cmd}\``).join('\n\t')}
+        const location = await which('aws');
+        const version = await $\`aws --version\`;
+        echo\`{
           name: 'aws',
-        }\`
-      } catch {}
-      `
-    }
-
-    super(scope, id, {
-      create: create(),
-      update: update(),
-      delete: del(),
-      read: read(),
+          location: \$\${location},
+          version: \$\${version},
+        }\`;
+      `,
+      delete: `
+        const location = await which('aws');
+        await $\`rm -rf \$\${location}\`;
+        await $\`rm -rf ${project.home.homeLocation}/.local\`;
+      `,
+      read: `
+        try {
+          const location = await which('aws');
+          const version = await $\`aws --version\`;
+          echo\`{
+            location: \$\${location},
+            version: \$\${version},
+            name: 'aws',
+          }\`
+        } catch {}
+      `,
     });
   }
 }

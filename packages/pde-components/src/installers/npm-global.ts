@@ -1,14 +1,12 @@
 import * as path from 'path';
 import { Construct } from 'constructs';
-import { LocalFile, IHome, IProfile, InstallerNew } from 'pde-core';
+import { LocalFile, Installer, Project } from 'pde-core';
 
 export interface NpmGlobalInstallerOptions {
   readonly npmPkgs: string[];
-  readonly home: IHome;
-  readonly profile: IProfile;
 }
 
-export class NpmGlobalInstaller extends InstallerNew {
+export class NpmGlobalInstaller extends Installer {
   public readonly name: string;
   constructor(scope: Construct, id: string, options: NpmGlobalInstallerOptions) {
     const npmProjectDir = path.join('$DOTFILES', 'npm');
@@ -36,6 +34,7 @@ export class NpmGlobalInstaller extends InstallerNew {
         await $\`rm -rf ${path.join(npmProjectDir, 'node_modules')};
       `,
     });
+    const project = Project.of(this);
 
     this.name = 'npm-global';
 
@@ -63,11 +62,12 @@ export class NpmGlobalInstaller extends InstallerNew {
       version: '0.0.0',
     };
 
-    new LocalFile(this, this.name, {
+    const packageJson = new LocalFile(this, this.name, {
       filename: 'package.json',
       lines: [JSON.stringify(content, undefined, 2)],
     });
+    this.addDependsOn(packageJson.resource);
 
-    options.profile.addToSystemPath(`${npmProjectDir}/node_modules/.bin`);
+    project.profile.addToSystemPath(`${npmProjectDir}/node_modules/.bin`);
   }
 }

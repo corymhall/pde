@@ -68,6 +68,7 @@
     },
     {
       "name": "@cdktf/provider-local",
+      "version": "^5.0.0",
       "type": "runtime"
     },
     {
@@ -76,16 +77,8 @@
       "type": "runtime"
     },
     {
-      "name": "commander",
-      "type": "runtime"
-    },
-    {
       "name": "constructs",
       "version": "^10.1.241",
-      "type": "runtime"
-    },
-    {
-      "name": "listr2",
       "type": "runtime"
     },
     {

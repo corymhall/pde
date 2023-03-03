@@ -1,12 +1,10 @@
 import { Construct } from 'constructs';
-import { Project, InstallerOptions, InstallerNew } from 'pde-core';
+import { Project, InstallerOptions, Installer } from 'pde-core';
 
 /**
  * Options for installing a component from a URL
- *
- * TODO: maybe rename to UrlInstaller?
  */
-export interface ShellInstallerOptions extends InstallerOptions {
+export interface UrlInstallerOptions extends InstallerOptions {
   /**
    * The URL that can be used to download the component
    */
@@ -23,11 +21,11 @@ export interface ShellInstallerOptions extends InstallerOptions {
   readonly executable?: boolean;
 }
 
-export class ShellInstaller extends InstallerNew {
+export class ShellInstaller extends Installer {
 
   public readonly name: string;
 
-  constructor(scope: Construct, id: string, options: ShellInstallerOptions) {
+  constructor(scope: Construct, id: string, options: UrlInstallerOptions) {
     const fileName = options.downloadUrl.split('/').pop()!;
     const downloadCommand = `curl -OL ${options.downloadUrl}`;
     const project = Project.of(scope);
@@ -40,15 +38,18 @@ export class ShellInstaller extends InstallerNew {
     };
 
     const versionCommand = () => {
-      return `
-        const version = await $\`${options.versionCommand}\`;
-      `;
+      if (options.versionCommand) {
+        return `
+          const version = await $\`${options.versionCommand}\`;
+        `;
+      }
+      return "const version = '0.0.0'";
     }
 
     const returnCommand = () => {
       return `
         ${versionCommand}
-        echo\`'{ version }'\`
+        echo\`'{ version, name: ${options.name} }'\`
       `
     }
 
@@ -61,14 +62,14 @@ export class ShellInstaller extends InstallerNew {
       `,
       update: `
         ${download}
-        await $\`${options.updateCommands?.join(' && ')}\`;
+        ${options.updateCommands?.map(cmd => `await $\`${cmd}\``).join('\n\t')};
         ${returnCommand}
       `,
       read: `
         ${returnCommand}
       `,
       delete: `
-        ${options.deleteCommands.map(cmd => `await $\`${cmd}\``).join('\n\t')};
+        ${options.uninstallCommands.map(cmd => `await $\`${cmd}\``).join('\n\t')};
       `,
     });
     this.name = options.name;

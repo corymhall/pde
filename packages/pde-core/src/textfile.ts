@@ -10,6 +10,7 @@ export interface LocalFileProps {
 export class LocalFile extends Construct {
   private readonly lines: string[] = [];
   public readonly path: string;
+  public readonly resource: File;
   constructor(scope: Construct, id: string, props: LocalFileProps) {
     super(scope, id);
 
@@ -17,10 +18,12 @@ export class LocalFile extends Construct {
       filename: props.filename,
       content: this.lines?.join('\n'),
     });
+    this.resource = file;
     this.path = file.filename;
   }
 
   public addLine(line: string): void {
     this.lines.push(line);
   }
+
 }

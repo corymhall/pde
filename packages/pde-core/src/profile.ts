@@ -1,36 +1,22 @@
 import * as path from 'path';
-import { Construct, IConstruct } from 'constructs';
+import { Construct } from 'constructs';
 import { IHome } from './home.js';
 import { Project } from './project-base.js';
 import { LocalFile } from './textfile.js';
-const PROFILE_SYMBOL = Symbol.for('pde-core/Profile');
+import { IProfileBase, ProfileBase } from './profile-base.js';
+
 
 /**
  * Represents a system profile
  * i.e. bash, zsh, etc
  */
-export interface IProfile {
+export interface IProfile extends IProfileBase {
   /**
    * The name of the profile file
    *
    * e.g. .zshrc, .bashrc, etc
    */
   readonly profileFileName: string;
-
-  /**
-   * Add additional lines to the system profile
-   */
-  addLines(lines: string[]): void;
-
-  /**
-   * Add additional environment variables
-   */
-  addToEnv(name: string, value: string): void;
-
-  /**
-   * Add additional paths to the system PATH
-   */
-  addToSystemPath(systemPath: string): void;
 }
 
 /**
@@ -48,37 +34,12 @@ export interface ProfilesOptions {
   readonly profileFileName: string;
 
   /**
-   * The Home to associate this profile with
-   */
-  readonly home: IHome;
-
-  /**
    * An initial set of environment variables to source
    */
   readonly env?: { [key: string]: string };
-
 }
 
-export class Profile extends Construct implements IProfile {
-  /**
-   * Check whether the given construct is a Profile
-   */
-  public static isProfile(construct: IConstruct): construct is Profile {
-    return construct !== null && typeof(construct) === 'object' && PROFILE_SYMBOL in construct;
-  }
-
-  /**
-   * Finds a Profile construct in the given scope
-   */
-  public static of(construct: IConstruct): Profile {
-    const scopes = construct.node.root.node.findAll();
-    const profile = scopes.find(s => Profile.isProfile(s));
-    if (!profile) {
-      throw new Error('No parent Home found');
-    }
-    return profile as Profile;
-  }
-
+export class Profile extends ProfileBase implements IProfile {
   public readonly profileFileName: string;
 
   protected readonly systemPaths: {[ path: string]: boolean } = {};
@@ -91,8 +52,8 @@ export class Profile extends Construct implements IProfile {
 
   constructor(scope: Construct, id: string, options: ProfilesOptions) {
     super(scope, id);
-    this.home = options.home;
     this.project = Project.of(this);
+    this.home = this.project.home;
 
     this.profileFileName = options.profileFileName;
     this.file = new LocalFile(this, `${options.name}/${options.profileFileName}`, {
@@ -104,23 +65,11 @@ export class Profile extends Construct implements IProfile {
       ],
     });
     this.renderEnv(options.env);
-    this.addToEnv('XDG_CONFIG_HOME', this.home.xdgConfigHome);
     const sourcePath = path.join(this.project.dir, this.file.path);
     this.home.addLocation(sourcePath, `.${path.basename(sourcePath)}`);
   }
-
   public addLines(lines: string[]): void {
     lines.forEach(line => this.file.addLine(line));
-  }
-
-  public addToEnv(name: string, value: string): void {
-    this.systemEnv[name] = value;
-  }
-
-  public addToSystemPath(systemPath: string): void {
-    if (!(systemPath in this.systemPaths)) {
-      this.systemPaths[systemPath] = true;
-    }
   }
 
   protected renderEnvExports(): void {

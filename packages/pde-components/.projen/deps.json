@@ -72,10 +72,6 @@
       "type": "runtime"
     },
     {
-      "name": "listr2",
-      "type": "runtime"
-    },
-    {
       "name": "pde-core",
       "version": "workspace:*",
       "type": "runtime"

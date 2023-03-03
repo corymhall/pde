@@ -38,7 +38,6 @@
   },
   "dependencies": {
     "constructs": "^10.1.241",
-    "listr2": "*",
     "pde-core": "workspace:*",
     "projen": "^0.67.34",
     "zx": "^7.1.1"

@@ -1,23 +1,24 @@
 import { Construct } from 'constructs';
-import { GitHubRepoInstaller, GitHubRepoOptions } from './github.js';
+import { Project } from 'pde-core';
+import { GitHubRepoInstaller } from './github.js';
 
-export interface NvmInstallerOptions extends Pick<GitHubRepoOptions, 'home' | 'profile'> {}
+export interface NvmInstallerOptions {}
 
 export class NvmInstaller extends GitHubRepoInstaller {
-  constructor(scope: Construct, id: string, options: NvmInstallerOptions) {
+  constructor(scope: Construct, id: string, _options: NvmInstallerOptions = {}) {
     super(scope, id, {
-      home: options.home,
       name: 'nvm',
       repo: 'nvm',
       org: 'nvm-sh',
-      profile: options.profile,
       folderName: '.nvm',
-      deleteCommands: ['echo "nothing to do here"'],
+      uninstallCommands: ['echo "nothing to do here"'],
       installCommands: ['echo "nothing to do here"'],
       versionCommand: 'nvm --version',
     });
 
-    options.profile.addLines([
+    const project = Project.of(this);
+
+    project.profile.addLines([
       `[ -s "${this.absolutePathVar}/nvm.sh" ] && \. "${this.absolutePathVar}/nvm.sh" # This loads nvm`,
     ]);
   }

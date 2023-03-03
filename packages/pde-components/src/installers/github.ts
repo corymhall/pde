@@ -1,18 +1,13 @@
 import * as path from 'path';
 import 'zx/globals';
 import { Construct } from 'constructs';
-import { InstallerOptions, IHome, IProfile, InstallerNew } from 'pde-core';
+import { InstallerOptions, Installer, Project } from 'pde-core';
 import { ShellInstaller } from './shell.js';
 
 /**
  * Common options for installing a component from a GitHub repo
  */
 export interface GitHubInstallerOptions extends InstallerOptions {
-  /**
-   *
-   */
-  readonly home: IHome;
-
   /**
    * The GitHub organization
    */
@@ -28,10 +23,6 @@ export interface GitHubInstallerOptions extends InstallerOptions {
  * Options for installing a component from a GitHub repo
  */
 export interface GitHubRepoOptions extends GitHubInstallerOptions {
-  /**
-   *
-   */
-  readonly profile: IProfile;
   /**
    * The name of the folder where the repo should be cloned to. This will
    * be relative to the home directory.
@@ -81,19 +72,20 @@ export interface GitHubReleaseOptions extends GitHubInstallerOptions {
   readonly executable?: string;
 }
 
-export class GitHubRepoInstaller extends InstallerNew {
+export class GitHubRepoInstaller extends Installer {
   public readonly name: string;
   public readonly absolutePathVar: string;
   private readonly folderName: string;
 
   constructor(scope: Construct, id: string, options: GitHubRepoOptions) {
+    const project = Project.of(scope);
     const folderName = options.folderName ?? options.repo;
-    const absolutePath = path.join(options.home.homeLocation, folderName);
+    const absolutePath = path.join(project.home.homeLocation, folderName);
     const url = `https://github.com/${options.org}/${options.repo}.git`;
     const version = options.version ?? 'main';
 
     const clone = `
-      cd('${options.home.homeLocation}');
+      cd('${project.home.homeLocation}');
       await $\`git clone ${url} ${folderName}\`;
     `;
 
@@ -133,15 +125,16 @@ export class GitHubRepoInstaller extends InstallerNew {
 
     this.name = `${options.org}-${options.repo}`;
     this.folderName = options.folderName ?? options.repo;
-    this.absolutePathVar = path.join(options.home.homeVar, this.folderName);
+    this.absolutePathVar = path.join(project.home.homeVar, this.folderName);
     if (options.addBin) {
-      options.profile.addToEnv('PATH', `$PATH:${path.join(options.home.homeLocation, this.folderName, 'bin')}`);
+      project.profile.addToEnv('PATH', `$PATH:${path.join(project.home.homeLocation, this.folderName, 'bin')}`);
     }
   }
 }
 
 export class GitHubReleaseInstaller extends ShellInstaller {
   constructor(scope: Construct, id: string, options: GitHubReleaseOptions) {
+    const project = Project.of(scope);
     const downloadPath = `${options.org}/${options.repo}/releases/download`;
     const parsedPath = path.parse(options.assetName);
     const ext = parsedPath.ext;
@@ -156,11 +149,11 @@ export class GitHubReleaseInstaller extends ShellInstaller {
           break;
         case '.gz':
           executable = true;
-          installCommands.push(`tar -xzvf ${options.assetName} -C ${options.home.binLocation}`);
+          installCommands.push(`tar -xzvf ${options.assetName} -C ${project.home.binLocation}`);
       }
     }
     super(scope, id, {
-      deleteCommands: [
+      uninstallCommands: [
         'echo "nothing to do here"'
       ],
       versionCommand: options.versionCommand,

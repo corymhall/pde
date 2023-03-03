@@ -2,8 +2,9 @@ import { realpathSync } from 'fs';
 import 'zx/globals';
 import * as os from 'os';
 import { App } from 'cdktf';
-import { Command } from 'commander';
 import { IConstruct } from 'constructs';
+import { Home, IHome } from './home.js';
+import { ISystemProfile, SystemProfile } from './system-profile.js';
 const PROJECT_SYMBOL = Symbol.for('pde-core/Project');
 /**
  * The platform that this dotfiles project is installed on
@@ -19,6 +20,10 @@ export interface ProjectProps {
    * directory
    */
   readonly name: string;
+
+  readonly home?: IHome;
+
+  readonly profile?: ISystemProfile;
 }
 
 export class Project extends App {
@@ -64,15 +69,17 @@ export class Project extends App {
    */
   public readonly dir: string;
 
-
-  public readonly command: Command;
-
+  public readonly profile: ISystemProfile;
+  public readonly home: IHome;
 
   constructor(props: ProjectProps) {
     super();
     Object.defineProperty(this, PROJECT_SYMBOL, { value: true });
     this.name = props.name;
-    this.command = new Command('dotfiles');
+    this.home = props.home ?? new Home(this, 'Home');
+    this.profile = props.profile ?? new SystemProfile(this, 'SystemProfile', {
+      home: this.home,
+    });
 
     this.dir = 'dotfiles';
 

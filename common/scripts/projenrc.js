@@ -32,10 +32,8 @@ const core = new MonorepoTypeScriptProject({
   packageManager: NodePackageManager.PNPM,
   name: 'pde-core',
   deps: [
-    'commander',
     'zx',
-    'listr2',
-    '@cdktf/provider-local',
+    '@cdktf/provider-local@^5.0.0',
     'cdktf@^0.15',
     ...SHARED_DEPS,
   ],
@@ -50,8 +48,6 @@ const cli = new MonorepoTypeScriptProject({
   name: 'pde-cli',
   deps: [
     'zx',
-    'listr2',
-    'commander',
     core,
   ],
   devDeps: [
@@ -66,7 +62,6 @@ const components = new MonorepoTypeScriptProject({
   parent: project,
   deps: [
     'zx',
-    'listr2',
     core,
     ...SHARED_DEPS,
   ],
@@ -85,6 +80,7 @@ new MonorepoTypeScriptProject({
     components,
     cli,
     'constructs',
+    '@cdktf/provider-local@^5.0.0',
   ],
 });
 

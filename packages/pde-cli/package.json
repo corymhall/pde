@@ -37,8 +37,6 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "commander": "*",
-    "listr2": "*",
     "pde-core": "workspace:*",
     "zx": "^7.1.1"
   },
