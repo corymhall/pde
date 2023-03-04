@@ -18,6 +18,7 @@ const project = new MonorepoRoot({
   prettier: false,
   release: false,
 });
+project.addGitIgnore('**/cdktf.out');
 
 new MonorepoTypeScriptProject({
   packageManager: NodePackageManager.PNPM,
