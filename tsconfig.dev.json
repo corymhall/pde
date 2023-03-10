@@ -8,10 +8,9 @@
     "inlineSourceMap": true,
     "inlineSources": true,
     "lib": [
-      "es2019",
-      "dom"
+      "es2019"
     ],
-    "module": "nodenext",
+    "module": "CommonJS",
     "noEmitOnError": false,
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
@@ -24,9 +23,7 @@
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
     "stripInternal": true,
-    "target": "ES2019",
-    "composite": true,
-    "moduleResolution": "nodenext"
+    "target": "ES2019"
   },
   "include": [
     ".projenrc.js",
@@ -37,22 +34,5 @@
   ],
   "exclude": [
     "node_modules"
-  ],
-  "references": [
-    {
-      "path": "packages/projenrc"
-    },
-    {
-      "path": "packages/pde-core"
-    },
-    {
-      "path": "packages/pde-cli"
-    },
-    {
-      "path": "packages/pde-components"
-    },
-    {
-      "path": "packages/pde-example"
-    }
   ]
 }
