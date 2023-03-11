@@ -11,20 +11,32 @@ const project = new cdktf.ConstructLibraryCdktf({
   packageManager: NodePackageManager.PNPM,
   release: false,
   projenrcTs: true,
+  githubOptions: {
+    mergify: false,
+    pullRequestLint: false,
+  },
   devDeps: [
     '@cdktf/provider-local@^5.0.0',
   ],
-  deps: [
-  ],
+  deps: [],
   peerDeps: [
     '@cdktf/provider-local@^5.0.0',
   ],
-  bundledDeps: [
-  ]
+  bundledDeps: [],
 });
 
 project.deps.removeDependency('constructs');
 project.deps.addDependency('constructs@10.1.273', DependencyType.PEER);
 project.deps.addDependency('constructs@10.1.273', DependencyType.DEVENV);
+
+const gen = project.addTask('gen', {
+  condition: 'if [ -d "src/.gen" ]; then exit 1; fi',
+  exec: 'npx cdktf provider get scottwinkler/shell --language typescript --output src/.gen',
+});
+
+project.defaultTask?.spawn(gen);
+
+project.gitignore.exclude('src/.gen');
+project.npmignore?.exclude('bin');
 
 project.synth();

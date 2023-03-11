@@ -80,6 +80,9 @@
       "steps": [
         {
           "exec": "ts-node --project tsconfig.dev.json .projenrc.ts"
+        },
+        {
+          "spawn": "gen"
         }
       ]
     },
@@ -112,6 +115,15 @@
           "exec": "eslint --ext .ts,.tsx --fix --no-error-on-unmatched-pattern src test build-tools projenrc .projenrc.ts"
         }
       ]
+    },
+    "gen": {
+      "name": "gen",
+      "steps": [
+        {
+          "exec": "npx cdktf provider get scottwinkler/shell --language typescript --output src/.gen"
+        }
+      ],
+      "condition": "if [ -d \"src/.gen\" ]; then exit 1; fi"
     },
     "package": {
       "name": "package",

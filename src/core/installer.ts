@@ -1,7 +1,7 @@
-import { Construct } from 'constructs';
 import { TerraformResource, TerraformStack } from 'cdktf';
-import { Script } from '../.gen/providers/shell/script';
+import { Construct } from 'constructs';
 import { ShellProvider } from '../.gen/providers/shell/provider';
+import { Script } from '../.gen/providers/shell/script';
 
 export interface InstallerOptions {
   /**
@@ -55,7 +55,7 @@ export class Installer extends TerraformStack {
         read: props.read ? createScript(props.read): undefined,
         update: props.update ? createScript(props.update): undefined,
       },
-      interpreter: ['/usr/bin/zsh', '-c']
+      interpreter: ['/usr/bin/zsh', '-c'],
     });
   }
 
