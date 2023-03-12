@@ -1,3 +1,4 @@
+import { TerraformStack } from 'cdktf';
 import { Construct, IConstruct } from 'constructs';
 
 export interface IProfileBase extends IConstruct {
@@ -17,7 +18,7 @@ export interface IProfileBase extends IConstruct {
   addToSystemPath(systemPath: string): void;
 }
 
-export abstract class ProfileBase extends Construct implements IProfileBase {
+export abstract class ProfileBase extends TerraformStack implements IProfileBase {
   protected readonly systemPaths: {[ path: string]: boolean } = {};
   protected readonly systemEnv: {[ name: string]: string } = {};
   constructor(scope: Construct, id: string) {

@@ -1,8 +1,8 @@
-import { Aspects } from "cdktf";
-import { Construct, IConstruct } from "constructs";
-import { IHome } from "./home.js";
-import { IProfileBase, ProfileBase } from "./profile-base.js";
-import { IProfile } from "./profile.js";
+import { Aspects } from 'cdktf';
+import { Construct, IConstruct } from 'constructs';
+import { IHome } from './home';
+import { IProfile } from './profile';
+import { IProfileBase } from './profile-base';
 const PROFILE_SYMBOL = Symbol.for('pde-core/SystemProfile');
 
 
@@ -11,6 +11,8 @@ export interface ISystemProfile extends IProfileBase {
    * TODO: docs
    */
   register(profile: IProfile): void;
+
+  addAlias(name: string, command: string): void;
 }
 
 export interface SystemProfileOptions {
@@ -21,7 +23,7 @@ export interface SystemProfileOptions {
   readonly env?: { [key: string]: string };
 }
 
-export class SystemProfile extends ProfileBase implements ISystemProfile {
+export class SystemProfile extends Construct implements ISystemProfile {
   /**
    * Check whether the given construct is a Profile
    */
@@ -43,6 +45,8 @@ export class SystemProfile extends ProfileBase implements ISystemProfile {
 
   private readonly profiles: IProfile[] = [];
   private readonly lines: string[];
+  private readonly systemPaths: {[ path: string]: boolean } = {};
+  private readonly systemEnv: {[ name: string]: string } = {};
 
   constructor(scope: Construct, id: string, options: SystemProfileOptions) {
     super(scope, id);
@@ -62,7 +66,7 @@ export class SystemProfile extends ProfileBase implements ISystemProfile {
         if (node.node.id === that.node.id) {
           const profile = node as SystemProfile;
           profile.profiles.forEach(p => {
-            p.addLines(that.lines)
+            p.addLines(that.lines);
             for (const [key, value] of Object.entries(that.systemEnv)) {
               p.addToEnv(key, value);
             }
@@ -73,11 +77,27 @@ export class SystemProfile extends ProfileBase implements ISystemProfile {
     });
   }
 
+  public addAlias(name: string, command: string): void {
+    this.addLines([
+      `alias ${name}='${command}'`,
+    ]);
+  }
+
   public addLines(lines: string[]): void {
     this.lines.push(...lines);
   }
 
   public register(profile: IProfile): void {
     this.profiles.push(profile);
+  }
+
+  public addToEnv(name: string, value: string): void {
+    this.systemEnv[name] = value;
+  }
+
+  public addToSystemPath(systemPath: string): void {
+    if (!(systemPath in this.systemPaths)) {
+      this.systemPaths[systemPath] = true;
+    }
   }
 }

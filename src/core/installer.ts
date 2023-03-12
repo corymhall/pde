@@ -41,31 +41,41 @@ export interface InstallerProps {
   readonly delete: string;
   readonly update?: string;
   readonly read?: string;
+  readonly triggers?: { [key: string]: string };
 }
 
-export class Installer extends TerraformStack {
+export class Installer extends Construct {
   constructor(scope: Construct, id: string, props: InstallerProps) {
     super(scope, id);
 
-    new ShellProvider(this, 'ShellProvider');
+    // TODO update this
+    const zsh = '/opt/homebrew/bin/zsh';
+
+    this.getOrCreateProvider();
     new Script(this, 'Installer', {
+      triggers: props.triggers,
       lifecycleCommands: {
-        create: createScript(props.create),
-        delete: createScript(props.delete),
-        read: props.read ? createScript(props.read): undefined,
-        update: props.update ? createScript(props.update): undefined,
+        create: createScript(props.create, zsh),
+        delete: createScript(props.delete, zsh),
+        read: props.read ? createScript(props.read, zsh): undefined,
+        update: props.update ? createScript(props.update, zsh): undefined,
       },
-      interpreter: ['/usr/bin/zsh', '-c'],
+      interpreter: [zsh, '-c'],
     });
   }
 
   public addDependsOn(resource: TerraformResource): void {
-    this.dependsOn(TerraformStack.of(resource));
+    TerraformStack.of(this).dependsOn(TerraformStack.of(resource));
+  }
+  private getOrCreateProvider(): ShellProvider {
+    const id = 'ShellProvider';
+    const stack = TerraformStack.of(this);
+    return stack.node.tryFindChild(id) as ShellProvider ?? new ShellProvider(this, id);
   }
 }
 
-function createScript(script: string): string {
-  const prefix = "zx <<'EOF'\n$.shell = '/usr/bin/zsh'";
+function createScript(script: string, zsh: string): string {
+  const prefix = `zx <<'EOF'\n$.shell = '${zsh}'`;
   const postfix = 'EOF';
   return `${prefix}\n${script}\n${postfix}`;
 }

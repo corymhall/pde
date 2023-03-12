@@ -1,6 +1,6 @@
 import { Construct } from 'constructs';
 import { Project } from '../../core';
-import { GitHubRepoInstaller } from './github.js';
+import { GitHubRepoInstaller } from './github';
 
 export interface NvmInstallerOptions {}
 

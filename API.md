@@ -2,6 +2,130 @@
 
 ## Constructs <a name="Constructs" id="Constructs"></a>
 
+### Aptitude <a name="Aptitude" id="pde.Aptitude"></a>
+
+#### Initializers <a name="Initializers" id="pde.Aptitude.Initializer"></a>
+
+```typescript
+import { Aptitude } from 'pde'
+
+new Aptitude(scope: Construct, id: string, props: AptitudeProps)
+```
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#pde.Aptitude.Initializer.parameter.scope">scope</a></code> | <code>constructs.Construct</code> | *No description.* |
+| <code><a href="#pde.Aptitude.Initializer.parameter.id">id</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#pde.Aptitude.Initializer.parameter.props">props</a></code> | <code><a href="#pde.AptitudeProps">AptitudeProps</a></code> | *No description.* |
+
+---
+
+##### `scope`<sup>Required</sup> <a name="scope" id="pde.Aptitude.Initializer.parameter.scope"></a>
+
+- *Type:* constructs.Construct
+
+---
+
+##### `id`<sup>Required</sup> <a name="id" id="pde.Aptitude.Initializer.parameter.id"></a>
+
+- *Type:* string
+
+---
+
+##### `props`<sup>Required</sup> <a name="props" id="pde.Aptitude.Initializer.parameter.props"></a>
+
+- *Type:* <a href="#pde.AptitudeProps">AptitudeProps</a>
+
+---
+
+#### Methods <a name="Methods" id="Methods"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#pde.Aptitude.toString">toString</a></code> | Returns a string representation of this construct. |
+
+---
+
+##### `toString` <a name="toString" id="pde.Aptitude.toString"></a>
+
+```typescript
+public toString(): string
+```
+
+Returns a string representation of this construct.
+
+#### Static Functions <a name="Static Functions" id="Static Functions"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#pde.Aptitude.isConstruct">isConstruct</a></code> | Checks if `x` is a construct. |
+
+---
+
+##### `isConstruct` <a name="isConstruct" id="pde.Aptitude.isConstruct"></a>
+
+```typescript
+import { Aptitude } from 'pde'
+
+Aptitude.isConstruct(x: any)
+```
+
+Checks if `x` is a construct.
+
+Use this method instead of `instanceof` to properly detect `Construct`
+instances, even when the construct library is symlinked.
+
+Explanation: in JavaScript, multiple copies of the `constructs` library on
+disk are seen as independent, completely different libraries. As a
+consequence, the class `Construct` in each copy of the `constructs` library
+is seen as a different class, and an instance of one class will not test as
+`instanceof` the other class. `npm install` will not create installations
+like this, but users may manually symlink construct libraries together or
+use a monorepo tool: in those cases, multiple copies of the `constructs`
+library can be accidentally installed, and `instanceof` will behave
+unpredictably. It is safest to avoid using `instanceof`, and using
+this type-testing method instead.
+
+###### `x`<sup>Required</sup> <a name="x" id="pde.Aptitude.isConstruct.parameter.x"></a>
+
+- *Type:* any
+
+Any object.
+
+---
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#pde.Aptitude.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
+| <code><a href="#pde.Aptitude.property.installer">installer</a></code> | <code><a href="#pde.Installer">Installer</a></code> | *No description.* |
+
+---
+
+##### `node`<sup>Required</sup> <a name="node" id="pde.Aptitude.property.node"></a>
+
+```typescript
+public readonly node: Node;
+```
+
+- *Type:* constructs.Node
+
+The tree node.
+
+---
+
+##### `installer`<sup>Required</sup> <a name="installer" id="pde.Aptitude.property.installer"></a>
+
+```typescript
+public readonly installer: Installer;
+```
+
+- *Type:* <a href="#pde.Installer">Installer</a>
+
+---
+
+
 ### AwsCliInstaller <a name="AwsCliInstaller" id="pde.AwsCliInstaller"></a>
 
 #### Initializers <a name="Initializers" id="pde.AwsCliInstaller.Initializer"></a>
@@ -54,7 +178,6 @@ new AwsCliInstaller(scope: Construct, id: string, _options?: AwsCliInstallerOpti
 | <code><a href="#pde.AwsCliInstaller.registerOutgoingCrossStackReference">registerOutgoingCrossStackReference</a></code> | *No description.* |
 | <code><a href="#pde.AwsCliInstaller.runAllValidations">runAllValidations</a></code> | Run all validations on the stack. |
 | <code><a href="#pde.AwsCliInstaller.toTerraform">toTerraform</a></code> | *No description.* |
-| <code><a href="#pde.AwsCliInstaller.addDependsOn">addDependsOn</a></code> | *No description.* |
 
 ---
 
@@ -175,18 +298,6 @@ Run all validations on the stack.
 ```typescript
 public toTerraform(): any
 ```
-
-##### `addDependsOn` <a name="addDependsOn" id="pde.AwsCliInstaller.addDependsOn"></a>
-
-```typescript
-public addDependsOn(resource: TerraformResource): void
-```
-
-###### `resource`<sup>Required</sup> <a name="resource" id="pde.AwsCliInstaller.addDependsOn.parameter.resource"></a>
-
-- *Type:* cdktf.TerraformResource
-
----
 
 #### Static Functions <a name="Static Functions" id="Static Functions"></a>
 
@@ -482,6 +593,130 @@ e.g. .zshrc, .bashrc, etc
 ---
 
 
+### Brew <a name="Brew" id="pde.Brew"></a>
+
+#### Initializers <a name="Initializers" id="pde.Brew.Initializer"></a>
+
+```typescript
+import { Brew } from 'pde'
+
+new Brew(scope: Construct, id: string, props: BrewProps)
+```
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#pde.Brew.Initializer.parameter.scope">scope</a></code> | <code>constructs.Construct</code> | *No description.* |
+| <code><a href="#pde.Brew.Initializer.parameter.id">id</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#pde.Brew.Initializer.parameter.props">props</a></code> | <code><a href="#pde.BrewProps">BrewProps</a></code> | *No description.* |
+
+---
+
+##### `scope`<sup>Required</sup> <a name="scope" id="pde.Brew.Initializer.parameter.scope"></a>
+
+- *Type:* constructs.Construct
+
+---
+
+##### `id`<sup>Required</sup> <a name="id" id="pde.Brew.Initializer.parameter.id"></a>
+
+- *Type:* string
+
+---
+
+##### `props`<sup>Required</sup> <a name="props" id="pde.Brew.Initializer.parameter.props"></a>
+
+- *Type:* <a href="#pde.BrewProps">BrewProps</a>
+
+---
+
+#### Methods <a name="Methods" id="Methods"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#pde.Brew.toString">toString</a></code> | Returns a string representation of this construct. |
+
+---
+
+##### `toString` <a name="toString" id="pde.Brew.toString"></a>
+
+```typescript
+public toString(): string
+```
+
+Returns a string representation of this construct.
+
+#### Static Functions <a name="Static Functions" id="Static Functions"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#pde.Brew.isConstruct">isConstruct</a></code> | Checks if `x` is a construct. |
+
+---
+
+##### `isConstruct` <a name="isConstruct" id="pde.Brew.isConstruct"></a>
+
+```typescript
+import { Brew } from 'pde'
+
+Brew.isConstruct(x: any)
+```
+
+Checks if `x` is a construct.
+
+Use this method instead of `instanceof` to properly detect `Construct`
+instances, even when the construct library is symlinked.
+
+Explanation: in JavaScript, multiple copies of the `constructs` library on
+disk are seen as independent, completely different libraries. As a
+consequence, the class `Construct` in each copy of the `constructs` library
+is seen as a different class, and an instance of one class will not test as
+`instanceof` the other class. `npm install` will not create installations
+like this, but users may manually symlink construct libraries together or
+use a monorepo tool: in those cases, multiple copies of the `constructs`
+library can be accidentally installed, and `instanceof` will behave
+unpredictably. It is safest to avoid using `instanceof`, and using
+this type-testing method instead.
+
+###### `x`<sup>Required</sup> <a name="x" id="pde.Brew.isConstruct.parameter.x"></a>
+
+- *Type:* any
+
+Any object.
+
+---
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#pde.Brew.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
+| <code><a href="#pde.Brew.property.installer">installer</a></code> | <code><a href="#pde.Installer">Installer</a></code> | *No description.* |
+
+---
+
+##### `node`<sup>Required</sup> <a name="node" id="pde.Brew.property.node"></a>
+
+```typescript
+public readonly node: Node;
+```
+
+- *Type:* constructs.Node
+
+The tree node.
+
+---
+
+##### `installer`<sup>Required</sup> <a name="installer" id="pde.Brew.property.installer"></a>
+
+```typescript
+public readonly installer: Installer;
+```
+
+- *Type:* <a href="#pde.Installer">Installer</a>
+
+---
+
+
 ### DotnetInstaller <a name="DotnetInstaller" id="pde.DotnetInstaller"></a>
 
 #### Initializers <a name="Initializers" id="pde.DotnetInstaller.Initializer"></a>
@@ -534,7 +769,6 @@ new DotnetInstaller(scope: Construct, id: string, options: DotnetInstallerOption
 | <code><a href="#pde.DotnetInstaller.registerOutgoingCrossStackReference">registerOutgoingCrossStackReference</a></code> | *No description.* |
 | <code><a href="#pde.DotnetInstaller.runAllValidations">runAllValidations</a></code> | Run all validations on the stack. |
 | <code><a href="#pde.DotnetInstaller.toTerraform">toTerraform</a></code> | *No description.* |
-| <code><a href="#pde.DotnetInstaller.addDependsOn">addDependsOn</a></code> | *No description.* |
 
 ---
 
@@ -655,18 +889,6 @@ Run all validations on the stack.
 ```typescript
 public toTerraform(): any
 ```
-
-##### `addDependsOn` <a name="addDependsOn" id="pde.DotnetInstaller.addDependsOn"></a>
-
-```typescript
-public addDependsOn(resource: TerraformResource): void
-```
-
-###### `resource`<sup>Required</sup> <a name="resource" id="pde.DotnetInstaller.addDependsOn.parameter.resource"></a>
-
-- *Type:* cdktf.TerraformResource
-
----
 
 #### Static Functions <a name="Static Functions" id="Static Functions"></a>
 
@@ -844,7 +1066,6 @@ new GitHubReleaseInstaller(scope: Construct, id: string, options: GitHubReleaseO
 | <code><a href="#pde.GitHubReleaseInstaller.registerOutgoingCrossStackReference">registerOutgoingCrossStackReference</a></code> | *No description.* |
 | <code><a href="#pde.GitHubReleaseInstaller.runAllValidations">runAllValidations</a></code> | Run all validations on the stack. |
 | <code><a href="#pde.GitHubReleaseInstaller.toTerraform">toTerraform</a></code> | *No description.* |
-| <code><a href="#pde.GitHubReleaseInstaller.addDependsOn">addDependsOn</a></code> | *No description.* |
 
 ---
 
@@ -965,18 +1186,6 @@ Run all validations on the stack.
 ```typescript
 public toTerraform(): any
 ```
-
-##### `addDependsOn` <a name="addDependsOn" id="pde.GitHubReleaseInstaller.addDependsOn"></a>
-
-```typescript
-public addDependsOn(resource: TerraformResource): void
-```
-
-###### `resource`<sup>Required</sup> <a name="resource" id="pde.GitHubReleaseInstaller.addDependsOn.parameter.resource"></a>
-
-- *Type:* cdktf.TerraformResource
-
----
 
 #### Static Functions <a name="Static Functions" id="Static Functions"></a>
 
@@ -1154,7 +1363,6 @@ new GitHubRepoInstaller(scope: Construct, id: string, options: GitHubRepoOptions
 | <code><a href="#pde.GitHubRepoInstaller.registerOutgoingCrossStackReference">registerOutgoingCrossStackReference</a></code> | *No description.* |
 | <code><a href="#pde.GitHubRepoInstaller.runAllValidations">runAllValidations</a></code> | Run all validations on the stack. |
 | <code><a href="#pde.GitHubRepoInstaller.toTerraform">toTerraform</a></code> | *No description.* |
-| <code><a href="#pde.GitHubRepoInstaller.addDependsOn">addDependsOn</a></code> | *No description.* |
 
 ---
 
@@ -1275,18 +1483,6 @@ Run all validations on the stack.
 ```typescript
 public toTerraform(): any
 ```
-
-##### `addDependsOn` <a name="addDependsOn" id="pde.GitHubRepoInstaller.addDependsOn"></a>
-
-```typescript
-public addDependsOn(resource: TerraformResource): void
-```
-
-###### `resource`<sup>Required</sup> <a name="resource" id="pde.GitHubRepoInstaller.addDependsOn.parameter.resource"></a>
-
-- *Type:* cdktf.TerraformResource
-
----
 
 #### Static Functions <a name="Static Functions" id="Static Functions"></a>
 
@@ -1486,7 +1682,7 @@ Returns a string representation of this construct.
 ##### `addExecutable` <a name="addExecutable" id="pde.Home.addExecutable"></a>
 
 ```typescript
-public addExecutable(scope: Construct, source: string, target: string): void
+public addExecutable(scope: Construct, id: string, props: LinkProps): void
 ```
 
 Add a global executable.
@@ -1497,22 +1693,22 @@ Add a global executable.
 
 ---
 
-###### `source`<sup>Required</sup> <a name="source" id="pde.Home.addExecutable.parameter.source"></a>
+###### `id`<sup>Required</sup> <a name="id" id="pde.Home.addExecutable.parameter.id"></a>
 
 - *Type:* string
 
 ---
 
-###### `target`<sup>Required</sup> <a name="target" id="pde.Home.addExecutable.parameter.target"></a>
+###### `props`<sup>Required</sup> <a name="props" id="pde.Home.addExecutable.parameter.props"></a>
 
-- *Type:* string
+- *Type:* <a href="#pde.LinkProps">LinkProps</a>
 
 ---
 
 ##### `addLocation` <a name="addLocation" id="pde.Home.addLocation"></a>
 
 ```typescript
-public addLocation(scope: Construct, source: string, target: string): void
+public addLocation(scope: Construct, id: string, props: LinkProps): void
 ```
 
 Add a file or directory to a place within home.
@@ -1523,15 +1719,15 @@ Add a file or directory to a place within home.
 
 ---
 
-###### `source`<sup>Required</sup> <a name="source" id="pde.Home.addLocation.parameter.source"></a>
+###### `id`<sup>Required</sup> <a name="id" id="pde.Home.addLocation.parameter.id"></a>
 
 - *Type:* string
 
 ---
 
-###### `target`<sup>Required</sup> <a name="target" id="pde.Home.addLocation.parameter.target"></a>
+###### `props`<sup>Required</sup> <a name="props" id="pde.Home.addLocation.parameter.props"></a>
 
-- *Type:* string
+- *Type:* <a href="#pde.LinkProps">LinkProps</a>
 
 ---
 
@@ -1691,17 +1887,6 @@ new Installer(scope: Construct, id: string, props: InstallerProps)
 | **Name** | **Description** |
 | --- | --- |
 | <code><a href="#pde.Installer.toString">toString</a></code> | Returns a string representation of this construct. |
-| <code><a href="#pde.Installer.addDependency">addDependency</a></code> | *No description.* |
-| <code><a href="#pde.Installer.addOverride">addOverride</a></code> | *No description.* |
-| <code><a href="#pde.Installer.allProviders">allProviders</a></code> | *No description.* |
-| <code><a href="#pde.Installer.dependsOn">dependsOn</a></code> | *No description.* |
-| <code><a href="#pde.Installer.ensureBackendExists">ensureBackendExists</a></code> | *No description.* |
-| <code><a href="#pde.Installer.getLogicalId">getLogicalId</a></code> | *No description.* |
-| <code><a href="#pde.Installer.prepareStack">prepareStack</a></code> | *No description.* |
-| <code><a href="#pde.Installer.registerIncomingCrossStackReference">registerIncomingCrossStackReference</a></code> | *No description.* |
-| <code><a href="#pde.Installer.registerOutgoingCrossStackReference">registerOutgoingCrossStackReference</a></code> | *No description.* |
-| <code><a href="#pde.Installer.runAllValidations">runAllValidations</a></code> | Run all validations on the stack. |
-| <code><a href="#pde.Installer.toTerraform">toTerraform</a></code> | *No description.* |
 | <code><a href="#pde.Installer.addDependsOn">addDependsOn</a></code> | *No description.* |
 
 ---
@@ -1713,116 +1898,6 @@ public toString(): string
 ```
 
 Returns a string representation of this construct.
-
-##### `addDependency` <a name="addDependency" id="pde.Installer.addDependency"></a>
-
-```typescript
-public addDependency(dependency: TerraformStack): void
-```
-
-###### `dependency`<sup>Required</sup> <a name="dependency" id="pde.Installer.addDependency.parameter.dependency"></a>
-
-- *Type:* cdktf.TerraformStack
-
----
-
-##### `addOverride` <a name="addOverride" id="pde.Installer.addOverride"></a>
-
-```typescript
-public addOverride(path: string, value: any): void
-```
-
-###### `path`<sup>Required</sup> <a name="path" id="pde.Installer.addOverride.parameter.path"></a>
-
-- *Type:* string
-
----
-
-###### `value`<sup>Required</sup> <a name="value" id="pde.Installer.addOverride.parameter.value"></a>
-
-- *Type:* any
-
----
-
-##### `allProviders` <a name="allProviders" id="pde.Installer.allProviders"></a>
-
-```typescript
-public allProviders(): TerraformProvider[]
-```
-
-##### `dependsOn` <a name="dependsOn" id="pde.Installer.dependsOn"></a>
-
-```typescript
-public dependsOn(stack: TerraformStack): boolean
-```
-
-###### `stack`<sup>Required</sup> <a name="stack" id="pde.Installer.dependsOn.parameter.stack"></a>
-
-- *Type:* cdktf.TerraformStack
-
----
-
-##### `ensureBackendExists` <a name="ensureBackendExists" id="pde.Installer.ensureBackendExists"></a>
-
-```typescript
-public ensureBackendExists(): TerraformBackend
-```
-
-##### `getLogicalId` <a name="getLogicalId" id="pde.Installer.getLogicalId"></a>
-
-```typescript
-public getLogicalId(tfElement: TerraformElement | Node): string
-```
-
-###### `tfElement`<sup>Required</sup> <a name="tfElement" id="pde.Installer.getLogicalId.parameter.tfElement"></a>
-
-- *Type:* cdktf.TerraformElement | constructs.Node
-
----
-
-##### `prepareStack` <a name="prepareStack" id="pde.Installer.prepareStack"></a>
-
-```typescript
-public prepareStack(): void
-```
-
-##### `registerIncomingCrossStackReference` <a name="registerIncomingCrossStackReference" id="pde.Installer.registerIncomingCrossStackReference"></a>
-
-```typescript
-public registerIncomingCrossStackReference(fromStack: TerraformStack): TerraformRemoteState
-```
-
-###### `fromStack`<sup>Required</sup> <a name="fromStack" id="pde.Installer.registerIncomingCrossStackReference.parameter.fromStack"></a>
-
-- *Type:* cdktf.TerraformStack
-
----
-
-##### `registerOutgoingCrossStackReference` <a name="registerOutgoingCrossStackReference" id="pde.Installer.registerOutgoingCrossStackReference"></a>
-
-```typescript
-public registerOutgoingCrossStackReference(identifier: string): TerraformOutput
-```
-
-###### `identifier`<sup>Required</sup> <a name="identifier" id="pde.Installer.registerOutgoingCrossStackReference.parameter.identifier"></a>
-
-- *Type:* string
-
----
-
-##### `runAllValidations` <a name="runAllValidations" id="pde.Installer.runAllValidations"></a>
-
-```typescript
-public runAllValidations(): void
-```
-
-Run all validations on the stack.
-
-##### `toTerraform` <a name="toTerraform" id="pde.Installer.toTerraform"></a>
-
-```typescript
-public toTerraform(): any
-```
 
 ##### `addDependsOn` <a name="addDependsOn" id="pde.Installer.addDependsOn"></a>
 
@@ -1841,8 +1916,6 @@ public addDependsOn(resource: TerraformResource): void
 | **Name** | **Description** |
 | --- | --- |
 | <code><a href="#pde.Installer.isConstruct">isConstruct</a></code> | Checks if `x` is a construct. |
-| <code><a href="#pde.Installer.isStack">isStack</a></code> | *No description.* |
-| <code><a href="#pde.Installer.of">of</a></code> | *No description.* |
 
 ---
 
@@ -1878,41 +1951,11 @@ Any object.
 
 ---
 
-##### `isStack` <a name="isStack" id="pde.Installer.isStack"></a>
-
-```typescript
-import { Installer } from 'pde'
-
-Installer.isStack(x: any)
-```
-
-###### `x`<sup>Required</sup> <a name="x" id="pde.Installer.isStack.parameter.x"></a>
-
-- *Type:* any
-
----
-
-##### `of` <a name="of" id="pde.Installer.of"></a>
-
-```typescript
-import { Installer } from 'pde'
-
-Installer.of(construct: IConstruct)
-```
-
-###### `construct`<sup>Required</sup> <a name="construct" id="pde.Installer.of.parameter.construct"></a>
-
-- *Type:* constructs.IConstruct
-
----
-
 #### Properties <a name="Properties" id="Properties"></a>
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
 | <code><a href="#pde.Installer.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
-| <code><a href="#pde.Installer.property.dependencies">dependencies</a></code> | <code>cdktf.TerraformStack[]</code> | *No description.* |
-| <code><a href="#pde.Installer.property.synthesizer">synthesizer</a></code> | <code>cdktf.IStackSynthesizer</code> | *No description.* |
 
 ---
 
@@ -1928,23 +1971,116 @@ The tree node.
 
 ---
 
-##### `dependencies`<sup>Required</sup> <a name="dependencies" id="pde.Installer.property.dependencies"></a>
+
+### Link <a name="Link" id="pde.Link"></a>
+
+#### Initializers <a name="Initializers" id="pde.Link.Initializer"></a>
 
 ```typescript
-public readonly dependencies: TerraformStack[];
+import { Link } from 'pde'
+
+new Link(scope: Construct, id: string, props: LinkProps)
 ```
 
-- *Type:* cdktf.TerraformStack[]
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#pde.Link.Initializer.parameter.scope">scope</a></code> | <code>constructs.Construct</code> | *No description.* |
+| <code><a href="#pde.Link.Initializer.parameter.id">id</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#pde.Link.Initializer.parameter.props">props</a></code> | <code><a href="#pde.LinkProps">LinkProps</a></code> | *No description.* |
 
 ---
 
-##### `synthesizer`<sup>Required</sup> <a name="synthesizer" id="pde.Installer.property.synthesizer"></a>
+##### `scope`<sup>Required</sup> <a name="scope" id="pde.Link.Initializer.parameter.scope"></a>
+
+- *Type:* constructs.Construct
+
+---
+
+##### `id`<sup>Required</sup> <a name="id" id="pde.Link.Initializer.parameter.id"></a>
+
+- *Type:* string
+
+---
+
+##### `props`<sup>Required</sup> <a name="props" id="pde.Link.Initializer.parameter.props"></a>
+
+- *Type:* <a href="#pde.LinkProps">LinkProps</a>
+
+---
+
+#### Methods <a name="Methods" id="Methods"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#pde.Link.toString">toString</a></code> | Returns a string representation of this construct. |
+
+---
+
+##### `toString` <a name="toString" id="pde.Link.toString"></a>
 
 ```typescript
-public readonly synthesizer: IStackSynthesizer;
+public toString(): string
 ```
 
-- *Type:* cdktf.IStackSynthesizer
+Returns a string representation of this construct.
+
+#### Static Functions <a name="Static Functions" id="Static Functions"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#pde.Link.isConstruct">isConstruct</a></code> | Checks if `x` is a construct. |
+
+---
+
+##### `isConstruct` <a name="isConstruct" id="pde.Link.isConstruct"></a>
+
+```typescript
+import { Link } from 'pde'
+
+Link.isConstruct(x: any)
+```
+
+Checks if `x` is a construct.
+
+Use this method instead of `instanceof` to properly detect `Construct`
+instances, even when the construct library is symlinked.
+
+Explanation: in JavaScript, multiple copies of the `constructs` library on
+disk are seen as independent, completely different libraries. As a
+consequence, the class `Construct` in each copy of the `constructs` library
+is seen as a different class, and an instance of one class will not test as
+`instanceof` the other class. `npm install` will not create installations
+like this, but users may manually symlink construct libraries together or
+use a monorepo tool: in those cases, multiple copies of the `constructs`
+library can be accidentally installed, and `instanceof` will behave
+unpredictably. It is safest to avoid using `instanceof`, and using
+this type-testing method instead.
+
+###### `x`<sup>Required</sup> <a name="x" id="pde.Link.isConstruct.parameter.x"></a>
+
+- *Type:* any
+
+Any object.
+
+---
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#pde.Link.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
+
+---
+
+##### `node`<sup>Required</sup> <a name="node" id="pde.Link.property.node"></a>
+
+```typescript
+public readonly node: Node;
+```
+
+- *Type:* constructs.Node
+
+The tree node.
 
 ---
 
@@ -2322,7 +2458,6 @@ new MavenInstaller(scope: Construct, id: string, options: MavenInstallerOptions)
 | <code><a href="#pde.MavenInstaller.registerOutgoingCrossStackReference">registerOutgoingCrossStackReference</a></code> | *No description.* |
 | <code><a href="#pde.MavenInstaller.runAllValidations">runAllValidations</a></code> | Run all validations on the stack. |
 | <code><a href="#pde.MavenInstaller.toTerraform">toTerraform</a></code> | *No description.* |
-| <code><a href="#pde.MavenInstaller.addDependsOn">addDependsOn</a></code> | *No description.* |
 
 ---
 
@@ -2443,18 +2578,6 @@ Run all validations on the stack.
 ```typescript
 public toTerraform(): any
 ```
-
-##### `addDependsOn` <a name="addDependsOn" id="pde.MavenInstaller.addDependsOn"></a>
-
-```typescript
-public addDependsOn(resource: TerraformResource): void
-```
-
-###### `resource`<sup>Required</sup> <a name="resource" id="pde.MavenInstaller.addDependsOn.parameter.resource"></a>
-
-- *Type:* cdktf.TerraformResource
-
----
 
 #### Static Functions <a name="Static Functions" id="Static Functions"></a>
 
@@ -2632,7 +2755,6 @@ new NpmGlobalInstaller(scope: Construct, id: string, options: NpmGlobalInstaller
 | <code><a href="#pde.NpmGlobalInstaller.registerOutgoingCrossStackReference">registerOutgoingCrossStackReference</a></code> | *No description.* |
 | <code><a href="#pde.NpmGlobalInstaller.runAllValidations">runAllValidations</a></code> | Run all validations on the stack. |
 | <code><a href="#pde.NpmGlobalInstaller.toTerraform">toTerraform</a></code> | *No description.* |
-| <code><a href="#pde.NpmGlobalInstaller.addDependsOn">addDependsOn</a></code> | *No description.* |
 
 ---
 
@@ -2753,18 +2875,6 @@ Run all validations on the stack.
 ```typescript
 public toTerraform(): any
 ```
-
-##### `addDependsOn` <a name="addDependsOn" id="pde.NpmGlobalInstaller.addDependsOn"></a>
-
-```typescript
-public addDependsOn(resource: TerraformResource): void
-```
-
-###### `resource`<sup>Required</sup> <a name="resource" id="pde.NpmGlobalInstaller.addDependsOn.parameter.resource"></a>
-
-- *Type:* cdktf.TerraformResource
-
----
 
 #### Static Functions <a name="Static Functions" id="Static Functions"></a>
 
@@ -2942,7 +3052,6 @@ new NvmInstaller(scope: Construct, id: string, _options?: NvmInstallerOptions)
 | <code><a href="#pde.NvmInstaller.registerOutgoingCrossStackReference">registerOutgoingCrossStackReference</a></code> | *No description.* |
 | <code><a href="#pde.NvmInstaller.runAllValidations">runAllValidations</a></code> | Run all validations on the stack. |
 | <code><a href="#pde.NvmInstaller.toTerraform">toTerraform</a></code> | *No description.* |
-| <code><a href="#pde.NvmInstaller.addDependsOn">addDependsOn</a></code> | *No description.* |
 
 ---
 
@@ -3063,18 +3172,6 @@ Run all validations on the stack.
 ```typescript
 public toTerraform(): any
 ```
-
-##### `addDependsOn` <a name="addDependsOn" id="pde.NvmInstaller.addDependsOn"></a>
-
-```typescript
-public addDependsOn(resource: TerraformResource): void
-```
-
-###### `resource`<sup>Required</sup> <a name="resource" id="pde.NvmInstaller.addDependsOn.parameter.resource"></a>
-
-- *Type:* cdktf.TerraformResource
-
----
 
 #### Static Functions <a name="Static Functions" id="Static Functions"></a>
 
@@ -3922,17 +4019,6 @@ new PythonGlobalInstaller(scope: Construct, id: string, options: PythonGlobalIns
 | **Name** | **Description** |
 | --- | --- |
 | <code><a href="#pde.PythonGlobalInstaller.toString">toString</a></code> | Returns a string representation of this construct. |
-| <code><a href="#pde.PythonGlobalInstaller.addDependency">addDependency</a></code> | *No description.* |
-| <code><a href="#pde.PythonGlobalInstaller.addOverride">addOverride</a></code> | *No description.* |
-| <code><a href="#pde.PythonGlobalInstaller.allProviders">allProviders</a></code> | *No description.* |
-| <code><a href="#pde.PythonGlobalInstaller.dependsOn">dependsOn</a></code> | *No description.* |
-| <code><a href="#pde.PythonGlobalInstaller.ensureBackendExists">ensureBackendExists</a></code> | *No description.* |
-| <code><a href="#pde.PythonGlobalInstaller.getLogicalId">getLogicalId</a></code> | *No description.* |
-| <code><a href="#pde.PythonGlobalInstaller.prepareStack">prepareStack</a></code> | *No description.* |
-| <code><a href="#pde.PythonGlobalInstaller.registerIncomingCrossStackReference">registerIncomingCrossStackReference</a></code> | *No description.* |
-| <code><a href="#pde.PythonGlobalInstaller.registerOutgoingCrossStackReference">registerOutgoingCrossStackReference</a></code> | *No description.* |
-| <code><a href="#pde.PythonGlobalInstaller.runAllValidations">runAllValidations</a></code> | Run all validations on the stack. |
-| <code><a href="#pde.PythonGlobalInstaller.toTerraform">toTerraform</a></code> | *No description.* |
 | <code><a href="#pde.PythonGlobalInstaller.addDependsOn">addDependsOn</a></code> | *No description.* |
 
 ---
@@ -3944,116 +4030,6 @@ public toString(): string
 ```
 
 Returns a string representation of this construct.
-
-##### `addDependency` <a name="addDependency" id="pde.PythonGlobalInstaller.addDependency"></a>
-
-```typescript
-public addDependency(dependency: TerraformStack): void
-```
-
-###### `dependency`<sup>Required</sup> <a name="dependency" id="pde.PythonGlobalInstaller.addDependency.parameter.dependency"></a>
-
-- *Type:* cdktf.TerraformStack
-
----
-
-##### `addOverride` <a name="addOverride" id="pde.PythonGlobalInstaller.addOverride"></a>
-
-```typescript
-public addOverride(path: string, value: any): void
-```
-
-###### `path`<sup>Required</sup> <a name="path" id="pde.PythonGlobalInstaller.addOverride.parameter.path"></a>
-
-- *Type:* string
-
----
-
-###### `value`<sup>Required</sup> <a name="value" id="pde.PythonGlobalInstaller.addOverride.parameter.value"></a>
-
-- *Type:* any
-
----
-
-##### `allProviders` <a name="allProviders" id="pde.PythonGlobalInstaller.allProviders"></a>
-
-```typescript
-public allProviders(): TerraformProvider[]
-```
-
-##### `dependsOn` <a name="dependsOn" id="pde.PythonGlobalInstaller.dependsOn"></a>
-
-```typescript
-public dependsOn(stack: TerraformStack): boolean
-```
-
-###### `stack`<sup>Required</sup> <a name="stack" id="pde.PythonGlobalInstaller.dependsOn.parameter.stack"></a>
-
-- *Type:* cdktf.TerraformStack
-
----
-
-##### `ensureBackendExists` <a name="ensureBackendExists" id="pde.PythonGlobalInstaller.ensureBackendExists"></a>
-
-```typescript
-public ensureBackendExists(): TerraformBackend
-```
-
-##### `getLogicalId` <a name="getLogicalId" id="pde.PythonGlobalInstaller.getLogicalId"></a>
-
-```typescript
-public getLogicalId(tfElement: TerraformElement | Node): string
-```
-
-###### `tfElement`<sup>Required</sup> <a name="tfElement" id="pde.PythonGlobalInstaller.getLogicalId.parameter.tfElement"></a>
-
-- *Type:* cdktf.TerraformElement | constructs.Node
-
----
-
-##### `prepareStack` <a name="prepareStack" id="pde.PythonGlobalInstaller.prepareStack"></a>
-
-```typescript
-public prepareStack(): void
-```
-
-##### `registerIncomingCrossStackReference` <a name="registerIncomingCrossStackReference" id="pde.PythonGlobalInstaller.registerIncomingCrossStackReference"></a>
-
-```typescript
-public registerIncomingCrossStackReference(fromStack: TerraformStack): TerraformRemoteState
-```
-
-###### `fromStack`<sup>Required</sup> <a name="fromStack" id="pde.PythonGlobalInstaller.registerIncomingCrossStackReference.parameter.fromStack"></a>
-
-- *Type:* cdktf.TerraformStack
-
----
-
-##### `registerOutgoingCrossStackReference` <a name="registerOutgoingCrossStackReference" id="pde.PythonGlobalInstaller.registerOutgoingCrossStackReference"></a>
-
-```typescript
-public registerOutgoingCrossStackReference(identifier: string): TerraformOutput
-```
-
-###### `identifier`<sup>Required</sup> <a name="identifier" id="pde.PythonGlobalInstaller.registerOutgoingCrossStackReference.parameter.identifier"></a>
-
-- *Type:* string
-
----
-
-##### `runAllValidations` <a name="runAllValidations" id="pde.PythonGlobalInstaller.runAllValidations"></a>
-
-```typescript
-public runAllValidations(): void
-```
-
-Run all validations on the stack.
-
-##### `toTerraform` <a name="toTerraform" id="pde.PythonGlobalInstaller.toTerraform"></a>
-
-```typescript
-public toTerraform(): any
-```
 
 ##### `addDependsOn` <a name="addDependsOn" id="pde.PythonGlobalInstaller.addDependsOn"></a>
 
@@ -4072,8 +4048,6 @@ public addDependsOn(resource: TerraformResource): void
 | **Name** | **Description** |
 | --- | --- |
 | <code><a href="#pde.PythonGlobalInstaller.isConstruct">isConstruct</a></code> | Checks if `x` is a construct. |
-| <code><a href="#pde.PythonGlobalInstaller.isStack">isStack</a></code> | *No description.* |
-| <code><a href="#pde.PythonGlobalInstaller.of">of</a></code> | *No description.* |
 
 ---
 
@@ -4109,41 +4083,11 @@ Any object.
 
 ---
 
-##### `isStack` <a name="isStack" id="pde.PythonGlobalInstaller.isStack"></a>
-
-```typescript
-import { PythonGlobalInstaller } from 'pde'
-
-PythonGlobalInstaller.isStack(x: any)
-```
-
-###### `x`<sup>Required</sup> <a name="x" id="pde.PythonGlobalInstaller.isStack.parameter.x"></a>
-
-- *Type:* any
-
----
-
-##### `of` <a name="of" id="pde.PythonGlobalInstaller.of"></a>
-
-```typescript
-import { PythonGlobalInstaller } from 'pde'
-
-PythonGlobalInstaller.of(construct: IConstruct)
-```
-
-###### `construct`<sup>Required</sup> <a name="construct" id="pde.PythonGlobalInstaller.of.parameter.construct"></a>
-
-- *Type:* constructs.IConstruct
-
----
-
 #### Properties <a name="Properties" id="Properties"></a>
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
 | <code><a href="#pde.PythonGlobalInstaller.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
-| <code><a href="#pde.PythonGlobalInstaller.property.dependencies">dependencies</a></code> | <code>cdktf.TerraformStack[]</code> | *No description.* |
-| <code><a href="#pde.PythonGlobalInstaller.property.synthesizer">synthesizer</a></code> | <code>cdktf.IStackSynthesizer</code> | *No description.* |
 | <code><a href="#pde.PythonGlobalInstaller.property.name">name</a></code> | <code>string</code> | *No description.* |
 
 ---
@@ -4157,26 +4101,6 @@ public readonly node: Node;
 - *Type:* constructs.Node
 
 The tree node.
-
----
-
-##### `dependencies`<sup>Required</sup> <a name="dependencies" id="pde.PythonGlobalInstaller.property.dependencies"></a>
-
-```typescript
-public readonly dependencies: TerraformStack[];
-```
-
-- *Type:* cdktf.TerraformStack[]
-
----
-
-##### `synthesizer`<sup>Required</sup> <a name="synthesizer" id="pde.PythonGlobalInstaller.property.synthesizer"></a>
-
-```typescript
-public readonly synthesizer: IStackSynthesizer;
-```
-
-- *Type:* cdktf.IStackSynthesizer
 
 ---
 
@@ -4243,7 +4167,6 @@ new ShellInstaller(scope: Construct, id: string, options: UrlInstallerOptions)
 | <code><a href="#pde.ShellInstaller.registerOutgoingCrossStackReference">registerOutgoingCrossStackReference</a></code> | *No description.* |
 | <code><a href="#pde.ShellInstaller.runAllValidations">runAllValidations</a></code> | Run all validations on the stack. |
 | <code><a href="#pde.ShellInstaller.toTerraform">toTerraform</a></code> | *No description.* |
-| <code><a href="#pde.ShellInstaller.addDependsOn">addDependsOn</a></code> | *No description.* |
 
 ---
 
@@ -4364,18 +4287,6 @@ Run all validations on the stack.
 ```typescript
 public toTerraform(): any
 ```
-
-##### `addDependsOn` <a name="addDependsOn" id="pde.ShellInstaller.addDependsOn"></a>
-
-```typescript
-public addDependsOn(resource: TerraformResource): void
-```
-
-###### `resource`<sup>Required</sup> <a name="resource" id="pde.ShellInstaller.addDependsOn.parameter.resource"></a>
-
-- *Type:* cdktf.TerraformResource
-
----
 
 #### Static Functions <a name="Static Functions" id="Static Functions"></a>
 
@@ -4716,6 +4627,119 @@ The tree node.
 ---
 
 
+### TeaInstaller <a name="TeaInstaller" id="pde.TeaInstaller"></a>
+
+#### Initializers <a name="Initializers" id="pde.TeaInstaller.Initializer"></a>
+
+```typescript
+import { TeaInstaller } from 'pde'
+
+new TeaInstaller(scope: Construct, id: string, props: TeaInstallerProps)
+```
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#pde.TeaInstaller.Initializer.parameter.scope">scope</a></code> | <code>constructs.Construct</code> | *No description.* |
+| <code><a href="#pde.TeaInstaller.Initializer.parameter.id">id</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#pde.TeaInstaller.Initializer.parameter.props">props</a></code> | <code><a href="#pde.TeaInstallerProps">TeaInstallerProps</a></code> | *No description.* |
+
+---
+
+##### `scope`<sup>Required</sup> <a name="scope" id="pde.TeaInstaller.Initializer.parameter.scope"></a>
+
+- *Type:* constructs.Construct
+
+---
+
+##### `id`<sup>Required</sup> <a name="id" id="pde.TeaInstaller.Initializer.parameter.id"></a>
+
+- *Type:* string
+
+---
+
+##### `props`<sup>Required</sup> <a name="props" id="pde.TeaInstaller.Initializer.parameter.props"></a>
+
+- *Type:* <a href="#pde.TeaInstallerProps">TeaInstallerProps</a>
+
+---
+
+#### Methods <a name="Methods" id="Methods"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#pde.TeaInstaller.toString">toString</a></code> | Returns a string representation of this construct. |
+
+---
+
+##### `toString` <a name="toString" id="pde.TeaInstaller.toString"></a>
+
+```typescript
+public toString(): string
+```
+
+Returns a string representation of this construct.
+
+#### Static Functions <a name="Static Functions" id="Static Functions"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#pde.TeaInstaller.isConstruct">isConstruct</a></code> | Checks if `x` is a construct. |
+
+---
+
+##### `isConstruct` <a name="isConstruct" id="pde.TeaInstaller.isConstruct"></a>
+
+```typescript
+import { TeaInstaller } from 'pde'
+
+TeaInstaller.isConstruct(x: any)
+```
+
+Checks if `x` is a construct.
+
+Use this method instead of `instanceof` to properly detect `Construct`
+instances, even when the construct library is symlinked.
+
+Explanation: in JavaScript, multiple copies of the `constructs` library on
+disk are seen as independent, completely different libraries. As a
+consequence, the class `Construct` in each copy of the `constructs` library
+is seen as a different class, and an instance of one class will not test as
+`instanceof` the other class. `npm install` will not create installations
+like this, but users may manually symlink construct libraries together or
+use a monorepo tool: in those cases, multiple copies of the `constructs`
+library can be accidentally installed, and `instanceof` will behave
+unpredictably. It is safest to avoid using `instanceof`, and using
+this type-testing method instead.
+
+###### `x`<sup>Required</sup> <a name="x" id="pde.TeaInstaller.isConstruct.parameter.x"></a>
+
+- *Type:* any
+
+Any object.
+
+---
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#pde.TeaInstaller.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
+
+---
+
+##### `node`<sup>Required</sup> <a name="node" id="pde.TeaInstaller.property.node"></a>
+
+```typescript
+public readonly node: Node;
+```
+
+- *Type:* constructs.Node
+
+The tree node.
+
+---
+
+
 ### ZshProfile <a name="ZshProfile" id="pde.ZshProfile"></a>
 
 - *Implements:* <a href="#pde.IZshProfile">IZshProfile</a>
@@ -4918,6 +4942,34 @@ e.g. .zshrc, .bashrc, etc
 
 ## Structs <a name="Structs" id="Structs"></a>
 
+### AptitudeProps <a name="AptitudeProps" id="pde.AptitudeProps"></a>
+
+#### Initializer <a name="Initializer" id="pde.AptitudeProps.Initializer"></a>
+
+```typescript
+import { AptitudeProps } from 'pde'
+
+const aptitudeProps: AptitudeProps = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#pde.AptitudeProps.property.pkgName">pkgName</a></code> | <code>string</code> | *No description.* |
+
+---
+
+##### `pkgName`<sup>Required</sup> <a name="pkgName" id="pde.AptitudeProps.property.pkgName"></a>
+
+```typescript
+public readonly pkgName: string;
+```
+
+- *Type:* string
+
+---
+
 ### AwsCliInstallerOptions <a name="AwsCliInstallerOptions" id="pde.AwsCliInstallerOptions"></a>
 
 #### Initializer <a name="Initializer" id="pde.AwsCliInstallerOptions.Initializer"></a>
@@ -4982,6 +5034,45 @@ public readonly env: {[ key: string ]: string};
 - *Type:* {[ key: string ]: string}
 
 An initial set of environment variables to source.
+
+---
+
+### BrewProps <a name="BrewProps" id="pde.BrewProps"></a>
+
+#### Initializer <a name="Initializer" id="pde.BrewProps.Initializer"></a>
+
+```typescript
+import { BrewProps } from 'pde'
+
+const brewProps: BrewProps = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#pde.BrewProps.property.pkgName">pkgName</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#pde.BrewProps.property.version">version</a></code> | <code>string</code> | *No description.* |
+
+---
+
+##### `pkgName`<sup>Required</sup> <a name="pkgName" id="pde.BrewProps.property.pkgName"></a>
+
+```typescript
+public readonly pkgName: string;
+```
+
+- *Type:* string
+
+---
+
+##### `version`<sup>Optional</sup> <a name="version" id="pde.BrewProps.property.version"></a>
+
+```typescript
+public readonly version: string;
+```
+
+- *Type:* string
 
 ---
 
@@ -5588,6 +5679,7 @@ const installerProps: InstallerProps = { ... }
 | <code><a href="#pde.InstallerProps.property.create">create</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#pde.InstallerProps.property.delete">delete</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#pde.InstallerProps.property.read">read</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#pde.InstallerProps.property.triggers">triggers</a></code> | <code>{[ key: string ]: string}</code> | *No description.* |
 | <code><a href="#pde.InstallerProps.property.update">update</a></code> | <code>string</code> | *No description.* |
 
 ---
@@ -5622,6 +5714,16 @@ public readonly read: string;
 
 ---
 
+##### `triggers`<sup>Optional</sup> <a name="triggers" id="pde.InstallerProps.property.triggers"></a>
+
+```typescript
+public readonly triggers: {[ key: string ]: string};
+```
+
+- *Type:* {[ key: string ]: string}
+
+---
+
 ##### `update`<sup>Optional</sup> <a name="update" id="pde.InstallerProps.property.update"></a>
 
 ```typescript
@@ -5629,6 +5731,51 @@ public readonly update: string;
 ```
 
 - *Type:* string
+
+---
+
+### LinkProps <a name="LinkProps" id="pde.LinkProps"></a>
+
+Represents the location of a file or directory.
+
+#### Initializer <a name="Initializer" id="pde.LinkProps.Initializer"></a>
+
+```typescript
+import { LinkProps } from 'pde'
+
+const linkProps: LinkProps = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#pde.LinkProps.property.source">source</a></code> | <code>string</code> | The absolute path to the source location. |
+| <code><a href="#pde.LinkProps.property.target">target</a></code> | <code>string</code> | The relative path to the home directory where the file should be linked. |
+
+---
+
+##### `source`<sup>Required</sup> <a name="source" id="pde.LinkProps.property.source"></a>
+
+```typescript
+public readonly source: string;
+```
+
+- *Type:* string
+
+The absolute path to the source location.
+
+---
+
+##### `target`<sup>Required</sup> <a name="target" id="pde.LinkProps.property.target"></a>
+
+```typescript
+public readonly target: string;
+```
+
+- *Type:* string
+
+The relative path to the home directory where the file should be linked.
 
 ---
 
@@ -5931,6 +6078,45 @@ An initial set of environment variables to source.
 
 ---
 
+### TeaInstallerProps <a name="TeaInstallerProps" id="pde.TeaInstallerProps"></a>
+
+#### Initializer <a name="Initializer" id="pde.TeaInstallerProps.Initializer"></a>
+
+```typescript
+import { TeaInstallerProps } from 'pde'
+
+const teaInstallerProps: TeaInstallerProps = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#pde.TeaInstallerProps.property.pkgs">pkgs</a></code> | <code><a href="#pde.TeaPackage">TeaPackage</a>[]</code> | *No description.* |
+| <code><a href="#pde.TeaInstallerProps.property.zshProfile">zshProfile</a></code> | <code><a href="#pde.IZshProfile">IZshProfile</a></code> | *No description.* |
+
+---
+
+##### `pkgs`<sup>Required</sup> <a name="pkgs" id="pde.TeaInstallerProps.property.pkgs"></a>
+
+```typescript
+public readonly pkgs: TeaPackage[];
+```
+
+- *Type:* <a href="#pde.TeaPackage">TeaPackage</a>[]
+
+---
+
+##### `zshProfile`<sup>Required</sup> <a name="zshProfile" id="pde.TeaInstallerProps.property.zshProfile"></a>
+
+```typescript
+public readonly zshProfile: IZshProfile;
+```
+
+- *Type:* <a href="#pde.IZshProfile">IZshProfile</a>
+
+---
+
 ### UrlInstallerOptions <a name="UrlInstallerOptions" id="pde.UrlInstallerOptions"></a>
 
 Options for installing a component from a URL.
@@ -6203,6 +6389,239 @@ public readonly zshPlugins: ZplugPlugins[];
 
 ---
 
+## Classes <a name="Classes" id="Classes"></a>
+
+### TeaPackage <a name="TeaPackage" id="pde.TeaPackage"></a>
+
+#### Initializers <a name="Initializers" id="pde.TeaPackage.Initializer"></a>
+
+```typescript
+import { TeaPackage } from 'pde'
+
+new TeaPackage(programName: string, packageName: string, version?: string)
+```
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#pde.TeaPackage.Initializer.parameter.programName">programName</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#pde.TeaPackage.Initializer.parameter.packageName">packageName</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#pde.TeaPackage.Initializer.parameter.version">version</a></code> | <code>string</code> | *No description.* |
+
+---
+
+##### `programName`<sup>Required</sup> <a name="programName" id="pde.TeaPackage.Initializer.parameter.programName"></a>
+
+- *Type:* string
+
+---
+
+##### `packageName`<sup>Required</sup> <a name="packageName" id="pde.TeaPackage.Initializer.parameter.packageName"></a>
+
+- *Type:* string
+
+---
+
+##### `version`<sup>Optional</sup> <a name="version" id="pde.TeaPackage.Initializer.parameter.version"></a>
+
+- *Type:* string
+
+---
+
+
+#### Static Functions <a name="Static Functions" id="Static Functions"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#pde.TeaPackage.aws">aws</a></code> | *No description.* |
+| <code><a href="#pde.TeaPackage.crate">crate</a></code> | *No description.* |
+| <code><a href="#pde.TeaPackage.gh">gh</a></code> | *No description.* |
+| <code><a href="#pde.TeaPackage.github">github</a></code> | *No description.* |
+| <code><a href="#pde.TeaPackage.node">node</a></code> | *No description.* |
+| <code><a href="#pde.TeaPackage.of">of</a></code> | *No description.* |
+| <code><a href="#pde.TeaPackage.python">python</a></code> | *No description.* |
+
+---
+
+##### `aws` <a name="aws" id="pde.TeaPackage.aws"></a>
+
+```typescript
+import { TeaPackage } from 'pde'
+
+TeaPackage.aws(version?: string)
+```
+
+###### `version`<sup>Optional</sup> <a name="version" id="pde.TeaPackage.aws.parameter.version"></a>
+
+- *Type:* string
+
+---
+
+##### `crate` <a name="crate" id="pde.TeaPackage.crate"></a>
+
+```typescript
+import { TeaPackage } from 'pde'
+
+TeaPackage.crate(crate: string, name?: string, version?: string)
+```
+
+###### `crate`<sup>Required</sup> <a name="crate" id="pde.TeaPackage.crate.parameter.crate"></a>
+
+- *Type:* string
+
+---
+
+###### `name`<sup>Optional</sup> <a name="name" id="pde.TeaPackage.crate.parameter.name"></a>
+
+- *Type:* string
+
+---
+
+###### `version`<sup>Optional</sup> <a name="version" id="pde.TeaPackage.crate.parameter.version"></a>
+
+- *Type:* string
+
+---
+
+##### `gh` <a name="gh" id="pde.TeaPackage.gh"></a>
+
+```typescript
+import { TeaPackage } from 'pde'
+
+TeaPackage.gh(version?: string)
+```
+
+###### `version`<sup>Optional</sup> <a name="version" id="pde.TeaPackage.gh.parameter.version"></a>
+
+- *Type:* string
+
+---
+
+##### `github` <a name="github" id="pde.TeaPackage.github"></a>
+
+```typescript
+import { TeaPackage } from 'pde'
+
+TeaPackage.github(org: string, repo: string, name?: string, version?: string)
+```
+
+###### `org`<sup>Required</sup> <a name="org" id="pde.TeaPackage.github.parameter.org"></a>
+
+- *Type:* string
+
+---
+
+###### `repo`<sup>Required</sup> <a name="repo" id="pde.TeaPackage.github.parameter.repo"></a>
+
+- *Type:* string
+
+---
+
+###### `name`<sup>Optional</sup> <a name="name" id="pde.TeaPackage.github.parameter.name"></a>
+
+- *Type:* string
+
+---
+
+###### `version`<sup>Optional</sup> <a name="version" id="pde.TeaPackage.github.parameter.version"></a>
+
+- *Type:* string
+
+---
+
+##### `node` <a name="node" id="pde.TeaPackage.node"></a>
+
+```typescript
+import { TeaPackage } from 'pde'
+
+TeaPackage.node(version?: string)
+```
+
+###### `version`<sup>Optional</sup> <a name="version" id="pde.TeaPackage.node.parameter.version"></a>
+
+- *Type:* string
+
+---
+
+##### `of` <a name="of" id="pde.TeaPackage.of"></a>
+
+```typescript
+import { TeaPackage } from 'pde'
+
+TeaPackage.of(programName: string, packageName: string, version?: string)
+```
+
+###### `programName`<sup>Required</sup> <a name="programName" id="pde.TeaPackage.of.parameter.programName"></a>
+
+- *Type:* string
+
+---
+
+###### `packageName`<sup>Required</sup> <a name="packageName" id="pde.TeaPackage.of.parameter.packageName"></a>
+
+- *Type:* string
+
+---
+
+###### `version`<sup>Optional</sup> <a name="version" id="pde.TeaPackage.of.parameter.version"></a>
+
+- *Type:* string
+
+---
+
+##### `python` <a name="python" id="pde.TeaPackage.python"></a>
+
+```typescript
+import { TeaPackage } from 'pde'
+
+TeaPackage.python(version?: string)
+```
+
+###### `version`<sup>Optional</sup> <a name="version" id="pde.TeaPackage.python.parameter.version"></a>
+
+- *Type:* string
+
+---
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#pde.TeaPackage.property.packageName">packageName</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#pde.TeaPackage.property.programName">programName</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#pde.TeaPackage.property.version">version</a></code> | <code>string</code> | *No description.* |
+
+---
+
+##### `packageName`<sup>Required</sup> <a name="packageName" id="pde.TeaPackage.property.packageName"></a>
+
+```typescript
+public readonly packageName: string;
+```
+
+- *Type:* string
+
+---
+
+##### `programName`<sup>Required</sup> <a name="programName" id="pde.TeaPackage.property.programName"></a>
+
+```typescript
+public readonly programName: string;
+```
+
+- *Type:* string
+
+---
+
+##### `version`<sup>Optional</sup> <a name="version" id="pde.TeaPackage.property.version"></a>
+
+```typescript
+public readonly version: string;
+```
+
+- *Type:* string
+
+---
+
 
 ## Protocols <a name="Protocols" id="Protocols"></a>
 
@@ -6226,7 +6645,7 @@ Represents the users home directory.
 ##### `addExecutable` <a name="addExecutable" id="pde.IHome.addExecutable"></a>
 
 ```typescript
-public addExecutable(scope: Construct, source: string, target: string): void
+public addExecutable(scope: Construct, id: string, props: LinkProps): void
 ```
 
 ###### `scope`<sup>Required</sup> <a name="scope" id="pde.IHome.addExecutable.parameter.scope"></a>
@@ -6235,22 +6654,22 @@ public addExecutable(scope: Construct, source: string, target: string): void
 
 ---
 
-###### `source`<sup>Required</sup> <a name="source" id="pde.IHome.addExecutable.parameter.source"></a>
+###### `id`<sup>Required</sup> <a name="id" id="pde.IHome.addExecutable.parameter.id"></a>
 
 - *Type:* string
 
 ---
 
-###### `target`<sup>Required</sup> <a name="target" id="pde.IHome.addExecutable.parameter.target"></a>
+###### `props`<sup>Required</sup> <a name="props" id="pde.IHome.addExecutable.parameter.props"></a>
 
-- *Type:* string
+- *Type:* <a href="#pde.LinkProps">LinkProps</a>
 
 ---
 
 ##### `addLocation` <a name="addLocation" id="pde.IHome.addLocation"></a>
 
 ```typescript
-public addLocation(scope: Construct, source: string, target: string): void
+public addLocation(scope: Construct, id: string, props: LinkProps): void
 ```
 
 ###### `scope`<sup>Required</sup> <a name="scope" id="pde.IHome.addLocation.parameter.scope"></a>
@@ -6259,15 +6678,15 @@ public addLocation(scope: Construct, source: string, target: string): void
 
 ---
 
-###### `source`<sup>Required</sup> <a name="source" id="pde.IHome.addLocation.parameter.source"></a>
+###### `id`<sup>Required</sup> <a name="id" id="pde.IHome.addLocation.parameter.id"></a>
 
 - *Type:* string
 
 ---
 
-###### `target`<sup>Required</sup> <a name="target" id="pde.IHome.addLocation.parameter.target"></a>
+###### `props`<sup>Required</sup> <a name="props" id="pde.IHome.addLocation.parameter.props"></a>
 
-- *Type:* string
+- *Type:* <a href="#pde.LinkProps">LinkProps</a>
 
 ---
 

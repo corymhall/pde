@@ -1,6 +1,6 @@
 import { Construct } from 'constructs';
 import { Profile, IProfile, ProfilesOptions } from '../../../core';
-import { GitHubRepoInstaller } from '../../installers/github.js';
+import { GitHubRepoInstaller } from '../../installers/github';
 
 export interface ZplugPlugins {
   readonly pluginName: string;
@@ -13,9 +13,7 @@ export interface ZshProfileProps {
 }
 export interface ZshProfileOptions extends ZshProfileProps, ProfilesOptions {}
 
-export interface IZshProfile extends IProfile {
-  addAlias(name: string, command: string): void;
-}
+export interface IZshProfile extends IProfile { }
 
 export class ZshProfile extends Profile implements IZshProfile {
   constructor(scope: Construct, id: string, options: ZshProfileOptions) {
@@ -25,7 +23,7 @@ export class ZshProfile extends Profile implements IZshProfile {
     this.addToEnv('ENHANCD_COMPLETION_BEHAVIOR', 'list');
     this.addToEnv('KEYTIMEOUT', '1');
 
-    const zinit = new GitHubRepoInstaller(this, 'zinit', {
+    const zinit = new GitHubRepoInstaller(scope, 'zinit', {
       name: 'zinit',
       org: 'zdharma-continuum',
       branch: 'main',
@@ -36,6 +34,7 @@ export class ZshProfile extends Profile implements IZshProfile {
       versionCommand: '',
     });
     this.addToEnv('ZINIT_HOME', zinit.absolutePathVar);
+    this.addDependency(zinit);
 
     this.renderPlugins(zinit.absolutePathVar, options.zshPlugins);
     this.renderAliases(options.aliases);
@@ -66,12 +65,6 @@ export class ZshProfile extends Profile implements IZshProfile {
       '',
       '# Load secrets',
       `[ -f ${this.home.homeVar}/.localrc ] && . ${this.home.homeVar}/.localrc`,
-    ]);
-  }
-
-  public addAlias(name: string, command: string): void {
-    this.addLines([
-      `alias ${name}='${command}'`,
     ]);
   }
 

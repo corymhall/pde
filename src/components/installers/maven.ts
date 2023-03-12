@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { Construct } from 'constructs';
-import { ShellInstaller } from './shell.js';
+import { ShellInstaller } from './shell';
 import { Project } from '../../core';
 
 export interface MavenInstallerOptions {

@@ -1,11 +1,10 @@
-import * as path from 'path';
 import { realpathSync } from 'fs';
-import 'zx/globals';
 import * as os from 'os';
+import * as path from 'path';
 import { App } from 'cdktf';
 import { IConstruct } from 'constructs';
-import { Home, IHome } from './home.js';
-import { ISystemProfile, SystemProfile } from './system-profile.js';
+import { Home, IHome } from './home';
+import { ISystemProfile, SystemProfile } from './system-profile';
 const PROJECT_SYMBOL = Symbol.for('pde-core/Project');
 
 /**

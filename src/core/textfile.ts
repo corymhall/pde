@@ -1,7 +1,7 @@
-import { File } from '@cdktf/provider-local/lib/file/index.js';
+import { File } from '@cdktf/provider-local/lib/file/index';
+import { LocalProvider } from '@cdktf/provider-local/lib/provider';
 import { Lazy, TerraformStack } from 'cdktf';
 import { Construct } from 'constructs';
-import { LocalProvider } from '@cdktf/provider-local/lib/provider/index.js';
 
 export interface LocalFileProps {
   readonly filename: string;
@@ -9,7 +9,7 @@ export interface LocalFileProps {
 
 }
 
-export class LocalFile extends TerraformStack {
+export class LocalFile extends Construct {
   private readonly lines: string[];
   public readonly path: string;
   public readonly resource: File;
@@ -17,7 +17,7 @@ export class LocalFile extends TerraformStack {
     super(scope, id);
     this.lines = props.lines ?? [];
 
-    new LocalProvider(this, 'LocalProvider');
+    this.getOrCreateProvider();
     const file = new File(this, 'File', {
       filename: props.filename,
       content: Lazy.stringValue({ produce: () => this.lines?.join('\n') }),
@@ -28,6 +28,11 @@ export class LocalFile extends TerraformStack {
 
   public addLine(line: string): void {
     this.lines.push(line);
+  }
+  private getOrCreateProvider(): LocalProvider {
+    const id = 'LocalProvider';
+    const stack = TerraformStack.of(this);
+    return stack.node.tryFindChild(id) as LocalProvider ?? new LocalProvider(this, id);
   }
 
 }

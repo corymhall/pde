@@ -1,6 +1,6 @@
 import { Construct } from 'constructs';
 import { IHome, ISystemProfile } from '../../core';
-import { ShellInstaller } from './shell.js';
+import { ShellInstaller } from './shell';
 
 export interface DotnetInstallerOptions {
   readonly profile: ISystemProfile;

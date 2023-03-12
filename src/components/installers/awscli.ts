@@ -1,10 +1,12 @@
+import { TerraformStack } from 'cdktf';
 import { Construct } from 'constructs';
 import { Platform, Project, Installer } from '../../core';
 
 export interface AwsCliInstallerOptions { }
 
-export class AwsCliInstaller extends Installer {
+export class AwsCliInstaller extends TerraformStack {
   constructor(scope: Construct, id: string, _options: AwsCliInstallerOptions = {}) {
+    super(scope, id);
     const project = Project.ofProject(scope);
     let downloadUrl: string;
     const installCommands: string[] = [];
@@ -28,7 +30,7 @@ export class AwsCliInstaller extends Installer {
     }
     const downloadCommand = `curl -OL ${downloadUrl}`;
 
-    super(scope, id, {
+    new Installer(this, id, {
       create: `
         cd('${project.systemTmpDir}');
         await $\`${downloadCommand}\`;

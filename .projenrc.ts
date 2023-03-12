@@ -29,6 +29,9 @@ project.deps.removeDependency('constructs');
 project.deps.addDependency('constructs@10.1.273', DependencyType.PEER);
 project.deps.addDependency('constructs@10.1.273', DependencyType.DEVENV);
 
+project.tsconfig?.addInclude('bin/**/*.ts');
+project.tsconfigDev?.addInclude('bin/**/*.ts');
+
 const gen = project.addTask('gen', {
   condition: 'if [ -d "src/.gen" ]; then exit 1; fi',
   exec: 'npx cdktf provider get scottwinkler/shell --language typescript --output src/.gen',

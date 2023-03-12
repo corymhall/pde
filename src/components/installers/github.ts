@@ -1,8 +1,8 @@
 import * as path from 'path';
-import 'zx/globals';
+import { TerraformStack } from 'cdktf';
 import { Construct } from 'constructs';
+import { ShellInstaller } from './shell';
 import { Installer, Project } from '../../core';
-import { ShellInstaller } from './shell.js';
 
 /**
  * Common options for installing a component from a GitHub repo
@@ -105,13 +105,14 @@ export interface GitHubReleaseOptions extends GitHubInstallerOptions {
   readonly executable?: string;
 }
 
-export class GitHubRepoInstaller extends Installer {
+export class GitHubRepoInstaller extends TerraformStack {
   public readonly name: string;
   public readonly absolutePathVar: string;
   private readonly folderName: string;
 
   constructor(scope: Construct, id: string, options: GitHubRepoOptions) {
-    const project = Project.ofProject(scope);
+    super(scope, id);
+    const project = Project.ofProject(this);
     const folderName = options.folderName ?? options.repo;
     const absolutePath = path.join(project.home.homeLocation, folderName);
     const url = `https://github.com/${options.org}/${options.repo}.git`;
@@ -125,33 +126,32 @@ export class GitHubRepoInstaller extends Installer {
     const returnValue = `
       const version = await \`git rev-parse --abbrev-ref HEAD\`;
       const folderName = await $\`pwd\`;
-      echo \`{
-        folderName,
-        version,
-      }\`;
+      const returnValue = JSON.stringify({ folderName, version });
+      echo\`\$\${returnValue}\`
     `;
 
-    super(scope, id, {
+    new Installer(this, id, {
       create: `
-        $.cwd = '${absolutePath}';
-        ${clone}
-        await $\`git checkout ${version}\`;
-        ${options.installCommands?.map(cmd => `await $\`${cmd}\`;`).join('\n\t')}
-        ${returnValue}
+  cd('${project.home.homeLocation}');
+  ${clone}
+  cd('${absolutePath}')
+  await $\`git checkout ${version}\`;
+  ${options.installCommands?.map(cmd => `await $\`${cmd}\`;`).join('\n\t')}
+  ${returnValue}
       `,
       update: `
-        $.cwd = '${absolutePath}';
-        await $\`git clean -fzdx\`;
-        await $\`git checkout ${version} && git pull\`;
-        ${options.installCommands?.map(cmd => `await $\`${cmd}\`;`).join('\n\t')}
-        ${returnValue}
+  $.cwd = '${absolutePath}';
+  await $\`git clean -fzdx\`;
+  await $\`git checkout ${version} && git pull\`;
+  ${options.installCommands?.map(cmd => `await $\`${cmd}\`;`).join('\n\t')}
+  ${returnValue}
       `,
       read: `
-        cd('${absolutePath}');
-        ${returnValue}
+  cd('${absolutePath}');
+  ${returnValue}
       `,
       delete: `
-        await $\`rm -rf ${absolutePath}\`;
+  await $\`rm -rf ${absolutePath}\`;
       `,
     });
 

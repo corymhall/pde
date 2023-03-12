@@ -1,9 +1,9 @@
 import * as path from 'path';
 import { Construct } from 'constructs';
-import { IHome } from './home.js';
-import { Project } from './project-base.js';
-import { LocalFile } from './textfile.js';
-import { IProfileBase, ProfileBase } from './profile-base.js';
+import { IHome } from './home';
+import { IProfileBase, ProfileBase } from './profile-base';
+import { Project } from './project-base';
+import { LocalFile } from './textfile';
 
 
 /**
@@ -47,7 +47,7 @@ export class Profile extends ProfileBase implements IProfile {
   protected readonly project: Project;
   protected readonly home: IHome;
 
-  private readonly file: LocalFile;
+  protected readonly file: LocalFile;
 
 
   constructor(scope: Construct, id: string, options: ProfilesOptions) {
@@ -62,11 +62,14 @@ export class Profile extends ProfileBase implements IProfile {
         '# -----------------------------------------------------',
         '# ----------------Common Profile Config----------------',
         '# -----------------------------------------------------',
+        'test -d "$HOME/.tea" && source <("$HOME/.tea/tea.xyz/v*/bin/tea" --magic=zsh --silent)',
       ],
     });
     this.renderEnv(options.env);
-    const sourcePath = path.join(this.project.dir, this.file.path);
-    this.home.addLocation(this.file, sourcePath, `.${path.basename(sourcePath)}`);
+    this.home.addLocation(this.file, options.name, {
+      source: this.file.path,
+      target: `${this.profileFileName}`,
+    });
   }
   public addLines(lines: string[]): void {
     lines.forEach(line => this.file.addLine(line));

@@ -1,4 +1,5 @@
 import * as path from 'path';
+import { TerraformStack } from 'cdktf';
 import { Construct } from 'constructs';
 import { Project, InstallerOptions, Installer } from '../../core';
 
@@ -22,13 +23,14 @@ export interface UrlInstallerOptions extends InstallerOptions {
   readonly executable?: boolean;
 }
 
-export class ShellInstaller extends Installer {
+export class ShellInstaller extends TerraformStack {
 
   public readonly name: string;
 
   constructor(scope: Construct, id: string, options: UrlInstallerOptions) {
+    super(scope, id);
     const downloadCommand = `curl -OL ${options.downloadUrl}`;
-    const project = Project.ofProject(scope);
+    const project = Project.ofProject(this);
 
     const download = () => {
       return `
@@ -44,38 +46,38 @@ export class ShellInstaller extends Installer {
         `;
       }
       return "const version = '0.0.0'";
-    }
+    };
 
     const returnCommand = () => {
       return `
         ${versionCommand()}
         const returnValue = JSON.stringify({ version, name: '${options.name}' });
         echo\`\$\${returnValue}\`
-      `
-    }
+      `;
+    };
 
-    super(scope, id, {
+    new Installer(this, id, {
       create: `
-        ${download()}
-        ${options.installCommands?.map(cmd => `await $\`${cmd}\``).join('\n\t')}
-        ${options.executable ? [
-          `await $\`chmod +x ${path.join(project.home.binLocation, options.name)}\`;`,
-        ].join('\n\t') : ''}
-        ${returnCommand()}
+   ${download()}
+   ${options.installCommands?.map(cmd => `await $\`${cmd}\``).join('\n\t')}
+   ${options.executable ? [
+    `await $\`chmod +x ${path.join(project.home.binLocation, options.name)}\`;`,
+  ].join('\n\t') : ''}
+   ${returnCommand()}
       `,
       update: options.updateCommands ? `
-        ${download()}
-        ${(options.updateCommands?.map(cmd => `await $\`${cmd}\``) ?? []).join('\n\t')}
-        ${options.executable ? [
-          `await $\`chmod +x ${options.name}\`;`,
-        ].join('\n\t') : ''}
-        ${returnCommand()}
+   ${download()}
+   ${(options.updateCommands?.map(cmd => `await $\`${cmd}\``) ?? []).join('\n\t')}
+   ${options.executable ? [
+    `await $\`chmod +x ${options.name}\`;`,
+  ].join('\n\t') : ''}
+   ${returnCommand()}
       ` : undefined,
       read: `
-        ${returnCommand()}
+   ${returnCommand()}
       `,
       delete: `
-        ${options.uninstallCommands?.map(cmd => `await $\`${cmd}\``).join('\n\t')}
+   ${options.uninstallCommands?.map(cmd => `await $\`${cmd}\``).join('\n\t')}
       `,
     });
     this.name = options.name;

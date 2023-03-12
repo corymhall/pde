@@ -30,7 +30,8 @@
     "src/**/*.ts",
     "test/**/*.ts",
     ".projenrc.ts",
-    "projenrc/**/*.ts"
+    "projenrc/**/*.ts",
+    "bin/**/*.ts"
   ],
   "exclude": [
     "node_modules"
