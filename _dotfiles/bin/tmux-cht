@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+#read -p "Enter Query: " query
+
+#tmux neww "cht.sh $query | less -r"
+
+
+source $DOTFILES/bin/lib/cht.sh
+
+cht

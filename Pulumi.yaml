@@ -1,0 +1,9 @@
+name: pde-pulumi
+runtime: go
+description: A simple pde example
+plugins:
+  providers:
+  - name: pde
+    path: /Users/chall/go/bin
+  - name: pdec
+    path: /Users/chall/go/bin

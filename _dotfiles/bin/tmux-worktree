@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+wt=$(git worktree list)
+IFS=' ' read -r -a wtarr <<< "$wt"
+wtroot=${wtarr[0]}
+echo $wtroot

@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+tmux kill-server
+systemctl --user reset-failed
+tmux new-session -A -s dotfiles

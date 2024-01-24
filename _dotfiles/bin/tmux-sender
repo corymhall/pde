@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+session_name=$(tmux display-message -p "#S")
+window_name=$(tmux display-message -p "#W")
+current_pane=$(tmux display-message -p "#P")
+
+target="$session_name:$window_name.{bottom}"
+
+tmux send-keys -t $target "$*"

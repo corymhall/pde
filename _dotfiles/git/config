@@ -1,0 +1,39 @@
+
+[core]
+  editor = "nvim"
+  fsmonitor = true
+  untrackedcache = true
+
+[credential]
+  helper = "store"
+
+[diff]
+
+[fetch]
+  prune = true
+
+[github]
+  user = "corymhall"
+
+[init]
+  defaultBranch = "main"
+
+[pull]
+  rebase = true
+
+[push]
+  default = "simple"
+  autoSetupRemote = true
+
+[commit]
+  template = "~/.gitmessage"
+  gpgsign = true
+
+[user]
+  email = "43035978+corymhall@users.noreply.github.com"
+  name = "corymhall"
+  signingkey = "DDB8E901194EB317"
+[url "https://github.com/"]
+insteadOf = git@github.com:
+[url "https://github.com/"]
+insteadOf = ssh://git@github.com/

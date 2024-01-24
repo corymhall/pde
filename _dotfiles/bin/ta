@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+
+DIR=$1
+
+if [ -z "$DIR" ]; then
+  DIR="."
+fi
+selected=$(fd -t d -d 1 -- "$DIR" \
+  ~/personal \
+  ~/playground \
+  ~/github \
+  | fzf)
+echo "$selected"
+if [[ -z $selected ]]; then
+    exit 0
+fi
+
+
+if [[ $selected == $HOME/github** ]]; then
+  session_name="github"
+elif [[ $selected == $HOME/playground** ]]; then
+  session_name="playground"
+elif [[ $selected == $HOME/personal** ]]; then
+  session_name="personal"
+fi
+
+selected_name=$(basename "$selected" | tr . _)
+target="$session_name:$selected_name"
+
+echo "$target"
+
+create_detached_session() {
+  (TMUX=''
+  tmux new-session -Ad -s "$session_name" -n "$selected_name" -c "$selected";
+  split_window;
+  start_nvim;
+  )
+}
+
+start_nvim() {
+  tmux send-keys -t "$target" "nvim" Enter;
+}
+
+split_window() {
+  tmux split-window -vb -t "$target" -c "$selected" -p 70
+}
+
+create_detached_window() {
+  tmux new-window -t "$session_name" -dn "$selected_name"
+  split_window
+  start_nvim
+}
+
+window_exists() {
+  tmux has-session -t "=$target" 
+}
+
+session_exists() {
+  tmux has-session -t "=$session_name"
+}
+create_if_needed_and_attach() {
+  if ! session_exists; then
+    create_detached_session
+  elif ! window_exists; then
+    echo "creating window"
+    create_detached_window
+  fi
+
+  tmux switch-client -t "$target"
+}
+
+create_if_needed_and_attach

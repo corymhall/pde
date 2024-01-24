@@ -1,0 +1,99 @@
+export GOPRIVATE=github.com/corymhall
+export ENHANCD_FILTER=fzf
+export ENHANCD_COMPLETION_BEHAVIOR=list
+export KEYTIMEOUT=1
+export NODE_OPTIONS=--max-old-space-size=8196 --experimental-worker $${NODE_OPTIONS:-}
+export SHELL=/bin/zsh
+export PATH=$HOME/go/bin:$PATH
+export PATH=/opt/homebrew/bin:$PATH
+export ZINIT_HOME=/Users/chall/.zinit-tmp
+# -----------------------------------------------------
+# ------------Configure zinit and zsh plugins----------
+# -----------------------------------------------------
+source /Users/chall/.zinit-tmp/zinit.zsh
+zinit ice blockf lucid pick"init.sh" wait
+zinit light "b4b4r07/enhancd"
+
+zinit ice lucid wait
+zinit light "changyuheng/fz"
+
+zinit ice blockf lucid wait
+zinit light "changyuheng/zsh-interactive-cd"
+
+zinit ice depth"1"
+zinit light "romkatv/powerlevel10k"
+
+zinit ice pick"z.sh"
+zinit light "rupa/z"
+
+zinit ice
+zinit light "zdharma-continuum/fast-syntax-highlighting"
+
+zinit ice
+zinit light "zpm-zsh/ls"
+
+zinit ice
+zinit light "zsh-users/zsh-autosuggestions"
+
+zinit ice
+zinit light "zsh-users/zsh-completions"
+
+zinit ice
+zinit light "zsh-users/zsh-history-substring-search"
+
+# -----------------------------------------------------
+# ----------Aliases and Functions Configuration--------
+# -----------------------------------------------------
+[[ ! -f $HOME/functions.zsh ]] || source $HOME/functions.zsh
+alias ga='git add'
+alias gcam='git commit -a -m'
+alias gcb='git checkout -b'
+alias gcl='git clone'
+alias gcm='git checkout main'
+alias gcmsg='git commit -m'
+alias gco='git checkout'
+alias gl='git pull'
+alias gp='git push'
+alias gst='git status'
+alias killgpg='gpgconf --kill gpg-agent && gpg-connect-agent reloadagent /bye'
+alias nb='npm run build'
+alias nv='nvim'
+alias pn='pnpm'
+
+# -----------------------------------------------------
+# ----------------Standard Configuration---------------
+# -----------------------------------------------------
+source /Users/chall/.config/op/plugins.sh
+# To customize prompt, run "p10k configure" or edit $HOME/p10k.zsh.
+[[ ! -f $HOME/p10k.zsh ]] || source $HOME/p10k.zsh
+
+HISTSIZE="10000"
+SAVEHIST="10000"
+export AWS_PAGER=""""
+
+HISTFILE="$HOME/.zsh_history"
+mkdir -p "$(dirname "$HISTFILE")"
+setopt HIST_FCNTL_LOCK
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE
+unsetopt HIST_EXPIRE_DUPS_FIRST
+setopt SHARE_HISTORY
+setopt EXTENDED_HISTORY
+# vim mode
+bindkey -v
+bindkey '^ ' autosuggest-accept
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+bindkey "$terminfo[kcuu1]" history-substring-search-up
+bindkey "$terminfo[kcud1]" history-substring-search-down
+
+# `v` is already mapped to visual mode, so we need to use a different key to
+# # open Vim
+bindkey -M vicmd "^V" edit-command-line
+
+# Load secrets
+[ -f $HOME/.localrc ] && . $HOME/.localrc
+
+autoload bashcompinit && bashcompinit
+autoload -Uz compinit && compinit
+eval "$(op completion zsh)"; compdef _op op

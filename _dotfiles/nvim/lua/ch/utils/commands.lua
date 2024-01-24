@@ -1,0 +1,94 @@
+-- local tmux = require('harpoon.tmux')
+-- local Job = require('plenary.job')
+
+local M = {}
+-- local logger = require('plenary.log').new({
+--   plugin = 'ch.commands',
+--   level = 'debug',
+-- })
+
+-- local function send_command(window, cmd)
+--   local pane1 = string.format("%s.1", window):gsub('"', '')
+--   local pane2 = string.format("%s.2", window):gsub('"', '')
+--   tmux.sendCommand(pane1, cmd.."\r")
+--   tmux.sendCommand(pane2, cmd.."\r")
+-- end
+--
+-- function M.get_tmux_session()
+--   local stderr = {}
+--   local stdout, ret = Job
+--     :new({
+--       command = 'tmux',
+--       args = { 'display-message', '-p', '"#S"' },
+--       cwd = vim.fn.expand '%:h',
+--       on_stderr = function(_, data)
+--         table.insert(stderr, data)
+--       end,
+--   })
+--   :sync()
+--
+--   if ret ~= 0 then
+--     logger.error(stderr)
+--     return {}
+--   end
+--
+--   return stdout
+-- end
+--
+-- function M.get_tmux_window()
+--   local stderr = {}
+--   local stdout, ret = Job
+--     :new({
+--       command = 'tmux',
+--       args = { 'display-message', '-p', '"#W"' },
+--       cwd = vim.fn.expand '%:h',
+--       on_stderr = function(_, data)
+--         table.insert(stderr, data)
+--       end,
+--   })
+--   :sync()
+--
+--   if ret ~= 0 then
+--     logger.error(stderr)
+--     return {}
+--   end
+--
+--   return stdout
+-- end
+--
+-- function M.goto_current_worktree_root()
+--   local session = M.get_tmux_session()
+--   if vim.tbl_isempty(session)  then
+--     return
+--   end
+--
+--   local window = M.get_tmux_window()
+--   if vim.tbl_isempty(window)  then
+--     return
+--   end
+--   local cwd = require('git-worktree').get_current_worktree_path()
+--   local tmuxId = string.format("%s:%s", session[1], window[1])
+--   logger.debug(tmuxId)
+--
+--   send_command(tmuxId, 'cd '..cwd)
+-- end
+--
+-- function M.goto_current_package_dir()
+--   local session = M.get_tmux_session()
+--   if vim.tbl_isempty(session)  then
+--     return
+--   end
+--
+--   local window = M.get_tmux_window()
+--   if vim.tbl_isempty(window)  then
+--     return
+--   end
+--   local cwd = require('lspconfig.util').root_pattern("package.json")(vim.fn.expand "%:p")
+--   local tmuxId = string.format("%s:%s", session[1], window[1])
+--   logger.debug(tmuxId)
+--
+--   send_command(tmuxId, 'cd '..cwd)
+-- end
+--
+--
+return M
