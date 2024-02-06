@@ -47,7 +47,7 @@ func NewZshProfile(ctx *pulumi.Context, name string, args ZshProfileArgs, opts p
 	z.AddToEnv("ENHANCD_FILTER", pulumi.String("fzf"))
 	z.AddToEnv("ENHANCD_COMPLETION_BEHAVIOR", pulumi.String("list"))
 	z.AddToEnv("KEYTIMEOUT", pulumi.String("1"))
-	z.AddToEnv("NODE_OPTIONS", pulumi.String("--max-old-space-size=8196 --experimental-worker $${NODE_OPTIONS:-}"))
+	z.AddToEnv("NODE_OPTIONS", pulumi.String(`"--max-old-space-size=8196 --experimental-worker $${NODE_OPTIONS:-}"`))
 	z.AddToEnv("SHELL", pulumi.String("/bin/zsh"))
 	z.AddToSystemPath(path.Join(args.Project.Home.HomeVar, "go", "bin"))
 	z.AddToSystemPath("/opt/homebrew/bin")
@@ -55,7 +55,7 @@ func NewZshProfile(ctx *pulumi.Context, name string, args ZshProfileArgs, opts p
 	zinit, err := installers.NewGitHubRepo(ctx, "zinit", &installers.GitHubRepoArgs{
 		Org:        pulumi.String("zdharma-continuum"),
 		Repo:       pulumi.String("zinit"),
-		FolderName: pulumi.String(".zinit-tmp"),
+		FolderName: pulumi.String(".zinit"),
 	})
 	if err != nil {
 		return nil, err
@@ -64,11 +64,11 @@ func NewZshProfile(ctx *pulumi.Context, name string, args ZshProfileArgs, opts p
 	z.AddToEnv("ZINIT_HOME", zinit.AbsFolderName)
 	args.Project.Home.AddLocation(ctx, "p10k", LinkProps{
 		Source: pulumi.String(path.Join(args.Project.Dir, name, "p10k.zsh")),
-		Target: "p10k-tmp.zsh",
+		Target: "p10k.zsh",
 	})
 	args.Project.Home.AddLocation(ctx, "functions", LinkProps{
 		Source: pulumi.String(path.Join(args.Project.Dir, name, "functions.zsh")),
-		Target: "functions-tmp.zsh",
+		Target: "functions.zsh",
 	})
 
 	z.renderPlugins(zinit.AbsFolderName, args.ZshPlugins)

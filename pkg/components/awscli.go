@@ -105,7 +105,7 @@ func NewAwsCli(ctx *pulumi.Context, project *Project, name string, opts pulumi.R
 	}
 
 	project.Profile.AddLines(
-		pulumi.Sprintf("complete -C '%s/aws_completer' aws", project.Home.BinLocation),
+		pulumi.Sprintf("complete -C '%s/aws_completer' aws", project.Home.BinVar),
 	)
 
 	return a, nil

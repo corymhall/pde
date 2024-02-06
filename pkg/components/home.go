@@ -44,8 +44,9 @@ func (h *Home) AddLocation(ctx *pulumi.Context, id string, props LinkProps) (*lo
 	target := path.Join(h.HomeLocation, props.Target)
 	id = fmt.Sprintf("link%s", id)
 	return local.NewLink(ctx, id, &local.LinkArgs{
-		Source: props.Source,
-		Target: pulumi.String(target),
+		Source:    props.Source,
+		Target:    pulumi.String(target),
+		Overwrite: pulumi.BoolPtr(true),
 	}, pulumi.Parent(h))
 }
 
@@ -53,7 +54,8 @@ func (h *Home) AddExecutable(ctx *pulumi.Context, id string, props LinkProps) (*
 	target := path.Join(h.BinLocation, props.Target)
 	id = fmt.Sprintf("link%s", id)
 	return local.NewLink(ctx, id, &local.LinkArgs{
-		Source: props.Source,
-		Target: pulumi.String(target),
+		Source:    props.Source,
+		Target:    pulumi.String(target),
+		Overwrite: pulumi.BoolPtr(true),
 	})
 }

@@ -33,7 +33,9 @@ func (s *SystemProfiles) AddToSystemPath(path string) {
 
 func (s *SystemProfiles) AddLines(lines ...pulumi.StringInput) {
 	for _, p := range s.profiles {
-		p.AddLines(lines...)
+		for _, line := range lines {
+			p.AddLines(line)
+		}
 	}
 }
 

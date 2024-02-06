@@ -60,6 +60,10 @@ func main() {
 			return err
 		}
 
+		if _, err := components.NewNpm(ctx, project, "npm", nil); err != nil {
+			return err
+		}
+
 		return nil
 	})
 }

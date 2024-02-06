@@ -14,7 +14,7 @@ return {
     },
     {
       '<leader>gvm',
-      ':DiffviewOpen upstream/main %<CR>',
+      ':DiffviewOpen origin/main %<CR>',
       desc = "Open diffview  against upstream/main",
     },
     {

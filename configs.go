@@ -13,6 +13,7 @@ func NewConfigs(ctx *pulumi.Context, project *components.Project) error {
 		Source:    pulumi.String(path.Join(project.Dir, "bin")),
 		Target:    pulumi.String(project.Home.BinLocation),
 		Recursive: pulumi.Bool(true),
+		Overwrite: pulumi.Bool(true),
 	}); err != nil {
 		return err
 	}

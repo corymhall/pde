@@ -1,7 +1,9 @@
 package components
 
 import (
+	"fmt"
 	"path"
+	"strings"
 
 	"github.com/corymhall/pulumi-provider-pde/sdk/go/pde/local"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
@@ -13,13 +15,15 @@ type Profile struct {
 	systemPaths map[string]bool
 	systemEnv   map[string]pulumi.StringInput
 	content     *content `pulumi:"content"`
+	project     *Project
 }
 
 type content struct {
 	lines *pulumi.StringArray `pulumi:"lines"`
 }
 
-type profile struct{}
+type profile struct {
+}
 
 type ProfileArgs struct {
 	FileName string `pulumi:"fileName"`
@@ -34,6 +38,7 @@ func NewProfile(ctx *pulumi.Context, name string, args ProfileArgs, opts pulumi.
 		content: &content{
 			lines: &pulumi.StringArray{},
 		},
+		project:     args.Project,
 		systemPaths: map[string]bool{},
 		systemEnv:   map[string]pulumi.StringInput{},
 	}
@@ -41,10 +46,17 @@ func NewProfile(ctx *pulumi.Context, name string, args ProfileArgs, opts pulumi.
 		return nil, err
 	}
 	profile.FileName = args.FileName
-	local.NewFile(ctx, name, &local.FileArgs{
+	file, err := local.NewFile(ctx, name, &local.FileArgs{
 		Path:    pulumi.String(path.Join(args.Project.Dir, name, args.FileName)),
 		Force:   pulumi.BoolPtr(false),
 		Content: profile.content.lines,
+	})
+	if err != nil {
+		return nil, err
+	}
+	args.Project.Home.AddLocation(ctx, name, LinkProps{
+		Source: file.Path,
+		Target: fmt.Sprintf(".%s", args.FileName),
 	})
 
 	if err := ctx.RegisterResourceOutputs(profile, pulumi.Map{
@@ -62,10 +74,12 @@ func (p *Profile) GetFileName() string {
 func (p *Profile) AddToEnv(key string, value pulumi.StringInput) {
 	if _, ok := p.systemEnv[key]; !ok {
 		p.systemEnv[key] = value
-		s := value
-		// if strings.HasPrefix(value, p.project.Home.HomeLocation) {
-		// 	s = strings.Replace(value, p.project.Home.HomeLocation, p.project.Home.HomeVar, 1)
-		// }
+		s := value.ToStringOutput().ApplyT(func(v string) string {
+			if strings.HasPrefix(v, p.project.Home.HomeLocation) {
+				return strings.Replace(v, p.project.Home.HomeLocation, p.project.Home.HomeVar, 1)
+			}
+			return v
+		})
 		p.AddLines(pulumi.Sprintf(`export %s=%s`, key, s))
 	}
 }
@@ -73,9 +87,9 @@ func (p *Profile) AddToEnv(key string, value pulumi.StringInput) {
 func (p *Profile) AddToSystemPath(location string) {
 	if _, ok := p.systemPaths[location]; !ok {
 		s := location
-		// if strings.HasPrefix(location, p.project.Home.HomeLocation) {
-		// 	s = strings.Replace(location, p.project.Home.HomeLocation, p.project.Home.HomeVar, 1)
-		// }
+		if strings.HasPrefix(location, p.project.Home.HomeLocation) {
+			s = strings.Replace(location, p.project.Home.HomeLocation, p.project.Home.HomeVar, 1)
+		}
 		p.systemPaths[location] = true
 		p.AddLines(pulumi.Sprintf(`export PATH=%s:$PATH`, s))
 	}

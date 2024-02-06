@@ -6,10 +6,6 @@ import (
 )
 
 func NewProfiles(ctx *pulumi.Context, project *components.Project) error {
-	systemProfiles, err := components.NewSystemProfiles(ctx, "SystemProfiles", nil)
-	if err != nil {
-		return err
-	}
 	zsh, err := components.NewZshProfile(ctx, "zsh", components.ZshProfileArgs{
 		Project: project,
 		Env: map[string]string{
@@ -68,12 +64,12 @@ func NewProfiles(ctx *pulumi.Context, project *components.Project) error {
 	if err != nil {
 		return err
 	}
-	systemProfiles.Register(zsh.Profile)
+	project.Profile.Register(zsh.Profile)
 
 	bash, err := components.NewBashProfile(ctx, project, "bash", nil)
 	if err != nil {
 		return err
 	}
-	systemProfiles.Register(bash.Profile)
+	project.Profile.Register(bash.Profile)
 	return nil
 }
