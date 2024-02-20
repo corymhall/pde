@@ -53,8 +53,10 @@ local M = {
 
 function M.config()
   require('mind').setup({
-    state_path = "~/personal/mind/mind.json",
-    data_dir = "~/personal/mind/data",
+    persistence = {
+      state_path = "~/personal/mind/mind.json",
+      data_dir = "~/personal/mind/data",
+    },
     ui =  {
       width = 40,
     },

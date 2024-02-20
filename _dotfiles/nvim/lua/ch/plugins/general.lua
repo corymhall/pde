@@ -3,6 +3,11 @@ return {
   'nvim-lua/plenary.nvim',
   "folke/neodev.nvim",
   {
+    'daenikon/marknav.nvim',
+    config = true,
+    ft = {'markdown', 'vimwiki'},
+  },
+  {
     'tpope/vim-fugitive', -- git commands in nvim,
     lazy = false,
   },
