@@ -29,10 +29,6 @@ func NewProject(ctx *pulumi.Context, name string, opts pulumi.ResourceOption) (*
 	if err := ctx.RegisterComponentResource("pde:index:Project", name, p, opts); err != nil {
 		return nil, err
 	}
-	brew, err := NewBrew(ctx, p, "Brew", pulumi.Parent(p))
-	if err != nil {
-		return nil, err
-	}
 	home, err := NewHome(ctx, "Home", pulumi.Parent(p))
 	if err != nil {
 		return nil, err
@@ -43,10 +39,5 @@ func NewProject(ctx *pulumi.Context, name string, opts pulumi.ResourceOption) (*
 	}
 	p.Home = home
 	p.Profile = profile
-	p.brew = brew
 	return p, nil
-}
-
-func (p *Project) AddDep(pkg string, tap *string) {
-	p.brew.Install(pkg, tap)
 }

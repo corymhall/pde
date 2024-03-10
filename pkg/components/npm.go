@@ -7,12 +7,19 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-type Npm struct {
-	pulumi.ResourceState
+type Npm interface {
+	Component
 }
 
-func NewNpm(ctx *pulumi.Context, project *Project, name string, opts pulumi.ResourceOption) (*Npm, error) {
-	n := &Npm{}
+type npm struct {
+	pulumi.ResourceState
+	*component
+}
+
+func NewNpm(ctx *pulumi.Context, project *Project, name string, opts pulumi.ResourceOption) (Npm, error) {
+	n := &npm{
+		component: NewComponent(),
+	}
 	if err := ctx.RegisterComponentResource("pde:index:Npm", name, n, opts); err != nil {
 		return nil, err
 	}
@@ -24,10 +31,10 @@ func NewNpm(ctx *pulumi.Context, project *Project, name string, opts pulumi.Reso
 		FolderName: pulumi.String(".nvm"),
 	})
 
-	project.Profile.AddLines(
-		pulumi.String(`export NVM_DIR="$HOME/.nvm"`),
-		pulumi.String(`[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm`),
-		pulumi.String(`[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion`),
+	n.AddLines(
+		`export NVM_DIR="$HOME/.nvm"`,
+		`[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm`,
+		`[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion`,
 	)
 
 	npm := path.Join(project.Dir, "npm")
@@ -49,9 +56,10 @@ func NewNpm(ctx *pulumi.Context, project *Project, name string, opts pulumi.Reso
 			"tree-sitter-cli",
 			"cdktf-cli",
 			"artillery",
+			"yarn",
 		}),
 	})
-	project.Profile.AddToSystemPath(path.Join(npm, "node_modules", ".bin"))
+	n.AddToSystemPath(path.Join(npm, "node_modules", ".bin"))
 
 	return n, nil
 }

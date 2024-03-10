@@ -4,8 +4,6 @@ require('lazy').setup({
       import = "ch.plugins",
     },
   },
-  defaults = { lazy = true },
-  install = { colorscheme = { "kanagawa" } },
   dev = {
     path = "~/plugins",
   },

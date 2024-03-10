@@ -18,7 +18,8 @@ func NewGitConfig(ctx *pulumi.Context, project *Project, name string, opts pulum
 	}
 
 	gm, err := local.NewFile(ctx, "git-message", &local.FileArgs{
-		Path: pulumi.String(path.Join(project.Dir, "git", "gitmessage")),
+		Path:  pulumi.String(path.Join(project.Dir, "git", "gitmessage")),
+		Force: pulumi.Bool(true),
 		Content: pulumi.StringArray{
 			pulumi.String("# Header - #"),
 			pulumi.String("# <type>(<scope>): <subject>"),
@@ -47,8 +48,9 @@ func NewGitConfig(ctx *pulumi.Context, project *Project, name string, opts pulum
 		Target: ".gitmessage",
 	})
 
-	gpgFile, err := local.NewFile(ctx, "gpg-agent", &local.FileArgs{
-		Path: pulumi.String(path.Join(project.Dir, "gnupg", "gpg-agent.conf")),
+	gpgAgentFile, err := local.NewFile(ctx, "gpg-agent", &local.FileArgs{
+		Path:  pulumi.String(path.Join(project.Dir, "gnupg", "gpg-agent.conf")),
+		Force: pulumi.Bool(true),
 		Content: pulumi.StringArray{
 			pulumi.String("default-cache-ttl 28800"),
 			pulumi.String("max-cache-ttl 28800"),
@@ -59,12 +61,28 @@ func NewGitConfig(ctx *pulumi.Context, project *Project, name string, opts pulum
 		return nil, err
 	}
 	project.Home.AddLocation(ctx, "gpg-agent", LinkProps{
-		Source: gpgFile.Path,
+		Source: gpgAgentFile.Path,
 		Target: path.Join(".gnupg", "gpg-agent.conf"),
 	})
 
+	gpgFile, err := local.NewFile(ctx, "gpg-conf", &local.FileArgs{
+		Path:  pulumi.String(path.Join(project.Dir, "gnupg", "gpg.conf")),
+		Force: pulumi.Bool(true),
+		Content: pulumi.StringArray{
+			pulumi.String("use-agent"),
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+	project.Home.AddLocation(ctx, "gpg-conf", LinkProps{
+		Source: gpgFile.Path,
+		Target: path.Join(".gnupg", "gpg.conf"),
+	})
+
 	gc, err := local.NewFile(ctx, "git-config", &local.FileArgs{
-		Path: pulumi.String(path.Join(project.Dir, "git", "config")),
+		Path:  pulumi.String(path.Join(project.Dir, "git", "config")),
+		Force: pulumi.Bool(true),
 		Content: pulumi.StringArray{
 			pulumi.String(""),
 			pulumi.String("[core]"),
@@ -100,7 +118,7 @@ func NewGitConfig(ctx *pulumi.Context, project *Project, name string, opts pulum
 			pulumi.String("[user]"),
 			pulumi.String(`  email = "43035978+corymhall@users.noreply.github.com"`),
 			pulumi.String(`  name = "corymhall"`),
-			pulumi.String(`  signingkey = "DDB8E901194EB317"`),
+			pulumi.String(`  signingkey = "10E0136E71568E18"`),
 			pulumi.String(`[url "https://github.com/"]`),
 			pulumi.String("insteadOf = git@github.com:"),
 			pulumi.String(`[url "https://github.com/"]`),

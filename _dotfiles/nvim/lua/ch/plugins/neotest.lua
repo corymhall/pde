@@ -73,9 +73,9 @@ function M.config()
   require("neotest").setup({
     adapters = {
       require("neotest-go")({
-        -- experimental = {
-        --   test_table = true,
-        -- },
+        experimental = {
+          test_table = true,
+        },
       }),
       require('neotest-jest')({
         jestCommand = "yarn jest ",

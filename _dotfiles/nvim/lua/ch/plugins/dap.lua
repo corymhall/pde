@@ -2,11 +2,53 @@ local M = {
   event = "VeryLazy",
   'mfussenegger/nvim-dap',
   dependencies = {
+    { 'rcarriga/nvim-dap-ui', opts = {} },
     {
-
-      'rcarriga/nvim-dap-ui',
+      'leoluz/nvim-dap-go',
       config = function()
-        require("dapui").setup()
+        require('dap-go').setup {
+          dap_configurations = {
+            {
+              -- Must be "go" or it will be ignored by the plugin
+              type = "go",
+              name = "Attach remote",
+              mode = "remote",
+              request = "attach",
+            },
+            {
+              -- Must be "go" or it will be ignored by the plugin
+              type = "go",
+              name = "Launch pulumi-aws",
+              mode = "auto",
+              request = "launch",
+              program = "provider/cmd/pulumi-resource-aws/main.go",
+              buildFlags = {'-ldflags "-X github.com/pulumi/pulumi-aws/provider/v6/pkg/version.Version=6 -X github.com/hashicorp/terraform-provider-aws/version.ProviderVersion=6"'},
+            },
+
+          },
+          -- delve configurations
+          delve = {
+            -- the path to the executable dlv which will be used for debugging.
+            -- by default, this is the "dlv" executable on your PATH.
+            path = "dlv",
+            -- time to wait for delve to initialize the debug session.
+            -- default to 20 seconds
+            initialize_timeout_sec = 20,
+            -- a string that defines the port to start delve debugger.
+            -- default to string "${port}" which instructs nvim-dap
+            -- to start the process in a random available port
+            port = "${port}",
+            -- additional args to pass to dlv
+            args = {},
+            -- the build flags that are passed to delve.
+            -- defaults to empty string, but can be used to provide flags
+            -- such as "-tags=unit" to make sure the test suite is
+            -- compiled during debugging, for example.
+            -- passing build flags using args is ineffective, as those are
+            -- ignored by delve in dap mode.
+            build_flags = "-tags=all",
+          },
+        }
       end,
     },
     {
@@ -36,127 +78,48 @@ local M = {
 function M.keys()
   return {
     {
+      '<leader>du',
+      function()
+        require('dapui').toggle()
+      end,
+      desc = '[D]ap [U]i toggle',
+    },
+    {
       '<leader>db',
       function()
         require('dap').toggle_breakpoint()
       end,
-      desc = 'dap toggle_breakpoint',
+      desc = '[D]ap Toggle [B]reakpoint',
     },
     {
       '<leader>di',
       function()
         require('dap').step_into()
       end,
-      desc = 'dap step into',
+      desc = '[D]ap step [I]nto',
     },
     {
       '<leader>dc',
       function()
         require('dap').continue()
       end,
-      desc = 'dap continue',
+      desc = '[D]ap [C]ontinue',
     },
     {
       '<leader>do',
       function()
         require('dap').step_over()
       end,
-      desc = 'dap step over',
+      desc = '[D]ap step [O]ver',
     }
   }
 end
 
 function M.config()
-  -- local utils = require("dap-vscode-js.utils")
   local dap = require('dap')
 
-  dap.adapters.delve = {
-    type = 'server',
-    port = '${port}',
-    executable = {
-      command = 'dlv',
-      args = {'dap', '-l', '127.0.0.1:${port}'},
-    }
-  }
-
-  dap.configurations.go = {
-    {
-      type = "delve",
-      name = "Debug",
-      request = "launch",
-      program = "${file}",
-    },
-    {
-      type = "delve",
-      name = "Debug test",
-      request = "launch",
-      mode = "test",
-      program = "${file}",
-    },
-    {
-      type = "delve",
-      name = "Debug test (go.mod)",
-      request = "launch",
-      mode = "test",
-      program = "./${relativeFileDirname}",
-    }
-  }
-
-  dap.configurations.javascript = {
-    {
-      type = "pwa-node",
-      request = "attach",
-      name = "remote attach",
-      skipFiles = { '<node_internals>/**' },
-      localRoot = '${workspaceFolder}',
-      resolveSourceMapLocations = { '!**/node_modules/**' },
-    },
-    {
-      type = "pwa-node",
-      request = "launch",
-      name = "Launch file",
-      program = "${file}",
-      cwd = "${workspaceFolder}",
-      protocol = 'inspector',
-      runtimeExecutable = "node",
-      resolveSourceMapLocations = { '!**/node_modules/**' },
-    },
-  }
-  dap.configurations.typescript = {
-    {
-      type = "pwa-node",
-      request = "launch",
-      name = "Launch file",
-      program = "${file}",
-      cwd = "${workspaceFolder}",
-      runtimeArgs = { "-r", "ts-node/register"},
-      protocol = 'inspector',
-      runtimeExecutable = "node",
-      resolveSourceMapLocations = { '!**/node_modules/**' },
-    },
-    {
-      type = "pwa-node",
-      request = "attach",
-      name = "Attach",
-      processId = require'dap.utils'.pick_process,
-      cwd = "${workspaceFolder}",
-      resolveSourceMapLocations = { '!**/node_modules/**' },
-    },
-    {
-      type = "pwa-node",
-      request = "launch",
-      name = "Debug Jest Tests",
-      runtimeExecutable = "node",
-      runtimeArgs = {
-        "${workspaceFolder}/node_modules/jest/bin/jest.js",
-        "--runInBand",
-      },
-      rootPath = "${workspaceFolder}",
-      cwd = "${workspaceFolder}",
-      console = "integratedTerminal",
-      internalConsoleOptions = "neverOpen",
-    },
-  }
+  dap.configurations.javascript = { }
+  dap.configurations.typescript = { }
 end
 
 return M

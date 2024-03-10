@@ -3,37 +3,6 @@ local M = {
   event = "VeryLazy",
 }
 
-function M.init()
-  local wk = require('which-key')
-  wk.register({
-    ['<leader>'] = {
-      n = {
-        name = '+noice',
-      },
-    }
-  })
-  vim.keymap.set("n", "<leader>na", function()
-    require('noice').cmd('all')
-  end, { desc = "Noice All" })
-
-  vim.keymap.set("n", "<leader>nl", function()
-    require('noice').cmd("last")
-  end, { desc = "Noice last" })
-
-  vim.keymap.set("n", "<c-f>", function()
-    if not require('noice.lsp').scroll(4) then
-      return "<c-f>"
-    end
-  end, { silent = true, expr = true })
-
-  vim.keymap.set("n", "<c-b>", function()
-    if not require('noice.lsp').scroll(-4) then
-      return "<c-b>"
-    end
-  end, { silent = true, expr = true })
-
-end
-
 function M.config()
   require("noice").setup({
     lsp = {

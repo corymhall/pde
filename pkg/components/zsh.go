@@ -22,35 +22,23 @@ type ZplugPlugin struct {
 }
 
 type ZshProfileArgs struct {
-	Project    *Project
-	Env        map[string]string
-	ZshPlugins []ZplugPlugin
-	Aliases    map[string]string
+	Project     *Project
+	Env         map[string]pulumi.StringInput
+	SystemPaths []pulumi.StringInput
+	ZshPlugins  []ZplugPlugin
+	Aliases     map[string]string
+	Lines       []pulumi.StringInput
 }
 
-func NewZshProfile(ctx *pulumi.Context, name string, args ZshProfileArgs, opts pulumi.ResourceOption) (*ZshProfile, error) {
-	profile, err := NewProfile(ctx, "zsh", ProfileArgs{
-		FileName: "zshrc",
-		Project:  args.Project,
-	}, opts)
-	if err != nil {
-		return nil, err
+func NewZshProfile(ctx *pulumi.Context, name string, args ZshProfileArgs, opts ...pulumi.ResourceOption) (*ZshProfile, error) {
+	if args.Env == nil {
+		args.Env = map[string]pulumi.StringInput{}
 	}
-	z := &ZshProfile{
-		Profile: profile,
-		project: args.Project,
-	}
-	for k, v := range args.Env {
-		z.AddToEnv(k, pulumi.String(v))
-	}
-
-	z.AddToEnv("ENHANCD_FILTER", pulumi.String("fzf"))
-	z.AddToEnv("ENHANCD_COMPLETION_BEHAVIOR", pulumi.String("list"))
-	z.AddToEnv("KEYTIMEOUT", pulumi.String("1"))
-	z.AddToEnv("NODE_OPTIONS", pulumi.String(`"--max-old-space-size=8196 --experimental-worker $${NODE_OPTIONS:-}"`))
-	z.AddToEnv("SHELL", pulumi.String("/bin/zsh"))
-	z.AddToSystemPath(path.Join(args.Project.Home.HomeVar, "go", "bin"))
-	z.AddToSystemPath("/opt/homebrew/bin")
+	args.Env["ENHANCD_FILTER"] = pulumi.String("fzf")
+	args.Env["ENHANCD_COMPLETION_BEHAVIOR"] = pulumi.String("list")
+	args.Env["KEYTIMEOUT"] = pulumi.String("1")
+	args.Env["NODE_OPTIONS"] = pulumi.String(`"--max-old-space-size=8196 --experimental-worker $${NODE_OPTIONS:-}"`)
+	args.Env["SHELL"] = pulumi.String("/bin/zsh")
 
 	zinit, err := installers.NewGitHubRepo(ctx, "zinit", &installers.GitHubRepoArgs{
 		Org:        pulumi.String("zdharma-continuum"),
@@ -60,8 +48,12 @@ func NewZshProfile(ctx *pulumi.Context, name string, args ZshProfileArgs, opts p
 	if err != nil {
 		return nil, err
 	}
-
-	z.AddToEnv("ZINIT_HOME", zinit.AbsFolderName)
+	args.Env["ZINIT_HOME"] = zinit.AbsFolderName
+	args.SystemPaths = append(
+		args.SystemPaths,
+		pulumi.String("/opt/homebrew/bin"),
+		pulumi.String(path.Join(args.Project.Home.HomeVar, "go", "bin")),
+	)
 	args.Project.Home.AddLocation(ctx, "p10k", LinkProps{
 		Source: pulumi.String(path.Join(args.Project.Dir, name, "p10k.zsh")),
 		Target: "p10k.zsh",
@@ -71,21 +63,25 @@ func NewZshProfile(ctx *pulumi.Context, name string, args ZshProfileArgs, opts p
 		Target: "functions.zsh",
 	})
 
-	z.renderPlugins(zinit.AbsFolderName, args.ZshPlugins)
-	z.renderAliases(args.Aliases)
-	z.AddLines(
+	if args.Lines == nil {
+		args.Lines = []pulumi.StringInput{}
+	}
+	lines := args.Lines
+	lines = append(lines, renderPlugins(zinit.AbsFolderName, args.ZshPlugins)...)
+	lines = append(lines, renderAliases(args.Project, args.Aliases)...)
+	lines = append(lines,
 		pulumi.String("# -----------------------------------------------------"),
 		pulumi.String("# ----------------Standard Configuration---------------"),
 		pulumi.String("# -----------------------------------------------------"),
 		pulumi.String("source /Users/chall/.config/op/plugins.sh"),
-		pulumi.String(fmt.Sprintf(`# To customize prompt, run "p10k configure" or edit %s/p10k.zsh.`, args.Project.Home.HomeVar)),
-		pulumi.String(fmt.Sprintf("[[ ! -f %s/p10k.zsh ]] || source %s/p10k.zsh", args.Project.Home.HomeVar, args.Project.Home.HomeVar)),
+		pulumi.Sprintf(`# To customize prompt, run "p10k configure" or edit %s/p10k.zsh.`, args.Project.Home.HomeVar),
+		pulumi.Sprintf("[[ ! -f %s/p10k.zsh ]] || source %s/p10k.zsh", args.Project.Home.HomeVar, args.Project.Home.HomeVar),
 		pulumi.String(""),
 		pulumi.String(`HISTSIZE="10000"`),
 		pulumi.String(`SAVEHIST="10000"`),
 		pulumi.String(`export AWS_PAGER=""""`),
 		pulumi.String(""),
-		pulumi.String(fmt.Sprintf(`HISTFILE="%s/.zsh_history"`, args.Project.Home.HomeVar)),
+		pulumi.Sprintf(`HISTFILE="%s/.zsh_history"`, args.Project.Home.HomeVar),
 		pulumi.String(`mkdir -p "$(dirname "$HISTFILE")"`),
 		pulumi.String("setopt HIST_FCNTL_LOCK"),
 		pulumi.String("setopt HIST_IGNORE_DUPS"),
@@ -106,7 +102,7 @@ func NewZshProfile(ctx *pulumi.Context, name string, args ZshProfileArgs, opts p
 		pulumi.String(`bindkey -M vicmd "^V" edit-command-line`),
 		pulumi.String(""),
 		pulumi.String("# Load secrets"),
-		pulumi.String(fmt.Sprintf("[ -f %s/.localrc ] && . %s/.localrc", args.Project.Home.HomeVar, args.Project.Home.HomeVar)),
+		pulumi.Sprintf("[ -f %s/.localrc ] && . %s/.localrc", args.Project.Home.HomeVar, args.Project.Home.HomeVar),
 		pulumi.String(""),
 		pulumi.String("autoload bashcompinit && bashcompinit"),
 		pulumi.String("autoload -Uz compinit && compinit"),
@@ -114,16 +110,33 @@ func NewZshProfile(ctx *pulumi.Context, name string, args ZshProfileArgs, opts p
 		pulumi.String(""),
 	)
 
+	profile, err := NewProfile(ctx, "zsh", ProfileArgs{
+		FileName:    "zshrc",
+		Project:     args.Project,
+		SystemPaths: args.SystemPaths,
+		Env:         args.Env,
+		Lines:       lines,
+	}, opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	z := &ZshProfile{
+		Profile: profile,
+		project: args.Project,
+	}
+
 	return z, nil
 }
 
-func (z *ZshProfile) renderAliases(aliases map[string]string) {
-	fp := path.Join(z.project.Home.HomeVar, "functions.zsh")
-	z.AddLines(
+func renderAliases(project *Project, aliases map[string]string) []pulumi.StringInput {
+	lines := []pulumi.StringInput{}
+	fp := path.Join(project.Home.HomeVar, "functions.zsh")
+	lines = append(lines,
 		pulumi.String("# -----------------------------------------------------"),
 		pulumi.String("# ----------Aliases and Functions Configuration--------"),
 		pulumi.String("# -----------------------------------------------------"),
-		pulumi.String(fmt.Sprintf("[[ ! -f %s ]] || source %s", fp, fp)),
+		pulumi.Sprintf("[[ ! -f %s ]] || source %s", fp, fp),
 	)
 
 	var keys []string
@@ -132,18 +145,20 @@ func (z *ZshProfile) renderAliases(aliases map[string]string) {
 	}
 	slices.Sort(keys)
 	for _, v := range keys {
-		z.AddLines(pulumi.String(fmt.Sprintf("alias %s='%s'", v, aliases[v])))
+		lines = append(lines, pulumi.Sprintf("alias %s='%s'", v, aliases[v]))
 	}
-	z.AddLines(pulumi.String(""))
+	lines = append(lines, pulumi.String(""))
+	return lines
 }
 
-func (z *ZshProfile) renderPlugins(location pulumi.StringInput, plugins []ZplugPlugin) {
-	z.AddLines(
+func renderPlugins(location pulumi.StringInput, plugins []ZplugPlugin) []pulumi.StringInput {
+	lines := []pulumi.StringInput{}
+	lines = append(lines,
 		pulumi.String("# -----------------------------------------------------"),
 		pulumi.String("# ------------Configure zinit and zsh plugins----------"),
 		pulumi.String("# -----------------------------------------------------"),
+		pulumi.Sprintf("source %s/zinit.zsh", location),
 	)
-	z.AddLines(pulumi.Sprintf("source %s/zinit.zsh", location))
 	sort.SliceStable(plugins, func(i, j int) bool {
 		return plugins[i].PluginName < plugins[j].PluginName
 	})
@@ -161,7 +176,8 @@ func (z *ZshProfile) renderPlugins(location pulumi.StringInput, plugins []ZplugP
 				op = append(op, k)
 			}
 		}
-		z.AddLines(pulumi.String(strings.Join(op, " ")))
-		z.AddLines(pulumi.String(fmt.Sprintf(`zinit light "%s"`, zp.PluginName)), pulumi.String(""))
+		lines = append(lines, pulumi.String(strings.Join(op, " ")))
+		lines = append(lines, pulumi.Sprintf(`zinit light "%s"`, zp.PluginName), pulumi.String(""))
 	}
+	return lines
 }

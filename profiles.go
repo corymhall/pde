@@ -5,12 +5,37 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func NewProfiles(ctx *pulumi.Context, project *components.Project) error {
+type ProfilesArgs struct {
+	Env         map[string]pulumi.StringInput
+	SystemPaths []pulumi.StringInput
+	Lines       []pulumi.StringInput
+	Components  []components.Component
+}
+
+func NewProfiles(ctx *pulumi.Context, project *components.Project, args ProfilesArgs, opts ...pulumi.ResourceOption) error {
+	if args.Env == nil {
+		args.Env = map[string]pulumi.StringInput{}
+	}
+	args.Env["GOPRIVATE"] = pulumi.String("github.com/corymhall")
+	args.SystemPaths = append(args.SystemPaths, pulumi.String(project.Home.BinLocation))
+
+	for _, c := range args.Components {
+		for k, v := range c.GetEnv() {
+			args.Env[k] = v
+		}
+		for _, l := range c.GetLines() {
+			args.Lines = append(args.Lines, l)
+		}
+		for _, p := range c.GetSystemPaths() {
+			args.SystemPaths = append(args.SystemPaths, p)
+		}
+	}
+
 	zsh, err := components.NewZshProfile(ctx, "zsh", components.ZshProfileArgs{
-		Project: project,
-		Env: map[string]string{
-			"GOPRIVATE": "github.com/corymhall",
-		},
+		Project:     project,
+		Env:         args.Env,
+		Lines:       args.Lines,
+		SystemPaths: args.SystemPaths,
 		Aliases: map[string]string{
 			"ga":      "git add",
 			"gcam":    "git commit -a -m",
@@ -60,13 +85,17 @@ func NewProfiles(ctx *pulumi.Context, project *components.Project) error {
 				PluginName: "zsh-users/zsh-history-substring-search",
 			},
 		},
-	}, nil)
+	}, opts...)
 	if err != nil {
 		return err
 	}
 	project.Profile.Register(zsh.Profile)
 
-	bash, err := components.NewBashProfile(ctx, project, "bash", nil)
+	bash, err := components.NewBashProfile(ctx, project, components.BashProfileArgs{
+		Env:         args.Env,
+		SystemPaths: args.SystemPaths,
+		Lines:       args.Lines,
+	}, "bash", opts...)
 	if err != nil {
 		return err
 	}

@@ -27,7 +27,7 @@ func (s *SystemProfiles) AddToEnv(key string, value pulumi.StringInput) {
 
 func (s *SystemProfiles) AddToSystemPath(path string) {
 	for _, p := range s.profiles {
-		p.AddToSystemPath(path)
+		p.AddToSystemPath(pulumi.String(path))
 	}
 }
 

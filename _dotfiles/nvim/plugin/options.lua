@@ -19,25 +19,13 @@ vim.opt.listchars = {
   nbsp ='␣',
 }
 
---busy
--- opt.listchars = {
---   eol: '↲',
---   tab: '»·',
---   space: '␣',
---   trail: '-',
---   extends: '☛',
---   precedes: '☚',
---   conceal: '┊',
---   nbsp: '☠',
--- }
-
 vim.opt.expandtab = true -- use spaces instead of tabs
 vim.opt.hidden = true -- enable background buffers
 vim.opt.ignorecase = true -- ignore case
 vim.opt.joinspaces = false -- non double spaces with join
 vim.opt.relativenumber = true -- Show line numbers
 vim.opt.number = true -- But show the actual number for the line we're on
-vim.opt.scrolloff = 4 -- lines of context
+vim.opt.scrolloff = 10 -- lines of context
 vim.opt.shiftround = true -- round indent
 vim.opt.shiftwidth = 2 --size of indent
 vim.opt.sidescrolloff = 8 -- columns of context
@@ -50,7 +38,8 @@ vim.opt.termguicolors = true            -- True color support
 --opt.wildmode = {'list', 'longest'}  -- Command-line completion mode
 vim.opt.wrap = false                    -- Disable line wrap
 vim.opt.mouse = 'a'
-vim.opt.updatetime = 1000
+vim.opt.updatetime = 250
+vim.opt.timeoutlen = 300
 vim.wo.signcolumn = 'yes'
 vim.opt.formatoptions = vim.opt.formatoptions
   - "a" -- Auto formatting is BAD.
@@ -63,18 +52,18 @@ vim.opt.formatoptions = vim.opt.formatoptions
   + "j" -- Auto-remove comments if possible.
   - "2" -- I'm not in gradeschool anymore
 
-vim.g.clipboard = {
-  name = 'clipboard',
-  copy = {
-    ['+'] = 'tmux load-buffer -w -',
-    ['*'] = 'tmux load-buffer -w -'
-  },
-  paste = {
-    ['+'] = 'tmux save-buffer -',
-    ['*'] = 'tmux save-buffer -'
-  },
-  cache_enabled = 1
-}
+-- vim.g.clipboard = {
+--   name = 'clipboard',
+--   copy = {
+--     ['+'] = 'tmux load-buffer -w -',
+--     ['*'] = 'tmux load-buffer -w -'
+--   },
+--   paste = {
+--     ['+'] = 'tmux save-buffer -',
+--     ['*'] = 'tmux save-buffer -'
+--   },
+--   cache_enabled = 1
+-- }
 
 vim.opt.clipboard = vim.o.clipboard .. 'unnamedplus'
 

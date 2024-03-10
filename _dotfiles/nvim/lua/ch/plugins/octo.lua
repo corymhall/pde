@@ -39,9 +39,9 @@ function M.init()
   local wk = require('which-key')
   wk.register({
     o = {
-      name = "+octo",
+      name = "[O]cto",
       r = {
-        name = "+review",
+        name = "[R]eview",
         s = { function()
           vim.api.nvim_cmd({
             cmd = 'Octo',
@@ -75,7 +75,7 @@ function M.init()
         end, 'Discard PR review' },
       },
       p = {
-        name = "+pr",
+        name = "[P]r",
         c = { function()
           vim.api.nvim_cmd({
             cmd = 'Octo',
@@ -123,7 +123,7 @@ function M.init()
         },
       },
       i = {
-        name = "+issue",
+        name = "[I]ssue",
         o = { function()
           local num = vim.fn.input "Issue: "
           local url = string.format("octo://aws/aws-cdk/issue/%s", num)

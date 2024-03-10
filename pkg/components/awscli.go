@@ -9,18 +9,30 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-type AwsCli struct {
-	pulumi.ResourceState
+type AwsCli interface {
+	Component
 }
 
-func NewAwsCli(ctx *pulumi.Context, project *Project, name string, opts pulumi.ResourceOption) (*AwsCli, error) {
-	a := &AwsCli{}
+type awsCli struct {
+	pulumi.ResourceState
+	*component
+}
+
+func NewAwsCli(ctx *pulumi.Context, project *Project, name string, opts pulumi.ResourceOption) (AwsCli, error) {
+	a := &awsCli{
+		component: NewComponent(),
+	}
 	if err := ctx.RegisterComponentResource("pde:index:AwsCli", name, a, opts); err != nil {
 		return nil, err
 	}
 
+	a.AddLines(
+		fmt.Sprintf("complete -C '%s/aws_completer' aws", project.Home.BinVar),
+	)
+
 	config, err := local.NewFile(ctx, "aws-config", &local.FileArgs{
-		Path: pulumi.String(path.Join(project.Dir, "aws", "choices.xml")),
+		Force: pulumi.Bool(true),
+		Path:  pulumi.String(path.Join(project.Dir, "aws", "choices.xml")),
 		Content: pulumi.ToStringArray([]string{fmt.Sprintf(`
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -60,7 +72,7 @@ func NewAwsCli(ctx *pulumi.Context, project *Project, name string, opts pulumi.R
 	if err != nil {
 		return nil, err
 	}
-	//
+
 	_, err = installers.NewShell(ctx, "samcli-installer", &installers.ShellArgs{
 		DownloadURL: pulumi.String("https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-macos-arm64.pkg"),
 		ProgramName: pulumi.String("sam"),
@@ -103,10 +115,6 @@ func NewAwsCli(ctx *pulumi.Context, project *Project, name string, opts pulumi.R
 	if err != nil {
 		return nil, err
 	}
-
-	project.Profile.AddLines(
-		pulumi.Sprintf("complete -C '%s/aws_completer' aws", project.Home.BinVar),
-	)
 
 	return a, nil
 }

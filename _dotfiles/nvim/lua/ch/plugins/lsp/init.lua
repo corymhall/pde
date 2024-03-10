@@ -1,224 +1,157 @@
 local M = {
-  "neovim/nvim-lspconfig",
-  name = "lsp",
-  event = "BufReadPre",
-  dependencies = {
-    "hrsh7th/cmp-nvim-lsp",
-  }
+	"neovim/nvim-lspconfig",
+	dependencies = {
+		-- Automatically install LSPs and related tools to stdpath for neovim
+		"williamboman/mason.nvim",
+		"williamboman/mason-lspconfig.nvim",
+		"WhoIsSethDaniel/mason-tool-installer.nvim",
+		{ "j-hui/fidget.nvim", opts = {} },
+	},
 }
 
 function M.config()
-  require('neodev').setup({})
-  require("mason")
-  require("ch.plugins.lsp.diagnostics").setup()
+	require("neodev").setup({})
+	require("ch.plugins.lsp.diagnostics").setup()
+	local lspconfig = require("lspconfig")
+	local telescope_mapper = require("ch.plugins.telescope.mappings")
 
-  local lspconfig = require('lspconfig')
+	vim.api.nvim_create_autocmd("LspAttach", {
+		group = vim.api.nvim_create_augroup("kickstart-lsp-attach", { clear = true }),
+		callback = function(event)
+			local map = function(keys, func, desc)
+				vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
+			end
+			local lsp_rename = function()
+				vim.lsp.buf.rename()
+				vim.cmd("wa")
+			end
 
-  local autocmd = require('ch.utils.auto').autocmd
-  local autocmd_clear = vim.api.nvim_clear_autocmds
+			map("gd", telescope_mapper("lsp_definitions"), "[G]oto [D]efinition")
+			map("gr", telescope_mapper("lsp_references"), "[G]oto [R]eferences")
+			map("gi", telescope_mapper("lsp_implementations"), "[G]oto [I]mplementations")
+			map("gt", telescope_mapper("lsp_type_definitions"), "[G]oto [T]ype Definitions")
+			map("<leader>ws", telescope_mapper("lsp_dynamic_workspace_symbols"), "[W]workspace [S]ymbols")
+			map("<leader>ds", telescope_mapper("lsp_document_symbols"), "[D]ocument [S]ymbols")
+			map("<leader>dl", vim.diagnostic.open_float, "[D]iagnostics [L]ine")
+			map("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
+			map("<leader>rn", lsp_rename, "[R]e[n]ame")
+			map("K", vim.lsp.buf.hover, "Hover")
 
-  local augroup_highlight = vim.api.nvim_create_augroup("custom-lsp-references", { clear = true })
-  local augroup_codelens = vim.api.nvim_create_augroup("custom-lsp-codelens", { clear = true })
-  local inlays = require "ch.plugins.lsp.inlay"
-  local augroup_format = vim.api.nvim_create_augroup('custom-lsp-format', { clear = true })
-  local autocmd_format = function(async, filter, callback)
-    vim.api.nvim_clear_autocmds { buffer = 0, group = augroup_format }
-    if callback == nil then
-      callback = function()
-        vim.lsp.buf.format { async = async, filter = filter }
-      end
-    end
-    vim.api.nvim_create_autocmd("BufWritePre", {
-      buffer = 0,
-      callback = callback,
-      group = augroup_format,
-    })
-  end
+			-- The following two autocommands are used to highlight references of the
+			-- word under your cursor when your cursor rests there for a little while.
+			--    See `:help CursorHold` for information about when this is executed
+			--
+			-- When you move your cursor, the highlights will be cleared (the second autocommand).
+			local client = vim.lsp.get_client_by_id(event.data.client_id)
+			if client and client.server_capabilities.documentHighlightProvider then
+				vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+					buffer = event.buf,
+					callback = vim.lsp.buf.document_highlight,
+				})
 
+				vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+					buffer = event.buf,
+					callback = vim.lsp.buf.clear_references,
+				})
+			end
+		end,
+	})
 
-  local filetype_attach = setmetatable({
-    go = function()
-      autocmd_format(false, nil, require('go.format').goimport())
-    end,
-    typescript = function()
-      autocmd_format(false, function(client)
-        return client.name ~= "tsserver"
-      end, function()
-          vim.cmd("EslintFixAll")
-        end)
-    end,
-  }, {
-      __index = function()
-        return function() end
-      end,
-    })
+	-- LSP servers and clients are able to communicate to each other what features they support.
+	--  By default, Neovim doesn't support everything that is in the LSP Specification.
+	--  When you add nvim-cmp, luasnip, etc. Neovim now has *more* capabilities.
+	--  So, we create new capabilities with nvim cmp, and then broadcast that to the servers.
+	local capabilities = vim.lsp.protocol.make_client_capabilities()
+	capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
 
-  local custom_attach = function(client, bufnr)
-    local filetype = vim.api.nvim_buf_get_option(0, "filetype")
-    require("ch.plugins.lsp.keys").setup(client, bufnr)
-    vim.bo.omnifunc = "v:lua.vim.lsp.omnifunc"
+	local servers = {
+		pyright = {},
+		terraformls = {},
+		lua_ls = {
+			single_file_support = true,
+			settings = {
+				Lua = {
+					runtime = { version = "LuaJIT" },
+					completion = {
+						callSnippet = "Replace",
+					},
+					workspace = {
+						checkThirdParty = false,
+						unusedLocalExclude = { "*_" },
+						-- Tells lua_ls where to find all the Lua files that you have loaded
+						-- for your neovim configuration
+						library = {
+							"${3rd}/luv/library",
+							unpack(vim.api.nvim_get_runtime_file("", true)),
+						},
+					},
+				},
+			},
+		},
+		eslint = {
+			root_dir = lspconfig.util.root_pattern(".eslintrc", ".eslintrc.js", ".eslintrc.json"),
+			settings = {
+				format = {
+					enable = true,
+				},
+			},
+			handlers = {
+				-- this error shows up occasionally when formatting
+				-- formatting actually works, so this will supress it
+				["window/showMessageRequest"] = function(_, result)
+					if result.message:find("ENOENT") then
+						return vim.NIL
+					end
 
+					return vim.lsp.handlers["window/showMessageRequest"](nil, result)
+				end,
+			},
+		},
+		tsserver = {
+			settings = {
+				typescript = {},
+				javascript = {},
+				completions = {
+					completeFunctionCalls = true,
+				},
+			},
+		},
+		rust_analyzer = {},
+		gopls = {
+			settings = {
+				gopls = {
+					buildFlags = { "--tags=all" },
+					codelenses = { test = true },
+				},
+			},
+			flags = {
+				debounce_text_changes = 200,
+			},
+		},
+	}
 
-    -- Set autocommands conditional on server_capabilities
-    if client.server_capabilities.document_highlight then
-      autocmd_clear { group = augroup_highlight, buffer = bufnr }
-      autocmd { "CursorHold", augroup_highlight, vim.lsp.buf.document_highlight, buffer = bufnr }
-      autocmd { "CursorMoved", augroup_highlight, vim.lsp.buf.clear_references, buffer = bufnr }
-    end
+	require("mason").setup()
+	local ensure_installed = vim.tbl_keys(servers or {})
+	vim.list_extend(ensure_installed, {
+		"stylua", -- Used to format lua code
+		"shellcheck",
+		"shfmt",
+		"codelldb",
+	})
+	require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
+	require("mason-lspconfig").setup({
+		handlers = {
+			function(server_name)
+				local server = servers[server_name] or {}
 
-    if false and client.server_capabilities.codeLensProvider then
-      autocmd_clear { group = augroup_codelens, buffer = bufnr }
-      autocmd { "BufEnter", augroup_codelens, vim.lsp.codelens.refresh, bufnr, once = true }
-      autocmd { { "BufWritePost", "CursorHold" }, augroup_codelens, vim.lsp.codelens.refresh, bufnr }
-    end
-
-    filetype_attach[filetype]()
-  end
-
-  -- nvim-cmp supports additional completion capabilities
-  local updated_capabilities = vim.lsp.protocol.make_client_capabilities()
-  updated_capabilities.textDocument.completion.completionItem.snippetSupport = true
-  vim.tbl_deep_extend("force", updated_capabilities, require("cmp_nvim_lsp").default_capabilities())
-
-  updated_capabilities.textDocument.codeLens = { dynamicRegistration = false }
-
-  local servers = {
-    pyright = true,
-    terraformls = {
-      -- filetypes = { "terraform", "hcl", "terraform-vars" },
-    },
-    java_language_server = true,
-    lua_ls = {
-      single_file_support = true,
-      settings = {
-        Lua = {
-          workspace = {
-            checkThirdParty = false,
-            completion = {
-              workspaceWord = true,
-              callSnippet = "Both",
-            },
-            unusedLocalExclude = {"*_"},
-            format = {
-              enable = false,
-              defaultConfig = {
-                indent_style = "space",
-                indent_size = "2",
-                continuation_indent_size = "2",
-              }
-            }
-          }
-        }
-      }
-    },
-    eslint = {
-      root_dir = lspconfig.util.root_pattern(".eslintrc", ".eslintrc.js", ".eslintrc.json"),
-      settings = {
-        format = {
-          enable = true,
-        },
-      },
-      handlers = {
-        -- this error shows up occasionally when formatting
-        -- formatting actually works, so this will supress it
-        ["window/showMessageRequest"] = function(_, result)
-          if result.message:find("ENOENT") then
-            return vim.NIL
-          end
-
-          return vim.lsp.handlers["window/showMessageRequest"](nil, result)
-        end,
-      },
-    },
-    tsserver = {
-      settings = {
-        typescript = {
-          format = {
-            indentSize = vim.o.shiftwidth,
-            convertTabsToSpaces = vim.o.expandtab,
-            tabSize = vim.o.tabstop,
-          },
-        },
-        javascript = {
-          format = {
-            indentSize = vim.o.shiftwidth,
-            convertTabsToSpaces = vim.o.expandtab,
-            tabSize = vim.o.tabstop,
-          },
-        },
-        completions = {
-          completeFunctionCalls = true,
-        },
-      },
-    },
-    rust_analyzer = {},
-    gopls = {
-      codelenses = { test = true },
-      hints = inlays and {
-        assignVariableTypes = true,
-        compositeLiteralFields = true,
-        compositeLiteralTypes = true,
-        constantValues = true,
-        functionTypeParameters = true,
-        parameterNames = true,
-        rangeVariableTypes = true,
-      } or nil,
-      -- root_dir = function(fname)
-      --   local Path = require "plenary.path"
-      --
-      --   local absolute_cwd = Path:new(vim.loop.cwd()):absolute()
-      --   local absolute_fname = Path:new(fname):absolute()
-      --
-      --   if string.find(absolute_cwd, "/cmd/", 1, true) and string.find(absolute_fname, absolute_cwd, 1, true) then
-      --     return absolute_cwd
-      --   end
-      --
-      --   return lspconfig_util.root_pattern("go.mod", ".git")(fname)
-      -- end,
-
-      settings = {
-        gopls = {
-          codelenses = { test = true },
-        },
-      },
-
-      flags = {
-        debounce_text_changes = 200,
-      },
-    },
-  }
-
-  local setup_server = function(server, config)
-    if not config then
-      return
-    end
-
-    if type(config) ~= "table" then
-      config = {}
-    end
-
-    config = vim.tbl_deep_extend("force", {
-      on_attach = custom_attach,
-      capabilities = updated_capabilities,
-      flags = {
-        debounce_text_changes = 150,
-      },
-    }, config)
-
-    if server == "rust_analyzer" then
-      require('rust-tools').setup({ server = config })
-    else
-      lspconfig[server].setup(config)
-    end
-  end
-
-  for server, config in pairs(servers) do
-    setup_server(server, config)
-  end
-
-  require('ch.plugins.none-ls').setup({
-    on_attach = custom_attach,
-  })
+				-- This handles overriding only values explicitly passed
+				-- by the server configuration above. Useful when disabling
+				-- certain features of an LSP (for example, turning off formatting for tsserver)
+				server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
+				require("lspconfig")[server_name].setup(server)
+			end,
+		},
+	})
 end
 
 return M

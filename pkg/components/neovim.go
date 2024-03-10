@@ -7,12 +7,19 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-type Neovim struct {
-	pulumi.ResourceState
+type Neovim interface {
+	Component
 }
 
-func NewNeovim(ctx *pulumi.Context, project *Project, name string, opts pulumi.ResourceOption) (*Neovim, error) {
-	n := &Neovim{}
+type neovim struct {
+	pulumi.ResourceState
+	*component
+}
+
+func NewNeovim(ctx *pulumi.Context, project *Project, name string, opts pulumi.ResourceOption) (Neovim, error) {
+	n := &neovim{
+		component: NewComponent(),
+	}
 	if err := ctx.RegisterComponentResource("pde:index:Neovim", name, n, opts); err != nil {
 		return nil, err
 	}
@@ -32,7 +39,7 @@ func NewNeovim(ctx *pulumi.Context, project *Project, name string, opts pulumi.R
 		UpdateCommands:  releaseCommands,
 	})
 
-	deps := []string{
+	n.AddDeps(
 		"libintl",
 		"ninja",
 		"libtool",
@@ -41,11 +48,9 @@ func NewNeovim(ctx *pulumi.Context, project *Project, name string, opts pulumi.R
 		"pkg-config",
 		"gettext",
 		"curl",
-	}
-	for _, v := range deps {
-		project.AddDep(v, nil)
-	}
-	project.Profile.AddToSystemPath(path.Join(project.Home.HomeVar, "neovim", "bin"))
+	)
+
+	n.AddToSystemPath(path.Join(project.Home.HomeVar, "neovim", "bin"))
 
 	return n, nil
 }

@@ -17,13 +17,13 @@ local function on_attach(bufnr)
     if vim.wo.diff then return ']c' end
     vim.schedule(function() gs.next_hunk() end)
     return '<Ignore>'
-  end, {expr=true})
+  end, {expr=true, desc = "Next Hunk"})
 
   map('n', '[c', function()
     if vim.wo.diff then return '[c' end
     vim.schedule(function() gs.prev_hunk() end)
     return '<Ignore>'
-  end, {expr=true})
+  end, {expr=true, desc = "Previous Hunk"})
 
   -- Actions
   map({'n', 'v'}, '<leader>hs', ':Gitsigns stage_hunk<CR>', { desc = 'Gitsigns Stage Hunk' })

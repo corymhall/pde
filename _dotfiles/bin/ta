@@ -9,6 +9,7 @@ selected=$(fd -t d -d 1 -- "$DIR" \
   ~/personal \
   ~/playground \
   ~/github \
+  ~/work \
   | fzf)
 echo "$selected"
 if [[ -z $selected ]]; then
@@ -22,6 +23,8 @@ elif [[ $selected == $HOME/playground** ]]; then
   session_name="playground"
 elif [[ $selected == $HOME/personal** ]]; then
   session_name="personal"
+elif [[ $selected == $HOME/work** ]]; then
+  session_name="work"
 fi
 
 selected_name=$(basename "$selected" | tr . _)

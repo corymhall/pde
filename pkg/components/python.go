@@ -7,12 +7,19 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-type Python struct {
-	pulumi.ResourceState
+type Python interface {
+	Component
 }
 
-func NewPython(ctx *pulumi.Context, project *Project, name string, opts pulumi.ResourceOption) (*Python, error) {
-	p := &Python{}
+type python struct {
+	pulumi.ResourceState
+	*component
+}
+
+func NewPython(ctx *pulumi.Context, project *Project, name string, opts pulumi.ResourceOption) (Python, error) {
+	p := &python{
+		component: NewComponent(),
+	}
 	if err := ctx.RegisterComponentResource("pde:index:Python", name, p, opts); err != nil {
 		return nil, err
 	}
@@ -29,9 +36,11 @@ func NewPython(ctx *pulumi.Context, project *Project, name string, opts pulumi.R
 			fmt.Sprintf("./bin/pyenv global %s", "3.11.5"),
 		}),
 	})
-	project.Profile.AddToEnv("PYENV_ROOT", pulumi.String("$HOME/.pyenv"))
-	project.Profile.AddToSystemPath("$PYENV_ROOT/bin")
-	project.Profile.AddLines(pulumi.String(`eval "$($HOME/.pyenv/bin/pyenv init -)"`))
+	p.AddToEnv("PYENV_ROOT", "$HOME/.pyenv")
+	p.AddToSystemPath("$PYENV_ROOT/bin")
+	p.AddLines(
+		`eval "$($HOME/.pyenv/bin/pyenv init -)"`,
+	)
 
 	return p, nil
 }

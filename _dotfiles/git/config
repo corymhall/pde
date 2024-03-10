@@ -32,7 +32,7 @@
 [user]
   email = "43035978+corymhall@users.noreply.github.com"
   name = "corymhall"
-  signingkey = "DDB8E901194EB317"
+  signingkey = "10E0136E71568E18"
 [url "https://github.com/"]
 insteadOf = git@github.com:
 [url "https://github.com/"]

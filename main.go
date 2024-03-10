@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/corymhall/pde-pulumi/pkg/components"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
@@ -11,36 +13,19 @@ func main() {
 		if err != nil {
 			return err
 		}
-		if err := NewProfiles(ctx, project); err != nil {
-			return err
-		}
-		project.AddDep("fd", nil)
-		project.AddDep("ripgrep", nil)
-		project.AddDep("gh", nil)
-		project.AddDep("aws-vault", nil)
-		project.AddDep("fzf", nil)
-		project.AddDep("jq", nil)
-		project.AddDep("shellcheck", nil)
-		project.AddDep("libpq", nil)
-		project.AddDep("exa", nil)
-		project.AddDep("tmux", nil)
-		project.AddDep("pulumi", pulumi.StringRef("pulumi/tap"))
-		project.AddDep("pulumictl", pulumi.StringRef("pulumi/tap"))
-		project.AddDep("MisterTea/et/et", pulumi.StringRef("mistertea/et"))
-		project.AddDep("tfenv", nil)
-		project.AddDep("cask:font-hack-nerd-font", pulumi.StringRef("homebrew/cask-fonts"))
-		project.AddDep("font-monaspace", pulumi.StringRef("homebrew/cask-fonts"))
 
-		_, err = components.NewNeovim(ctx, project, "neovim", nil)
+		neovim, err := components.NewNeovim(ctx, project, "neovim", nil)
 		if err != nil {
 			return err
 		}
 
-		if _, err := components.NewGitConfig(ctx, project, "gitconfig", nil); err != nil {
+		_, err = components.NewGitConfig(ctx, project, "gitconfig", nil)
+		if err != nil {
 			return err
 		}
 
-		if _, err := components.NewAwsCli(ctx, project, "awscli", nil); err != nil {
+		aws, err := components.NewAwsCli(ctx, project, "awscli", nil)
+		if err != nil {
 			return err
 		}
 
@@ -48,11 +33,13 @@ func main() {
 			return err
 		}
 
-		if _, err := components.NewJava(ctx, project, "java", nil); err != nil {
-			return err
-		}
+		// java, err := components.NewJava(ctx, project, "java", nil)
+		// if err != nil {
+		// 	return fmt.Errorf("Error building java: %w", err)
+		// }
 
-		if _, err := components.NewPython(ctx, project, "python", nil); err != nil {
+		python, err := components.NewPython(ctx, project, "python", nil)
+		if err != nil {
 			return err
 		}
 
@@ -60,7 +47,56 @@ func main() {
 			return err
 		}
 
-		if _, err := components.NewNpm(ctx, project, "npm", nil); err != nil {
+		npm, err := components.NewNpm(ctx, project, "npm", nil)
+		if err != nil {
+			return err
+		}
+		_, err = components.NewBrew(ctx, project, "Brew", components.BrewArgs{
+			Deps: []string{
+				"fd",
+				"1password-cli",
+				"ripgrep",
+				"gh",
+				"aws-vault",
+				"fzf",
+				"jq",
+				"shellcheck",
+				"libpq",
+				"tmux",
+				"pulumi",
+				"pulumictl",
+				"MisterTea/et/et",
+				"tfenv",
+				"font-monaspace-nerd-font",
+				"gnupg",
+				"pinentry-mac",
+				"bash",
+				"gradle",
+				"openjdk@11",
+				"hugo",
+			},
+			Components: []components.Component{neovim},
+		}, pulumi.Parent(project))
+		if err != nil {
+			return err
+		}
+
+		if err := NewProfiles(ctx, project, ProfilesArgs{
+			SystemPaths: pulumi.ToStringArray([]string{
+				fmt.Sprintf("%s/.dotnet", project.Home.HomeLocation),
+				"/opt/homebrew/opt/openjdk@11/bin",
+			}),
+			Env: map[string]pulumi.StringInput{
+				"JAVA_HOME": pulumi.String("/opt/homebrew/opt/openjdk@11"),
+			},
+			Lines: pulumi.ToStringArray([]string{}),
+			Components: []components.Component{
+				neovim,
+				python,
+				aws,
+				npm,
+			},
+		}, pulumi.Parent(project)); err != nil {
 			return err
 		}
 

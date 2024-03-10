@@ -8,6 +8,16 @@ function npmg() {
   popd
 }
 
+function exp() {
+  pulumi logout
+  if [ "$1" = "w" ]
+  then
+    export PULUMI_ACCESS_TOKEN=$PULUMI_WORK_TOKEN
+  else
+    export PULUMI_ACCESS_TOKEN=$PULUMI_PERSONAL_TOKEN
+  fi
+}
+
 function p() { fd -t d "$1" | fzf | cd }
 function wt() {
   w=$(tmux-worktree)

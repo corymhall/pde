@@ -10,10 +10,15 @@ import (
 
 type Java struct {
 	pulumi.ResourceState
+	SystemPaths []string
+	Env         map[string]pulumi.StringInput
 }
 
 func NewJava(ctx *pulumi.Context, project *Project, name string, opts pulumi.ResourceOption) (*Java, error) {
-	java := &Java{}
+	java := &Java{
+		SystemPaths: []string{},
+		Env:         map[string]pulumi.StringInput{},
+	}
 	if err := ctx.RegisterComponentResource("pde:index:Java", name, java, opts); err != nil {
 		return nil, err
 	}
@@ -32,8 +37,8 @@ func NewJava(ctx *pulumi.Context, project *Project, name string, opts pulumi.Res
 	}, pulumi.Parent(java))
 
 	javaHome := path.Join(mvnLoc, "jdk-21.jdk", "Contents", "Home")
-	project.Profile.AddToEnv("JAVA_HOME", pulumi.String(javaHome))
-	project.Profile.AddToSystemPath("$JAVA_HOME/bin")
+	java.Env["JAVA_HOME"] = pulumi.String(javaHome)
+	java.SystemPaths = append(java.SystemPaths, "$JAVA_HOME/bin")
 
 	installers.NewShell(ctx, "maven", &installers.ShellArgs{
 		DownloadURL: pulumi.String("https://dlcdn.apache.org/maven/maven-3/3.9.4/binaries/apache-maven-3.9.4-bin.tar.gz"),
@@ -49,7 +54,7 @@ func NewJava(ctx *pulumi.Context, project *Project, name string, opts pulumi.Res
 			fmt.Sprintf("rm -rf %s", path.Join(mvnLoc, "apache-maven-3.9.4")),
 		}),
 	}, pulumi.Parent(java))
-	project.Profile.AddToSystemPath(path.Join(mvnLoc, "apache-maven-3.9.4", "bin"))
+	java.SystemPaths = append(java.SystemPaths, fmt.Sprintf(path.Join(mvnLoc, "apache-maven-3.9.4", "bin")))
 
 	return java, nil
 }

@@ -1,29 +1,29 @@
-brew fd
-brew ripgrep
-brew gh
-brew aws-vault
-brew fzf
-brew jq
-brew shellcheck
-brew libpq
-brew exa
-brew tmux
-tap pulumi/tap
-brew pulumi
-tap pulumi/tap
-brew pulumictl
-tap mistertea/et
-brew MisterTea/et/et
-brew tfenv
-tap homebrew/cask-fonts
-brew cask:font-hack-nerd-font
-tap homebrew/cask-fonts
-brew font-monaspace
-brew libintl
-brew ninja
-brew libtool
-brew automake
-brew cmake
-brew pkg-config
-brew gettext
-brew curl
+fd
+1password-cli
+ripgrep
+gh
+aws-vault
+fzf
+jq
+shellcheck
+libpq
+tmux
+pulumi
+pulumictl
+MisterTea/et/et
+tfenv
+font-monaspace-nerd-font
+gnupg
+pinentry-mac
+bash
+gradle
+openjdk@11
+hugo
+libintl
+ninja
+libtool
+automake
+cmake
+pkg-config
+gettext
+curl

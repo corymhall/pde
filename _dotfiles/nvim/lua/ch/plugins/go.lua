@@ -23,28 +23,15 @@ function M.config()
     lsp_on_attach = false,
     gopls_cmd = { install_root_dir .. '/go/gopls' },
   })
-end
+  -- Run gofmt + goimport on save
 
-function M.init()
-  local wk = require('which-key')
-  wk.register({
-    ['<leader>'] = {
-      c = {
-        name = "+code",
-        g = {
-          name = "+go",
-          a = {
-            name = "+add"
-          },
-          r = {
-            name = "+remove"
-          },
-          t = {
-            name = "+test"
-          }
-        }
-      }
-    }
+  local format_sync_grp = vim.api.nvim_create_augroup("GoImport", {})
+  vim.api.nvim_create_autocmd("BufWritePre", {
+    pattern = "*.go",
+    callback = function()
+      require('go.format').goimport()
+    end,
+    group = format_sync_grp,
   })
 end
 

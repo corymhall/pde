@@ -10,21 +10,21 @@ function display_get_help() {
     owner  GitHub organization to search (default: rv-health)
 
     example usage:
-      get rv-health
+      get pulumi
   "
   echo "$msg"
 }
 
 function get() {
-  local msg="usage: tm get rv-health"
+  local msg="usage: tm get pulumi"
   # eval preprocess || exit_with_help "$(display_get_help)";
 
   local owner=$1
   local repo_name=$2
 
   if [ -z "$owner" ]; then
-    # default to rv-health
-    owner="rv-health"
+    # default to pulumi
+    owner="pulumi"
   fi
 
   local selected
@@ -82,8 +82,8 @@ function find_dir() {
   local dir
   if [[ "$1" == "corymhall" ]]; then
     dir="$HOME/personal"
-  elif [[ "$1" == "rv-health" ]]; then
-    dir="$HOME/work/rv-health"
+  elif [[ "$1" == "pulumi" ]]; then
+    dir="$HOME/work"
   fi
   echo "$dir"
 }
