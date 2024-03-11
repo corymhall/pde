@@ -61,16 +61,16 @@ func NewInstalls(ctx *pulumi.Context, project *components.Project) error {
 		VersionCommand: pulumi.Sprintf("%s/.dotnet/dotnet --version", project.Home.HomeLocation),
 	})
 
-	installers.NewShell(ctx, "docker", &installers.ShellArgs{
-		DownloadURL: pulumi.String("https://desktop.docker.com/mac/main/arm64/139021/Docker.dmg"),
-		ProgramName: pulumi.String("docker"),
-		Executable:  pulumi.BoolPtr(false),
-		InstallCommands: pulumi.ToStringArray([]string{
-			"sudo hdiutil attach Docker.dmg",
-			"sudo /Volumes/Docker/Docker.app/Contents/MacOS/install",
-			"sudo hdiutil detach /Volumes/Docker",
-		}),
-	})
+	// installers.NewShell(ctx, "docker", &installers.ShellArgs{
+		// DownloadURL: pulumi.String("https://desktop.docker.com/mac/main/arm64/139021/Docker.dmg"),
+		// ProgramName: pulumi.String("docker"),
+		// Executable:  pulumi.BoolPtr(false),
+		// InstallCommands: pulumi.ToStringArray([]string{
+			// "sudo hdiutil attach Docker.dmg",
+			// "sudo /Volumes/Docker/Docker.app/Contents/MacOS/install",
+			// "sudo hdiutil detach /Volumes/Docker",
+		// }),
+	// })
 	// installers.NewGitHubRepo(ctx, "tpm", &installers.GitHubRepoArgs{
 	// 	Branch:     pulumi.String("master"),
 	// 	FolderName: pulumi.Sprintf("%s/%s", project.Home.HomeLocation, ".tmux/plugins/tpm"),

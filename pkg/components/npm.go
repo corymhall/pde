@@ -1,6 +1,7 @@
 package components
 
 import (
+	"fmt"
 	"path"
 
 	"github.com/corymhall/pulumi-provider-pde/sdk/go/pde/installers"
@@ -24,12 +25,15 @@ func NewNpm(ctx *pulumi.Context, project *Project, name string, opts pulumi.Reso
 		return nil, err
 	}
 
-	installers.NewGitHubRepo(ctx, "nvm", &installers.GitHubRepoArgs{
+	repo, err := installers.NewGitHubRepo(ctx, "nvm", &installers.GitHubRepoArgs{
 		Branch:     pulumi.String("master"),
 		Org:        pulumi.String("nvm-sh"),
 		Repo:       pulumi.String("nvm"),
 		FolderName: pulumi.String(".nvm"),
 	})
+	if err != nil {
+		return nil, fmt.Errorf("error creating nvm repo: %w", err)
+	}
 
 	n.AddLines(
 		`export NVM_DIR="$HOME/.nvm"`,
@@ -58,7 +62,7 @@ func NewNpm(ctx *pulumi.Context, project *Project, name string, opts pulumi.Reso
 			"artillery",
 			"yarn",
 		}),
-	})
+	}, pulumi.DependsOn([]pulumi.Resource{repo}))
 	n.AddToSystemPath(path.Join(npm, "node_modules", ".bin"))
 
 	return n, nil

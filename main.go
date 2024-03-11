@@ -51,10 +51,11 @@ func main() {
 		if err != nil {
 			return err
 		}
+
 		_, err = components.NewBrew(ctx, project, "Brew", components.BrewArgs{
 			Deps: []string{
 				"fd",
-				"1password-cli",
+				"cask:1password-cli",
 				"ripgrep",
 				"gh",
 				"aws-vault",
@@ -63,11 +64,11 @@ func main() {
 				"shellcheck",
 				"libpq",
 				"tmux",
-				"pulumi",
+				"pulumi/tap::pulumi",
 				"pulumictl",
-				"MisterTea/et/et",
+				"mistertea/et::MisterTea/et/et",
 				"tfenv",
-				"font-monaspace-nerd-font",
+				"homebrew/cask-fonts::cask:font-monaspace-nerd-font",
 				"gnupg",
 				"pinentry-mac",
 				"bash",

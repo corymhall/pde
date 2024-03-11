@@ -66,7 +66,7 @@ func NewZshProfile(ctx *pulumi.Context, name string, args ZshProfileArgs, opts .
 	if args.Lines == nil {
 		args.Lines = []pulumi.StringInput{}
 	}
-	lines := args.Lines
+	lines := []pulumi.StringInput{}
 	lines = append(lines, renderPlugins(zinit.AbsFolderName, args.ZshPlugins)...)
 	lines = append(lines, renderAliases(args.Project, args.Aliases)...)
 	lines = append(lines,
@@ -108,7 +108,12 @@ func NewZshProfile(ctx *pulumi.Context, name string, args ZshProfileArgs, opts .
 		pulumi.String("autoload -Uz compinit && compinit"),
 		pulumi.String("eval \"$(op completion zsh)\"; compdef _op op"),
 		pulumi.String(""),
+		pulumi.String("# -----------------------------------------------------"),
+		pulumi.String("# ----------------Component Configuration--------------"),
+		pulumi.String("# -----------------------------------------------------"),
+		pulumi.String(""),
 	)
+	lines = append(lines, args.Lines...)
 
 	profile, err := NewProfile(ctx, "zsh", ProfileArgs{
 		FileName:    "zshrc",
