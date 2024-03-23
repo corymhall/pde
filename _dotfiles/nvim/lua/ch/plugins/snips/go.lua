@@ -206,4 +206,25 @@ if <err> != nil {
 	s("ps", fmta('pulumi.String("<arg>"),<finish>', { arg = i(1), finish = i(0) })),
 	s("pb", fmta('pulumi.Bool("<arg>",<finish>)', { arg = i(1), finish = i(0) })),
 	s("pi", fmta('pulumi.Int("<arg>",<finish>)', { arg = i(1), finish = i(0) })),
+	s(
+		"psa",
+		c(1, {
+			fmta(
+				[[
+pulumi.ToStringArray([]string{
+	<arg>
+})<finish>
+]],
+				{ arg = i(1), finish = i(0) }
+			),
+			fmta(
+				[[
+[]pulumi.StringInput{
+	<arg>
+}<finish>
+]],
+				{ arg = i(1), finish = i(0) }
+			),
+		})
+	),
 })

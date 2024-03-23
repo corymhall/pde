@@ -50,10 +50,10 @@ func NewNeovim(ctx *pulumi.Context, project *Project, name string, opts pulumi.R
 	})
 
 	n.AddDeps(
-		"ninja",
-		"cmake",
-		"gettext",
-		"curl",
+		BrewPackage("ninja"),
+		BrewPackage("cmake"),
+		BrewPackage("gettext"),
+		BrewPackage("curl"),
 	)
 
 	n.AddToSystemPath(path.Join(project.Home.HomeVar, "neovim", "bin"))

@@ -29,6 +29,10 @@
   template = "~/.gitmessage"
   gpgsign = true
 
+[status]
+  submoduleSummary = true
+[diff]
+  submodule = log
 [user]
   email = "43035978+corymhall@users.noreply.github.com"
   name = "corymhall"

@@ -3,7 +3,6 @@ package components
 import (
 	"fmt"
 	"path"
-	"strings"
 
 	"github.com/corymhall/pulumi-provider-pde/sdk/go/pde/local"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
@@ -15,13 +14,54 @@ type Brew struct {
 }
 
 type BrewArgs struct {
-	Deps       []string
+	Deps       []BrewDep
 	Components []Component
+}
+
+type BrewDep struct {
+	pkg  string
+	tap  string
+	cask string
+}
+
+func BrewTapCask(tap string, cask string) BrewDep {
+	return BrewDep{
+		cask: cask,
+		tap:  tap,
+	}
+}
+
+func BrewPackage(pkg string) BrewDep {
+	return BrewDep{
+		pkg: pkg,
+	}
+}
+
+func BrewFromTap(tap string, pkg string) BrewDep {
+	return BrewDep{
+		pkg: pkg,
+		tap: tap,
+	}
+}
+
+func (b *BrewDep) Render() []string {
+	lines := []string{}
+	if b.tap != "" {
+		lines = append(lines, fmt.Sprintf(`tap "%s"`, b.tap))
+	}
+	if b.pkg != "" {
+		lines = append(lines, fmt.Sprintf(`brew "%s"`, b.pkg))
+	}
+	if b.cask != "" {
+		lines = append(lines, fmt.Sprintf(`cask "%s"`, b.cask))
+	}
+	return lines
+
 }
 
 func NewBrew(ctx *pulumi.Context, project *Project, name string, args BrewArgs, opts pulumi.ResourceOption) (*Brew, error) {
 	b := &Brew{}
-	deps := []string{}
+	deps := []BrewDep{}
 	deps = append(deps, args.Deps...)
 	for _, c := range args.Components {
 		deps = append(deps, c.GetDeps()...)
@@ -46,33 +86,10 @@ type BrewPkg struct {
 	Tap *string
 }
 
-func render(pkgs []string) []string {
+func render(pkgs []BrewDep) []string {
 	lines := []string{}
 	for _, pkg := range pkgs {
-		var tap string
-		var cask string
-		var brew string
-		parts := strings.Split(pkg, "::")
-		if len(parts) > 1 {
-			tap = parts[0]
-			brew = parts[1]
-		} else {
-			brew = parts[0]
-		}
-		parts = strings.Split(brew, "cask:")
-		if len(parts) > 1 {
-			cask = parts[1]
-			brew = ""
-		}
-		if tap != "" {
-			lines = append(lines, fmt.Sprintf(`tap "%s"`, tap))
-		}
-		if brew != "" {
-			lines = append(lines, fmt.Sprintf(`brew "%s"`, brew))
-		}
-		if cask != "" {
-			lines = append(lines, fmt.Sprintf(`cask "%s"`, cask))
-		}
+		lines = append(lines, pkg.Render()...)
 	}
 	return lines
 }

@@ -19,6 +19,9 @@ export PATH=$HOME/go/bin:$PATH
 # ------------Configure zinit and zsh plugins----------
 # -----------------------------------------------------
 source /Users/chall/.zinit/zinit.zsh
+zinit ice
+zinit light "atuinsh/atuin"
+
 zinit ice blockf lucid pick"init.sh" wait
 zinit light "b4b4r07/enhancd"
 

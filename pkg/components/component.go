@@ -5,12 +5,12 @@ import (
 )
 
 type Component interface {
-	AddDeps(deps ...string)
+	AddDeps(deps ...BrewDep)
 	AddLines(lines ...string)
 	AddToSystemPath(location string)
 	AddToEnv(key string, value string)
 
-	GetDeps() []string
+	GetDeps() []BrewDep
 	GetEnv() map[string]pulumi.StringInput
 	GetLines() []pulumi.StringInput
 	GetSystemPaths() []pulumi.StringInput
@@ -20,10 +20,10 @@ type component struct {
 	systemPaths []string
 	env         map[string]string
 	lines       []string
-	deps        []string
+	deps        []BrewDep
 }
 
-func (c *component) AddDeps(deps ...string) {
+func (c *component) AddDeps(deps ...BrewDep) {
 	c.deps = append(c.deps, deps...)
 }
 
@@ -39,7 +39,7 @@ func (c *component) AddToEnv(key string, value string) {
 	c.env[key] = value
 }
 
-func (c *component) GetDeps() []string {
+func (c *component) GetDeps() []BrewDep {
 	return c.deps
 }
 
@@ -72,7 +72,7 @@ func NewComponent() *component {
 	return &component{
 		env:         map[string]string{},
 		systemPaths: []string{},
-		deps:        []string{},
+		deps:        []BrewDep{},
 		lines:       []string{},
 	}
 }

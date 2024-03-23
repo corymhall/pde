@@ -32,7 +32,7 @@ function M.config()
 			map("gt", telescope_mapper("lsp_type_definitions"), "[G]oto [T]ype Definitions")
 			map("<leader>ws", telescope_mapper("lsp_dynamic_workspace_symbols"), "[W]workspace [S]ymbols")
 			map("<leader>ds", telescope_mapper("lsp_document_symbols"), "[D]ocument [S]ymbols")
-			map("<leader>dl", vim.diagnostic.open_float, "[D]iagnostics [L]ine")
+			map("<leader>e", vim.diagnostic.open_float, "[D]iagnostics [L]ine")
 			map("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
 			map("<leader>rn", lsp_rename, "[R]e[n]ame")
 			map("K", vim.lsp.buf.hover, "Hover")
@@ -53,6 +53,11 @@ function M.config()
 					buffer = event.buf,
 					callback = vim.lsp.buf.clear_references,
 				})
+			end
+
+			if client.name == "tsserver" then
+				client.server_capabilities.documentFormattingProvider = false
+				client.server_capabilities.documentRangeFormattingProvider = false
 			end
 		end,
 	})
@@ -89,7 +94,7 @@ function M.config()
 			},
 		},
 		eslint = {
-			root_dir = lspconfig.util.root_pattern(".eslintrc", ".eslintrc.js", ".eslintrc.json"),
+			root_dir = lspconfig.util.root_pattern(".eslintrc", ".eslintrc.js", ".eslintrc.json", ".eslintrc.cjs"),
 			settings = {
 				format = {
 					enable = true,

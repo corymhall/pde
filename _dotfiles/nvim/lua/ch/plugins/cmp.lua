@@ -33,13 +33,13 @@ function M.config()
 				behavior = cmp.ConfirmBehavior.Replace,
 				select = true,
 			}),
-			["c-y"] = cmp.mapping(
-				cmp.mapping.confirm({
-					behavior = cmp.ConfirmBehavior.Insert,
-					select = true,
-				}),
-				{ "i", "c" }
-			),
+			-- ["c-y"] = cmp.mapping(
+			-- 	cmp.mapping.confirm({
+			-- 		behavior = cmp.ConfirmBehavior.Insert,
+			-- 		select = true,
+			-- 	}),
+			-- 	{ "i", "c" }
+			-- ),
 		},
 		sources = cmp.config.sources({
 			-- { name = 'copilot' },

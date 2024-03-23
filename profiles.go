@@ -62,6 +62,9 @@ func NewProfiles(ctx *pulumi.Context, project *components.Project, args Profiles
 				PluginOptions: map[string]*string{"wait": nil, "lucid": nil},
 			},
 			{
+				PluginName: "atuinsh/atuin",
+			},
+			{
 				PluginName:    "rupa/z",
 				PluginOptions: map[string]*string{"pick": pulumi.StringRef("z.sh")},
 			},

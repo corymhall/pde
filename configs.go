@@ -39,5 +39,25 @@ func NewConfigs(ctx *pulumi.Context, project *components.Project) error {
 		return err
 	}
 
+	project.Home.AddLocation(ctx, "git-message", components.LinkProps{
+		Source: pulumi.String(path.Join(project.Dir, "git", "gitmessage")),
+		Target: ".gitmessage",
+	})
+
+	project.Home.AddLocation(ctx, "gpg-agent", components.LinkProps{
+		Source: pulumi.String(path.Join(project.Dir, "gnupg", "gpg-agent.conf")),
+		Target: path.Join(".gnupg", "gpg-agent.conf"),
+	})
+
+	project.Home.AddLocation(ctx, "gpg-conf", components.LinkProps{
+		Source: pulumi.String(path.Join(project.Dir, "gnupg", "gpg.conf")),
+		Target: path.Join(".gnupg", "gpg.conf"),
+	})
+
+	project.Home.AddLocation(ctx, "git-config", components.LinkProps{
+		Source: pulumi.String(path.Join(project.Dir, "git", "config")),
+		Target: path.Join(".config", "git", "config"),
+	})
+
 	return nil
 }

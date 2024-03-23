@@ -29,7 +29,7 @@ return {
 				ls.expand_or_jump()
 			end
 		end, { silent = true })
-		vim.keymap.set({ "i", "s" }, "<Tab>", function()
+		vim.keymap.set({ "s" }, "<Tab>", function()
 			if ls.jumpable(1) then
 				ls.jump(1)
 			end
@@ -47,7 +47,6 @@ return {
 				ls.change_choice(1)
 			end
 		end, { silent = true })
-		vim.keymap.set("i", "<c-u>", require("luasnip.extras.select_choice"))
 
 		require("ch.plugins.snips.typescript")
 		require("ch.plugins.snips.go")

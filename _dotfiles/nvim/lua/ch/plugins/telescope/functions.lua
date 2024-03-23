@@ -12,18 +12,23 @@ local reloader = function()
 	end
 end
 function M.fd()
-	local opts = themes.get_ivy({
+	local opts = {
 		hidden = false,
-		find_command = {
-			"fd",
-			"--type",
-			"f",
-			"--exclude",
-			"CHANGELOG.md", -- aws-cdk changelog is so big it slows down the preview :(
-			"--exclude",
-			"vendor",
+		layout_strategy = "bottom_pane",
+		sorting_strategy = "ascending",
+		layout_config = {
+			height = 25,
 		},
-	})
+		-- find_command = {
+		-- 	"fd",
+		-- 	"--type",
+		-- 	"f",
+		-- 	"--exclude",
+		-- 	"CHANGELOG.md", -- aws-cdk changelog is so big it slows down the preview :(
+		-- 	"--exclude",
+		-- 	"vendor",
+		-- },
+	}
 	require("telescope.builtin").fd(opts)
 end
 

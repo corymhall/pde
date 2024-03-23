@@ -7,6 +7,7 @@ return { -- Autoformat
 			lsp_fallback = true,
 		},
 		formatters_by_ft = {
+			swift = { "swiftformat" },
 			lua = { "stylua" },
 			-- Conform can also run multiple formatters sequentially
 			-- python = { "isort", "black" },

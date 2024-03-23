@@ -26,11 +26,11 @@ wk.register({
 	},
 	x = { name = "Trouble", _ = "which_key_ignore" },
 	d = { name = "[D]ocument", _ = "which_key_ignore" },
-	r = { name = "[R]ename", _ = "which_key_ignore" },
+	r = { name = "[R]andom", _ = "which_key_ignore" },
 	s = { name = "[S]earch", _ = "which_key_ignore" },
 	w = { name = "[W]orkspace", _ = "which_key_ignore" },
 	t = { name = "[T]est", _ = "which_key_ignore" },
-	o = { name = "[O]cto", _ = "which_key_ignore" },
+	o = { name = "[O]cto/[O]verseer", _ = "which_key_ignore" },
 	h = { name = "Gitsigns", _ = "which_key_ignore" },
 	b = {
 		name = "[B]uffer",
@@ -108,6 +108,10 @@ vim.keymap.set("n", "N", "Nzzzv")
 vim.keymap.set("n", "U", "<cmd>redo<cr>") -- redo
 vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = false, desc = "make  file executable" })
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
+vim.keymap.set("n", "<Esc>", function()
+	vim.api.nvim_command("nohlsearch")
+	require("notify").dismiss()
+end)
 -- Diagnostic keymaps
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous [D]iagnostic message" })
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next [D]iagnostic message" })
@@ -116,6 +120,18 @@ vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagn
 
 vim.keymap.set("n", "<leader>dgt", "<cmd>diffget //2<cr>", { desc = "diffget //2 (target parent)" })
 vim.keymap.set("n", "<leader>dgy", "<cmd>diffget //3<cr>", { desc = "diffget //3 (merge parent)" })
+
+vim.keymap.set({ "n", "i", "s" }, "<c-f>", function()
+	if not require("noice.lsp").scroll(4) then
+		return "<c-f>"
+	end
+end, { silent = true, expr = true })
+
+vim.keymap.set({ "n", "i", "s" }, "<c-b>", function()
+	if not require("noice.lsp").scroll(-4) then
+		return "<c-b>"
+	end
+end, { silent = true, expr = true })
 
 vim.keymap.set("n", "<leader>gy", function()
 	require("ch.utils.git").git_url("v")

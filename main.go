@@ -19,11 +19,6 @@ func main() {
 			return err
 		}
 
-		_, err = components.NewGitConfig(ctx, project, "gitconfig", nil)
-		if err != nil {
-			return err
-		}
-
 		aws, err := components.NewAwsCli(ctx, project, "awscli", nil)
 		if err != nil {
 			return err
@@ -32,11 +27,6 @@ func main() {
 		if err := NewInstalls(ctx, project); err != nil {
 			return err
 		}
-
-		// java, err := components.NewJava(ctx, project, "java", nil)
-		// if err != nil {
-		// 	return fmt.Errorf("Error building java: %w", err)
-		// }
 
 		python, err := components.NewPython(ctx, project, "python", nil)
 		if err != nil {
@@ -53,28 +43,32 @@ func main() {
 		}
 
 		_, err = components.NewBrew(ctx, project, "Brew", components.BrewArgs{
-			Deps: []string{
-				"fd",
-				"cask:1password-cli",
-				"ripgrep",
-				"gh",
-				"aws-vault",
-				"fzf",
-				"jq",
-				"shellcheck",
-				"libpq",
-				"tmux",
-				"pulumi/tap::pulumi",
-				"pulumictl",
-				"mistertea/et::MisterTea/et/et",
-				"tfenv",
-				"homebrew/cask-fonts::cask:font-monaspace-nerd-font",
-				"gnupg",
-				"pinentry-mac",
-				"bash",
-				"gradle",
-				"openjdk@11",
-				"hugo",
+			Deps: []components.BrewDep{
+				components.BrewPackage("fd"),
+				components.BrewTapCask("", "1password-cli"),
+				components.BrewPackage("ripgrep"),
+				components.BrewPackage("gh"),
+				components.BrewPackage("aws-vault"),
+				components.BrewPackage("fzf"),
+				components.BrewPackage("jq"),
+				components.BrewPackage("shellcheck"),
+				components.BrewPackage("libpq"),
+				components.BrewPackage("tmux"),
+				components.BrewFromTap("pulumi/tap", "pulumi"),
+				components.BrewPackage("pulumictl"),
+				components.BrewFromTap("mistertea/et", "MisterTea/et/et"),
+				components.BrewPackage("tfenv"),
+				components.BrewTapCask("homebrew/cask-fonts", "font-monaspace-nerd-font"),
+				components.BrewPackage("gnupg"),
+				components.BrewPackage("pinentry-mac"),
+				components.BrewPackage("bash"),
+				components.BrewPackage("gradle"),
+				components.BrewPackage("openjdk@11"),
+				components.BrewPackage("hugo"),
+				components.BrewPackage("xcode-build-server"),
+				components.BrewPackage("xcbeautify"),
+				components.BrewPackage("ruby"),
+				components.BrewPackage("atuin"),
 			},
 			Components: []components.Component{neovim},
 		}, pulumi.Parent(project))
