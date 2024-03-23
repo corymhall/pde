@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"path"
 
 	"github.com/corymhall/pde-pulumi/pkg/components"
+	"github.com/pulumi/pulumi-command/sdk/go/command/local"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -42,7 +44,7 @@ func main() {
 			return err
 		}
 
-		_, err = components.NewBrew(ctx, project, "Brew", components.BrewArgs{
+		brew, err := components.NewBrew(ctx, project, "Brew", components.BrewArgs{
 			Deps: []components.BrewDep{
 				components.BrewPackage("fd"),
 				components.BrewTapCask("", "1password-cli"),
@@ -75,6 +77,13 @@ func main() {
 		if err != nil {
 			return err
 		}
+		local.NewCommand(ctx, "brew-bundle", &local.CommandArgs{
+			Triggers: pulumi.Array{brew.ContentHash},
+			Dir:      pulumi.String(path.Join(project.Dir, "brew")),
+			Create:   pulumi.String("brew bundle"),
+			Update:   pulumi.String("brew bundle"),
+			Delete:   pulumi.String("echo nothing to do here"),
+		})
 
 		if err := NewProfiles(ctx, project, ProfilesArgs{
 			SystemPaths: pulumi.ToStringArray([]string{

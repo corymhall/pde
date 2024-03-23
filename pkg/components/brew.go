@@ -1,6 +1,7 @@
 package components
 
 import (
+	"crypto/sha256"
 	"fmt"
 	"path"
 
@@ -10,7 +11,8 @@ import (
 
 type Brew struct {
 	pulumi.ResourceState
-	content *content
+	content     *content
+	ContentHash pulumi.StringOutput `pulumi:"ContentHash"`
 }
 
 type BrewArgs struct {
@@ -69,14 +71,19 @@ func NewBrew(ctx *pulumi.Context, project *Project, name string, args BrewArgs, 
 	if err := ctx.RegisterComponentResource("pde:index:Brew", name, b, opts); err != nil {
 		return nil, err
 	}
+	renderedDeps := render(deps)
 	_, err := local.NewFile(ctx, "brewfile", &local.FileArgs{
 		Force:   pulumi.Bool(true),
 		Path:    pulumi.String(path.Join(project.Dir, "brew", "Brewfile")),
-		Content: pulumi.ToStringArray(render(deps)),
+		Content: pulumi.ToStringArray(renderedDeps),
 	})
 	if err != nil {
 		return nil, err
 	}
+
+	ctx.RegisterResourceOutputs(b, pulumi.Map{
+		"ContentHash": pulumi.String(hashStrings(renderedDeps)),
+	})
 
 	return b, nil
 }
@@ -92,4 +99,12 @@ func render(pkgs []BrewDep) []string {
 		lines = append(lines, pkg.Render()...)
 	}
 	return lines
+}
+
+func hashStrings(strings []string) string {
+	h := sha256.New()
+	for _, s := range strings {
+		h.Write([]byte(s))
+	}
+	return fmt.Sprintf("%x", h.Sum(nil))
 }
