@@ -1,6 +1,6 @@
-vim.opt.completeopt = 'menuone,noselect'
+vim.opt.inccommand = "split"
 vim.opt.spell = true
-vim.opt.spelllang = 'en'
+vim.opt.spelllang = "en"
 
 -- Cool floating window popup menu for completion on command line
 vim.opt.pumblend = 17
@@ -10,13 +10,13 @@ vim.opt.wildoptions = "pum"
 vim.opt.list = true -- show some invisible characters
 -- limited
 vim.opt.listchars = {
-  eol = '↲',
-  tab = '» ',
-  trail = '·',
-  extends = '<',
-  precedes = '>',
-  conceal = '┊',
-  nbsp ='␣',
+  eol = "↲",
+  tab = "» ",
+  trail = "·",
+  extends = "<",
+  precedes = ">",
+  conceal = "┊",
+  nbsp = "␣",
 }
 
 vim.opt.expandtab = true -- use spaces instead of tabs
@@ -29,18 +29,18 @@ vim.opt.scrolloff = 10 -- lines of context
 vim.opt.shiftround = true -- round indent
 vim.opt.shiftwidth = 2 --size of indent
 vim.opt.sidescrolloff = 8 -- columns of context
-vim.opt.smartcase = true                -- Do not ignore case with capitals
-vim.opt.smartindent = true              -- Insert indents automatically
-vim.opt.splitbelow = true               -- Put new windows below current
-vim.opt.splitright = true               -- Put new windows right of current
-vim.opt.tabstop = 2                     -- Number of spaces tabs count for
-vim.opt.termguicolors = true            -- True color support
+vim.opt.smartcase = true -- Do not ignore case with capitals
+vim.opt.smartindent = true -- Insert indents automatically
+vim.opt.splitbelow = true -- Put new windows below current
+vim.opt.splitright = true -- Put new windows right of current
+vim.opt.tabstop = 2 -- Number of spaces tabs count for
+vim.opt.termguicolors = true -- True color support
 --opt.wildmode = {'list', 'longest'}  -- Command-line completion mode
-vim.opt.wrap = false                    -- Disable line wrap
-vim.opt.mouse = 'a'
+vim.opt.wrap = false -- Disable line wrap
+vim.opt.mouse = "a"
 vim.opt.updatetime = 250
 vim.opt.timeoutlen = 300
-vim.wo.signcolumn = 'yes'
+vim.wo.signcolumn = "yes"
 vim.opt.formatoptions = vim.opt.formatoptions
   - "a" -- Auto formatting is BAD.
   - "t" -- Don't auto format my code. I got linters for that.
@@ -65,11 +65,10 @@ vim.opt.formatoptions = vim.opt.formatoptions
 --   cache_enabled = 1
 -- }
 
-vim.opt.clipboard = vim.o.clipboard .. 'unnamedplus'
-
+vim.opt.clipboard = vim.o.clipboard .. "unnamedplus"
 
 --Remap space as leader key
-vim.api.nvim_set_keymap('', ' ', '<Nop>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap("", " ", "<Nop>", { noremap = true, silent = true })
 
 vim.g.loaded_python3_provider = 0
 vim.g.loaded_perl_provider = 0

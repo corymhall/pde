@@ -71,6 +71,9 @@ func main() {
 				components.BrewPackage("xcbeautify"),
 				components.BrewPackage("ruby"),
 				components.BrewPackage("atuin"),
+				components.BrewPackage("swiftformat"),
+				components.BrewPackage("swiftlint"),
+				components.BrewPackage("eza"),
 			},
 			Components: []components.Component{neovim},
 		}, pulumi.Parent(project))
@@ -81,7 +84,7 @@ func main() {
 			Triggers: pulumi.Array{brew.ContentHash},
 			Dir:      pulumi.String(path.Join(project.Dir, "brew")),
 			Create:   pulumi.String("brew bundle"),
-			Update:   pulumi.String("brew bundle"),
+			Update:   pulumi.String("brew bundle --cleanup"),
 			Delete:   pulumi.String("echo nothing to do here"),
 		})
 

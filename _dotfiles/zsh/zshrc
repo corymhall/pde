@@ -107,7 +107,6 @@ bindkey -M vicmd "^V" edit-command-line
 
 autoload bashcompinit && bashcompinit
 autoload -Uz compinit && compinit
-eval "$(op completion zsh)"; compdef _op op
 
 # -----------------------------------------------------
 # ----------------Component Configuration--------------

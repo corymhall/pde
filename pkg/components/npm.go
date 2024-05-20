@@ -66,6 +66,7 @@ func NewNpm(ctx *pulumi.Context, project *Project, name string, opts pulumi.Reso
 		"npm-check-updates",
 		"esbuild",
 		"tree-sitter-cli",
+		"aws-cdk",
 	}
 
 	npm := path.Join(project.Dir, "npm")

@@ -106,7 +106,8 @@ func NewZshProfile(ctx *pulumi.Context, name string, args ZshProfileArgs, opts .
 		pulumi.String(""),
 		pulumi.String("autoload bashcompinit && bashcompinit"),
 		pulumi.String("autoload -Uz compinit && compinit"),
-		pulumi.String("eval \"$(op completion zsh)\"; compdef _op op"),
+		// this just hangs forever
+		// pulumi.String("eval \"$(op completion zsh)\"; compdef _op op"),
 		pulumi.String(""),
 		pulumi.String("# -----------------------------------------------------"),
 		pulumi.String("# ----------------Component Configuration--------------"),

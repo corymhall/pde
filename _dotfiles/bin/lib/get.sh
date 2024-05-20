@@ -84,6 +84,8 @@ function find_dir() {
     dir="$HOME/personal"
   elif [[ "$1" == "pulumi" ]]; then
     dir="$HOME/work"
+  else
+    dir="$HOME/github"
   fi
   echo "$dir"
 }

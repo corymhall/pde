@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+COMMAND=$1
+DIR=$2
+
+start_nvim() {
+  local target=$1
+  # echo "tmux send-keys -t $target \"nvim\" Enter;"
+  tmux send-keys -t "$target" "nvim" Enter;
+}
+
+# -b option will put the new pane on top
+split_window() {
+  tmux split-window -v -t "$target" -l 20
+}
+
+session_name=$(tmux display-message -p "#S")
+window_name=$(tmux display-message -p "#W")
+current_pane=$(tmux display-message -p "#P")
+
+# start nvim on the top
+# echo "session_name: $session_name"
+# echo "window_name: $window_name"
+# echo "current_pane: $current_pane"
+# echo "COMMAND: $COMMAND"
+
+new_window_name=$(basename $2)
+tmux rename-window -t "$session_name:$window_name" $new_window_name
+start_nvim "$session_name:$new_window_name.$current_pane"
+split_window "$session_name:$new_window_name"
+# echo "tmux send-keys -t $session_name:$window_name.{bottom} \"$COMMAND\" Enter;"
+tmux send-keys -t "$session_name:$new_window_name.{bottom}" "$COMMAND" Enter;
