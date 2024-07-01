@@ -25,7 +25,7 @@ func NewJava(ctx *pulumi.Context, project *Project, name string, opts pulumi.Res
 
 	mvnLoc := path.Join(project.Home.HomeLocation, ".local")
 
-	installers.NewShell(ctx, "java", &installers.ShellArgs{
+	if _, err := installers.NewShell(ctx, "java", &installers.ShellArgs{
 		DownloadURL: pulumi.String("https://download.java.net/java/GA/jdk21/fd2272bbf8e04c3dbaee13770090416c/35/GPL/openjdk-21_macos-aarch64_bin.tar.gz"),
 		InstallCommands: pulumi.StringArray{
 			pulumi.Sprintf("tar -C %s -xzvf openjdk-21_macos-aarch64_bin.tar.gz", mvnLoc),
@@ -34,13 +34,15 @@ func NewJava(ctx *pulumi.Context, project *Project, name string, opts pulumi.Res
 		UninstallCommands: pulumi.StringArray{
 			pulumi.Sprintf("rm -rf %s", path.Join(mvnLoc, "openjdk-21_macos-aarch64_bin")),
 		},
-	}, pulumi.Parent(java))
+	}, pulumi.Parent(java)); err != nil {
+		return nil, err
+	}
 
 	javaHome := path.Join(mvnLoc, "jdk-21.jdk", "Contents", "Home")
 	java.Env["JAVA_HOME"] = pulumi.String(javaHome)
 	java.SystemPaths = append(java.SystemPaths, "$JAVA_HOME/bin")
 
-	installers.NewShell(ctx, "maven", &installers.ShellArgs{
+	if _, err := installers.NewShell(ctx, "maven", &installers.ShellArgs{
 		DownloadURL: pulumi.String("https://dlcdn.apache.org/maven/maven-3/3.9.4/binaries/apache-maven-3.9.4-bin.tar.gz"),
 		Environment: pulumi.ToStringMap(map[string]string{
 			"JAVA_HOME": javaHome,
@@ -53,8 +55,10 @@ func NewJava(ctx *pulumi.Context, project *Project, name string, opts pulumi.Res
 		UninstallCommands: pulumi.ToStringArray([]string{
 			fmt.Sprintf("rm -rf %s", path.Join(mvnLoc, "apache-maven-3.9.4")),
 		}),
-	}, pulumi.Parent(java))
-	java.SystemPaths = append(java.SystemPaths, fmt.Sprintf(path.Join(mvnLoc, "apache-maven-3.9.4", "bin")))
+	}, pulumi.Parent(java)); err != nil {
+		return nil, err
+	}
+	java.SystemPaths = append(java.SystemPaths, path.Join(mvnLoc, "apache-maven-3.9.4", "bin"))
 
 	return java, nil
 }

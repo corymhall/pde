@@ -2,11 +2,14 @@ return {
   "folke/trouble.nvim",
   keys = {
     {
-      '<leader>xw',
-      function()
-        require('trouble').toggle('workspace_diagnostics')
-      end,
-      desc = "Workspace diagnostics"
+      "<leader>xw",
+      "<cmd>Trouble diagnostics toggle<cr>",
+      desc = "Workspace diagnostics (Trouble)",
+    },
+    {
+      "<leader>xb",
+      "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+      desc = "Buffer diagnostics (Trouble)",
     },
   },
   dependencies = { "nvim-tree/nvim-web-devicons" },

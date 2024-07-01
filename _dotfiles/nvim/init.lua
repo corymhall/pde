@@ -29,7 +29,9 @@ vim.opt.runtimepath:prepend(lazypath)
 -- require("ch.lazy")
 require("lazy").setup({ import = "custom/plugins" }, {
   change_detection = {
+    enabled = true,
     notify = false,
+    frequency = 86400, -- every 24 hours
   },
 })
 

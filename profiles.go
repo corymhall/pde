@@ -23,12 +23,8 @@ func NewProfiles(ctx *pulumi.Context, project *components.Project, args Profiles
 		for k, v := range c.GetEnv() {
 			args.Env[k] = v
 		}
-		for _, l := range c.GetLines() {
-			args.Lines = append(args.Lines, l)
-		}
-		for _, p := range c.GetSystemPaths() {
-			args.SystemPaths = append(args.SystemPaths, p)
-		}
+		args.Lines = append(args.Lines, c.GetLines()...)
+		args.SystemPaths = append(args.SystemPaths, c.GetSystemPaths()...)
 	}
 
 	zsh, err := components.NewZshProfile(ctx, "zsh", components.ZshProfileArgs{

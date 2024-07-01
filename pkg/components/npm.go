@@ -7,6 +7,7 @@ import (
 	"path"
 
 	"github.com/corymhall/pulumi-provider-pde/sdk/go/pde/installers"
+	"github.com/pulumi/pulumi-github/sdk/v6/go/github"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -27,8 +28,17 @@ func NewNpm(ctx *pulumi.Context, project *Project, name string, opts pulumi.Reso
 		return nil, err
 	}
 
+	ref, err := github.GetRef(ctx, &github.GetRefArgs{
+		Owner:      pulumi.StringRef("nvm-sh"),
+		Repository: "nvm",
+		Ref:        "heads/master",
+	})
+	if err != nil {
+		return nil, err
+	}
+
 	repo, err := installers.NewGitHubRepo(ctx, "nvm", &installers.GitHubRepoArgs{
-		Branch:     pulumi.String("master"),
+		Version:    pulumi.String(ref.Sha),
 		Org:        pulumi.String("nvm-sh"),
 		Repo:       pulumi.String("nvm"),
 		FolderName: pulumi.String(".nvm"),

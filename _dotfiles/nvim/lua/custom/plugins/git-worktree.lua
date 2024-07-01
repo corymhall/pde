@@ -1,5 +1,5 @@
 return {
-  "ThePrimeagen/git-worktree.nvim",
+  dir = "~/plugins/git-worktree.nvim",
   config = function()
     require("git-worktree").setup {
       autopush = false,

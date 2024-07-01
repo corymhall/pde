@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/corymhall/pulumi-provider-pde/sdk/go/pde/installers"
+	"github.com/pulumi/pulumi-github/sdk/v6/go/github"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -40,8 +41,18 @@ func NewZshProfile(ctx *pulumi.Context, name string, args ZshProfileArgs, opts .
 	args.Env["NODE_OPTIONS"] = pulumi.String(`"--max-old-space-size=8196 --experimental-worker $${NODE_OPTIONS:-}"`)
 	args.Env["SHELL"] = pulumi.String("/bin/zsh")
 
+	ref, err := github.GetRef(ctx, &github.GetRefArgs{
+		Owner:      pulumi.StringRef("zdharma-continuum"),
+		Repository: "zinit",
+		Ref:        "heads/master",
+	})
+	if err != nil {
+		return nil, err
+	}
+
 	zinit, err := installers.NewGitHubRepo(ctx, "zinit", &installers.GitHubRepoArgs{
 		Org:        pulumi.String("zdharma-continuum"),
+		Version:    pulumi.String(ref.Sha),
 		Repo:       pulumi.String("zinit"),
 		FolderName: pulumi.String(".zinit"),
 	})

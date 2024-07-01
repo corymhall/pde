@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/corymhall/pulumi-provider-pde/sdk/go/pde/installers"
+	"github.com/pulumi/pulumi-github/sdk/v6/go/github"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -24,10 +25,19 @@ func NewPython(ctx *pulumi.Context, project *Project, name string, opts pulumi.R
 		return nil, err
 	}
 
+	ref, err := github.GetRef(ctx, &github.GetRefArgs{
+		Owner:      pulumi.StringRef("pyenv"),
+		Repository: "pyenv",
+		Ref:        "heads/master",
+	})
+	if err != nil {
+		return nil, err
+	}
+
 	installers.NewGitHubRepo(ctx, "pyenv", &installers.GitHubRepoArgs{
 		Org:        pulumi.String("pyenv"),
 		Repo:       pulumi.String("pyenv"),
-		Branch:     pulumi.String("master"),
+		Version:    pulumi.String(ref.Sha),
 		FolderName: pulumi.String(".pyenv"),
 		InstallCommands: pulumi.ToStringArray([]string{
 			"src/configure",

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+branch=$(git remote show origin | grep 'HEAD branch' | cut -d' ' -f5)
+root=$(tmux-worktree)
+
+pushd $root/$branch
+git pull
+popd

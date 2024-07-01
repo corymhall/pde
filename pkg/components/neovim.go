@@ -5,6 +5,7 @@ import (
 	"path"
 
 	"github.com/corymhall/pulumi-provider-pde/sdk/go/pde/installers"
+	"github.com/pulumi/pulumi-github/sdk/v6/go/github"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -25,6 +26,15 @@ func NewNeovim(ctx *pulumi.Context, project *Project, name string, opts pulumi.R
 		return nil, err
 	}
 
+	ref, err := github.GetRef(ctx, &github.GetRefArgs{
+		Owner:      pulumi.StringRef("neovim"),
+		Repository: "neovim",
+		Ref:        "tags/v0.10.1",
+	})
+	if err != nil {
+		return nil, err
+	}
+
 	// releaseCommands := pulumi.StringArray{
 	// 	pulumi.String("xattr -c ./nvim-macos.tar.gz"),
 	// 	pulumi.String("tar xzvf nvim-macos.tar.gz"),
@@ -32,17 +42,16 @@ func NewNeovim(ctx *pulumi.Context, project *Project, name string, opts pulumi.R
 	// 	pulumi.String("mv nvim-macos $HOME/neovim"),
 	// }
 	installCommands := pulumi.ToStringArray([]string{
-		fmt.Sprintf("rm -rf %s/neovim/share/nvim/runtime", project.Home.HomeLocation),
-		`rm -r build/`,
+		fmt.Sprintf("rm -rf %s/neovim/share/nvim/runtime || true", project.Home.HomeLocation),
+		`rm -r build/ || true`,
 		`make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=$HOME/neovim" CMAKE_BUILD_TYPE=Release`,
 		"make install",
 	})
-	_, err := installers.NewGitHubRepo(ctx, "neovim", &installers.GitHubRepoArgs{
+	_, err = installers.NewGitHubRepo(ctx, "neovim", &installers.GitHubRepoArgs{
 		Org:             pulumi.String("neovim"),
 		Repo:            pulumi.String("neovim"),
 		FolderName:      pulumi.String("neovim-install"),
-		Branch:          pulumi.String("master"),
-		Version:         pulumi.String("27fb62988e922c2739035f477f93cc052a4fee1e"), // v0.10.0
+		Version:         pulumi.String(ref.Sha),
 		InstallCommands: installCommands,
 		UpdateCommands:  installCommands,
 		UninstallCommands: pulumi.ToStringArray([]string{
